@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "title": "Budova",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "format": "number",
+            "readonly": true
+        },
+        "label": {
+            "type": "string"
+        },
+        "addr_label": {
+            "type": "string"
+        },
+        "addr_street": {
+            "type": "string"
+        },
+        "addr_town": {
+            "type": "string"
+        },
+        "addr_postal": {
+            "type": "number"
+        },
+        "addr_country_code": {
+            "type": "string",
+            "default": "CZ"
+        }
+    },
+    "required": [
+        "id",
+        "label",
+        "addr_label",
+        "addr_street",
+        "addr_town",
+        "addr_postal",
+        "addr_country_code"
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "title": "Uživatel",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "format": "number",
+            "readonly": true
+        },
+        "email": {
+            "type": "email"
+        },
+        "phone": {
+            "type": "tel"
+        },
+        "f_name": {
+            "type": "string"
+        },
+        "l_name": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "id",
+        "email",
+        "phone",
+        "f_name",
+        "l_name"
+    ]
+}
