@@ -1,0 +1,58 @@
+{
+    "type": "object",
+    "title": "Prostor",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "format": "number",
+            "readonly": true
+        },
+        "label": {
+            "type": "string",
+            "maxLength": 32
+        },
+        "addr_label": {
+            "type": "string",
+            "maxLength": 32
+        },
+        "addr_street": {
+            "type": "string",
+            "maxLength": 32
+        },
+        "addr_town": {
+            "type": "string",
+            "maxLength": 32
+        },
+        "addr_postal": {
+            "type": "integer",
+            "format": "number",
+            "maximum": 99999
+        },
+        "addr_country_code": {
+            "type": "string",
+            "default": "CZ",
+            "maxLength": 2
+        },
+        "text_color": {
+            "type": "string",
+            "format": "color",
+            "default": "#ffffff"
+        },
+        "background_color": {
+            "type": "string",
+            "format": "color",
+            "defaultValue": "#000000"
+        }
+    },
+    "required": [
+        "id",
+        "label",
+        "addr_label",
+        "addr_street",
+        "addr_town",
+        "addr_postal",
+        "addr_country_code",
+        "text_color",
+        "background_color"
+    ]
+}

@@ -1,5 +1,4 @@
 <script>
-	// @ts-nocheck
 	import AdminForm from '$lib/AdminForm.svelte';
 	export let data = null;
 </script>

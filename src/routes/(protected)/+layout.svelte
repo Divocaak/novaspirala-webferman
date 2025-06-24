@@ -1,12 +1,16 @@
 <script>
-	// @ts-nocheck
 	import { User } from '$lib/classes/user.js';
 
 	export let data;
 	const user = User.fromJSON(data.user);
 </script>
 
-<h1>ki-app protected</h1>
+<svelte:head>
+	<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
+	<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
+</svelte:head>
+
+<h1>Nová Spirála Web Ferman</h1>
 <p>
 	{@html user.getInfoString()}
 	<a href="/logout">logout</a>

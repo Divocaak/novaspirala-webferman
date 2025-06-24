@@ -9,10 +9,10 @@
 	<thead>
 		<tr>
 			<th scope="col">id</th>
+			<th scope="col">login</th>
 			<th scope="col">lname fname</th>
 			<th scope="col">email</th>
 			<th scope="col">phone</th>
-			<th scope="col">status</th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
@@ -26,6 +26,9 @@
 					{user.id}
 				</td>
 				<td>
+					{user.login}
+				</td>
+				<td>
 					<b>{user.l_name}</b>
 					{user.f_name}
 				</td>
@@ -36,19 +39,16 @@
 					<a href="tel:{user.phone}">{user.phone}</a>
 				</td>
 				<td>
-					<i>{user.status}</i>
-				</td>
-				<td>
 					<a href="/sysadmin/users/form?id={user.id}">upravit</a>
 				</td>
 				<td>
-					<a href="/sysadmin/users/status?uid={user.id}&sid={user.statusId}">status</a>
+					<a href="/sysadmin/users/changePassword?id={user.id}">změnit heslo</a>
 				</td>
 				<td>
 					<a href="/sysadmin/users/privileges?uid={user.id}">práva</a>
 				</td>
 				<td>
-					<a href="/sysadmin/users/structures?uid={user.id}">přiřazení k budovám</a>
+					<a href="/sysadmin/users/roles?uid={user.id}">role</a>
 				</td>
 			</tr>
 		{/each}

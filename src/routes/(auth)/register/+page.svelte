@@ -1,12 +1,12 @@
 <script>
-	// @ts-nocheck
-
-	let email = '';
+	let login = '';
 	let password = '';
 	let passwordAgain = '';
+	let email = '';
 	let phone = '';
 	let fName = '';
 	let lName = '';
+
 	let error = '';
 	let success = '';
 
@@ -21,12 +21,12 @@
 		const response = await fetch('/api/auth/register', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password, phone, fName, lName })
+			body: JSON.stringify({ login, password, email, phone, fName, lName })
 		});
 
 		if (response.ok) {
 			success = 'succ';
-			username = password = passwordAgain = '';
+			login = password = passwordAgain = '';
 			error = '';
 		} else {
 			const data = await response.json();
@@ -36,8 +36,11 @@
 </script>
 
 <form on:submit={handleSubmit} autocomplete="off">
-	<label for="email">* email</label>
-	<input id="email" type="email" bind:value={email} required /><br />
+	<label for="login">* login</label>
+	<input id="login" type="text" bind:value={login} required maxlength="16" /><br />
+
+	<label for="email">email</label>
+	<input id="email" type="email" bind:value={email} maxlength="32"/><br />
 
 	<label for="password">* password</label>
 	<input id="password" type="password" bind:value={password} required /><br />
@@ -45,14 +48,14 @@
 	<label for="passwordAgain">* password check</label>
 	<input id="passwordAgain" type="password" bind:value={passwordAgain} required /><br />
 
-	<label for="phone">* tel</label>
-	<input id="phone" type="tel" bind:value={phone} required /><br />
+	<label for="phone">tel</label>
+	<input id="phone" type="tel" bind:value={phone} /><br />
 
 	<label for="fname">f nane</label>
-	<input id="fname" type="text" bind:value={fName} /><br />
+	<input id="fname" type="text" bind:value={fName} maxlength="16"/><br />
 
 	<label for="lname">l name</label>
-	<input id="lname" type="text" bind:value={lName} /><br />
+	<input id="lname" type="text" bind:value={lName} maxlength="16"/><br />
 
 	{#if error}
 		<p style="color: red;">{error}</p>
@@ -66,5 +69,4 @@
 
 	<button type="submit">Register</button><br />
 	<a href="/login">login</a><br />
-	<a href="/">back to homepage</a><br />
 </form>

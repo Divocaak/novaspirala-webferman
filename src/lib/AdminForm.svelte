@@ -15,6 +15,7 @@
 			disable_edit_json: true,
 			disable_properties: true,
 			disable_array_delete_last_row: true,
+			disable_collapse: true,
 			compact: true,
 			ajax: true,
 			theme: 'spectre',
@@ -24,8 +25,8 @@
 
 		editor.on('ready', () => {
 			editor.setValue({ id: Date.now() });
-			
-            if (initialData) editor.setValue(initialData);
+
+			if (initialData) editor.setValue(initialData);
 		});
 
 		return () => {
@@ -57,11 +58,6 @@
 		}
 	}
 </script>
-
-<svelte:head>
-	<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
-	<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
-</svelte:head>
 
 <div class="wrapper">
 	<div bind:this={container} class="editor-container"></div>

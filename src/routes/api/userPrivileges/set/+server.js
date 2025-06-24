@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { pool } from "$lib/db/mysql.ts";
+import { pool } from "$lib/db/mysql.js";
 
 export async function POST({ params, request }) {
     const data = await request.json();
@@ -9,8 +8,8 @@ export async function POST({ params, request }) {
         await connection.beginTransaction();
 
         for (let [key, value] of Object.entries(data.updates)) {
-            await connection.query("INSERT INTO user_privilege (id_user, id_privilege, id_structure, active) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE active = ?",
-                [parseInt(data.uid), value.id_privilege, value.id_structure, value.active, value.active]
+            await connection.query("INSERT INTO user_privilege (id_user, id_privilege, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?",
+                [parseInt(data.uid), value.id_privilege, value.active, value.active]
             );
         }
 

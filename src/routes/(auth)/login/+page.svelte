@@ -1,7 +1,5 @@
 <script>
-	// @ts-nocheck
-
-	let email = '';
+	let login = '';
 	let password = '';
 	let error = '';
 
@@ -10,7 +8,7 @@
 		const response = await fetch('/api/auth/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password })
+			body: JSON.stringify({ login, password })
 		});
 
 		if (response.ok) {
@@ -23,10 +21,10 @@
 </script>
 
 <form on:submit={handleSubmit}>
-	<label for="email">email</label>
-	<input id="email" type="email" bind:value={email} required /><br />
+	<label for="login">login</label>
+	<input id="login" type="text" bind:value={login} required /><br />
 
-	<label for="password">Password</label>
+	<label for="password">password</label>
 	<input id="password" type="password" bind:value={password} required /><br />
 
 	{#if error}
@@ -36,5 +34,4 @@
 
 	<button type="submit">Login</button><br />
 	<a href="/register">register</a><br />
-	<a href="/">back to homepage</a><br />
 </form>

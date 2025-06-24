@@ -1,10 +1,10 @@
-// @ts-nocheck
-import { pool } from "$lib/db/mysql.ts";
+import { pool } from "$lib/db/mysql.js";
 
 export async function POST({ request }) {
 
     const data = await request.json();
-    await pool.query("UPDATE user SET email=?, phone=?, f_name=?, l_name=? WHERE id=?;", [
+    await pool.query("UPDATE user SET login=?, email=?, phone=?, f_name=?, l_name=? WHERE id=?;", [
+        data.login,
         data.email,
         parseInt(data.phone),
         data.f_name,

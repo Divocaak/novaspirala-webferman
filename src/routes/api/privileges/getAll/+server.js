@@ -1,8 +1,7 @@
-// @ts-nocheck
-import { pool } from "$lib/db/mysql.ts";
+import { pool } from "$lib/db/mysql.js";
 
 export async function GET() {
-    const [rows, fields] = await pool.query('SELECT id, label, note FROM privilege WHERE id > 1;');
+    const [rows, fields] = await pool.query('SELECT id, label, note, text_color AS txtClr, background_color AS bgClr FROM privilege WHERE id > 1;');
 
     return new Response(JSON.stringify(rows));
 }

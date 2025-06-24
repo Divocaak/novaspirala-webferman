@@ -10,7 +10,10 @@ export async function handle({ event, resolve }) {
         event.locals.user = null;
     }
 
-    const pathname = event.route.id;
+    const pathname = event.url.pathname;
+
+    if (pathname == "/") throw redirect(302, !event.locals.user ? '/login' : "/home");
+
     if (pathname.startsWith('/(auth)')) return resolve(event);
 
     if (pathname.startsWith('/(protected)')) {
@@ -27,6 +30,12 @@ export async function handle({ event, resolve }) {
         if (pathname.includes('/structure-admin') && !user.isStructureAdmin()) throw redirect(302, '/403'); // Redirect to Forbidden page
         if (pathname.includes('/bartender') && !user.isBartender()) throw redirect(302, '/403'); // Redirect to Forbidden page
     }
+    /* 
+        if (pathname == "/") {
+            throw redirect(302, '/(protected)/home');
+        } else {
+            throw redirect(302, '/(auth)/login');
+        } */
 
     return resolve(event);
 }

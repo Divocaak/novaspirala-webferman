@@ -1,0 +1,41 @@
+{
+    "type": "object",
+    "title": "Uživatel",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "format": "number",
+            "readonly": true
+        },
+        "login": {
+            "type": "string",
+            "maxLength": 16
+        },
+        "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 32
+        },
+        "phone": {
+            "type": "integer",
+            "format": "number",
+            "maximum": 999999999
+        },
+        "f_name": {
+            "type": "string",
+            "maxLength": 16
+        },
+        "l_name": {
+            "type": "string",
+            "maxLength": 16
+        }
+    },
+    "required": [
+        "id",
+        "login",
+        "email",
+        "phone",
+        "f_name",
+        "l_name"
+    ]
+}
