@@ -14,9 +14,10 @@ export async function handle({ event, resolve }) {
 
     if (pathname == "/") throw redirect(302, !event.locals.user ? '/login' : "/home");
 
-    if (pathname.startsWith('/(auth)')) return resolve(event);
+    // NOTE do i need this?
+    if (pathname.startsWith('/(designed)/(auth)')) return resolve(event);
 
-    if (pathname.startsWith('/(protected)')) {
+    if (pathname.startsWith('/(designed)/(protected)')) {
         if (!event.locals.user) {
             throw redirect(302, '/login');
         }
@@ -30,12 +31,6 @@ export async function handle({ event, resolve }) {
         if (pathname.includes('/structure-admin') && !user.isStructureAdmin()) throw redirect(302, '/403'); // Redirect to Forbidden page
         if (pathname.includes('/bartender') && !user.isBartender()) throw redirect(302, '/403'); // Redirect to Forbidden page
     }
-    /* 
-        if (pathname == "/") {
-            throw redirect(302, '/(protected)/home');
-        } else {
-            throw redirect(302, '/(auth)/login');
-        } */
 
     return resolve(event);
 }

@@ -1,24 +1,9 @@
-<script>
-	import { User } from '$lib/classes/user.js';
-
-	export let data;
-	const user = User.fromJSON(data.user);
-</script>
-
 <svelte:head>
 	<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
 	<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
 </svelte:head>
 
 <h1>Nová Spirála Web Ferman</h1>
-<p>
-	{@html user.getInfoString()}
-	<a href="/logout">logout</a>
-	<br />
-	(privileges: {#each user.privileges as privilege}
-		{privilege.id}: <b>{privilege.label}</b> {#if privilege.structureLabel}(<i>{privilege.structureLabel}</i>){/if},&nbsp;
-	{/each})
-</p>
 
 <slot />
 
@@ -35,5 +20,9 @@
 
 	:global(tr:nth-child(even)) {
 		background-color: #b7b7b7;
+	}
+
+	:global(body) {
+		margin: 50px;
 	}
 </style>

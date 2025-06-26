@@ -1,6 +1,9 @@
 {
     "type": "object",
     "title": "Prostor",
+    "options": {
+        "titleHidden": true
+    },
     "properties": {
         "id": {
             "type": "integer",

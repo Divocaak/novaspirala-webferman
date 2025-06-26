@@ -1,6 +1,9 @@
 {
     "type": "object",
     "title": "Uživatel",
+    "options": {
+        "titleHidden": true
+    },
     "properties": {
         "id": {
             "type": "integer",

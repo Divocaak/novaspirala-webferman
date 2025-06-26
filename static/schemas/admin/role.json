@@ -1,6 +1,9 @@
 {
     "type": "object",
     "title": "Role",
+    "options": {
+        "titleHidden": true
+    },
     "properties": {
         "id": {
             "type": "integer",

@@ -1,6 +1,9 @@
 {
     "type": "object",
     "title": "Žánr",
+    "options": {
+        "titleHidden": true
+    },
     "properties": {
         "id": {
             "type": "integer",
@@ -13,7 +16,7 @@
         },
         "note": {
             "type": "string",
-            "format":"textarea",
+            "format": "textarea",
             "maxLength": 64
         },
         "text_color": {
