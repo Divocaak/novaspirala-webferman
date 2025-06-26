@@ -24,6 +24,9 @@
 					<b style="color: {genre.txtClr}">{genre.label}</b>
 				</td>
 				<td>
+					{genre.note}
+				</td>
+				<td>
 					<a href="/sysadmin/genres/form?id={genre.id}">edit</a>
 				</td>
 			</tr>
