@@ -1,27 +1,48 @@
-export const load = async ({ url, params, fetch }) => {
+export const load = async ({ url, fetch }) => {
+  const [usersAllowedRes, venuesRes, genresRes, rolesRes] = await Promise.all([
+    fetch("/api/users/getAllAllowedToWrite"),
+    fetch("/api/venues/getAllForForm"),
+    fetch("/api/genres/getAllForForm"),
+    fetch("/api/roles/getAll")
+  ]);
 
-  /* URGENT */
-  const usersAllowedToWriteResult = await fetch("/api/venues/getAllForForm");
-  const usersAllowedToWriteData = await usersAllowedToWriteResult.json();
+  const [usersAllowedData, venuesData, genresData, rolesData] = await Promise.all([
+    usersAllowedRes.json(),
+    venuesRes.json(),
+    genresRes.json(),
+    rolesRes.json()
+  ]);
 
-  const venuesResult = await fetch("/api/venues/getAllForForm");
-  const venuesData = await venuesResult.json();
+  const usersAllowedToWrite = usersAllowedData.map(user => ({
+    id: user.id,
+    label: `${user.l_name} ${user.f_name} (${user.login})`
+  }));
 
-  const genresResult = await fetch("/api/genres/getAllForForm");
-  const genresData = await genresResult.json();
-  
-  const toRet = {
-    event: null,
-    venues: venuesData,
-    genres: genresData
-  }
+  const roles = await Promise.all(
+    rolesData.map(async role => {
+      const res = await fetch(`/api/users/getAllWithRole?rid=${role.id}`);
+      const users = await res.json();
+
+      return {
+        role,
+        users: users.map(user => ({
+          id: user.id,
+          label: `${user.l_name} ${user.f_name} (${user.login})`
+        }))
+      };
+    })
+  );
 
   const id = url.searchParams.get('id');
-  if (id) {
-    const result = await fetch(`/api/events/get?id=${id}`);
-    const data = await result.json();
-    toRet.event = data;
-  }
-  
-  return toRet;
-}
+  const event = id
+    ? await fetch(`/api/events/get?id=${id}`).then(res => res.json())
+    : null;
+
+  return {
+    event,
+    usersAllowedToWrite,
+    venues: venuesData,
+    genres: genresData,
+    roles
+  };
+};

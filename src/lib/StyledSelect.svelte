@@ -1,6 +1,8 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 
+	/* TODO add null option */
+
 	export let id = '';
 	export let label = '';
 	export let required = false;
@@ -8,7 +10,7 @@
 	export let options = [];
 	export let value = null;
 
-    const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
 	let isOpen = false;
 
@@ -19,19 +21,18 @@
 	function selectOption(option) {
 		value = option;
 		isOpen = false;
-        dispatch('input', value);
+		dispatch('input', value);
 	}
 </script>
 
-<label for={id}>
+<p>
 	{#if required}*&nbsp;{/if}{label}
-</label>
+</p>
 <div class="custom-select {isOpen ? 'open' : ''}">
 	<button
 		class="selected"
 		on:click={toggle}
-		style="background-color: {value?.bgClr || '#eee'}; color: {value?.txtClr ||
-			'#000'};"
+		style="background-color: {value?.bgClr || '#eee'}; color: {value?.txtClr || '#000'};"
 	>
 		{value?.label || 'Vybrat'}
 	</button>
@@ -41,7 +42,7 @@
 			<button
 				class="option"
 				on:click={() => selectOption(option)}
-				style="background-color: {option.bgClr}; color: {option.txtClr};"
+				style="background-color: {option.bgClr ?? '#000'}; color: {option.txtClr ?? '#fff'};"
 			>
 				{option.label}
 			</button>
@@ -54,7 +55,7 @@
 <br />
 
 <style>
-	label,
+	p,
 	.custom-select {
 		display: inline-block;
 	}
@@ -86,6 +87,8 @@
 	.option {
 		padding: 5px;
 		cursor: pointer;
+		display: block;
+		width: 100%;
 	}
 	.option:hover {
 		opacity: 0.8;

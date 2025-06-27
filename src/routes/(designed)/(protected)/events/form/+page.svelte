@@ -1,12 +1,11 @@
 <script>
-	import CustomSelect from '$lib/StyledSelect.svelte';
+	import StyledSelect from '$lib/StyledSelect.svelte';
 	export let data = null;
 
-	console.log(data);
+	const myIndex = data.usersAllowedToWrite.findIndex((user) => user.id === data.user.id);
 
 	let id = '';
-	/* URGENT default is me */
-	let id_created_by = null;
+	let id_created_by = data.usersAllowedToWrite[myIndex];
 	let id_venue = null;
 	let id_genre = null;
 	let id_order = '';
@@ -17,6 +16,8 @@
 	let text_color = '#ffffff';
 	let background_color = '#000000';
 
+	let selectedUsersByRole = {};
+
 	let error = '';
 	let success = '';
 
@@ -24,6 +25,29 @@
 		event.preventDefault();
 		/* BUG check dropdowns mandatory */
 		/* TODO validate date_to >= date_from */
+
+		const rolesToRet = [];
+		for (const [roleId, selectedUser] of Object.entries(selectedUsersByRole)) {
+			if (selectedUser) {
+				console.log(`roleId: ${roleId}, userId: ${selectedUser.id}`);
+				rolesToRet.push({ rid: Number(roleId), uid: selectedUser.id });
+			}
+		}
+
+		const toSend = {
+			id,
+			id_created_by: id_created_by.id,
+			id_venue: id_venue.id,
+			id_genre: id_genre.id,
+			id_order,
+			label,
+			date_from,
+			date_to,
+			description,
+			text_color,
+			background_color,
+			roles: rolesToRet
+		};
 
 		/* const response = await fetch('/api/auth/login', {
 			method: 'POST',
@@ -48,7 +72,7 @@
 	<label for="id">id</label>
 	<input id="id" type="number" bind:value={id} readonly disabled /><br />
 
-	<CustomSelect
+	<StyledSelect
 		label="created by"
 		id="id_created_by"
 		bind:value={id_created_by}
@@ -56,7 +80,7 @@
 		options={data.usersAllowedToWrite}
 	/>
 
-	<CustomSelect
+	<StyledSelect
 		label="prostor"
 		id="id_venue"
 		bind:value={id_venue}
@@ -64,7 +88,7 @@
 		options={data.venues}
 	/>
 
-	<CustomSelect
+	<StyledSelect
 		label="žánr/typ"
 		id="id_genre"
 		bind:value={id_genre}
@@ -94,7 +118,21 @@
 	<label for="background_color">* barva pozadí</label>
 	<input id="background_color" type="color" bind:value={background_color} required /><br />
 
-	<!-- TODO roles, dynamically by available roles -->
+	{#each data.roles as role, i}
+		<div style="background-color: {role.role.bgClr}; color: {role.role.txtClr}">
+			{#if role.users.length < 1}
+				<p>počet uživatelů s rolí <b>{role.role.label}</b> je 0</p>
+			{:else}
+				<StyledSelect
+					label={role.role.label}
+					id="id_role_{role.role.id}"
+					bind:value={selectedUsersByRole[role.role.id]}
+					options={role.users}
+				/>
+			{/if}
+			<p>{role.role.note}</p>
+		</div>
+	{/each}
 
 	{#if error}
 		<p style="color: red;">{error}</p>
