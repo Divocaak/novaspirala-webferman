@@ -10,6 +10,8 @@
 	export let options = [];
 	export let value = null;
 
+	let nativeSelect;
+
 	const dispatch = createEventDispatcher();
 
 	let isOpen = false;
@@ -21,6 +23,11 @@
 	function selectOption(option) {
 		value = option;
 		isOpen = false;
+
+		if (nativeSelect) {
+			nativeSelect.value = option; // Set native <select>'s value manually
+		}
+
 		dispatch('input', value);
 	}
 </script>
@@ -38,19 +45,37 @@
 	</button>
 
 	<div class="options">
+		<button
+			class="option"
+			on:click={() => selectOption(null)}
+			style="background-color: #eee; color: #000;">-</button
+		>
 		{#each options as option}
 			<button
 				class="option"
 				on:click={() => selectOption(option)}
-				style="background-color: {option.bgClr ?? '#000'}; color: {option.txtClr ?? '#fff'};"
+				style="background-color: {option.bgClr ?? '#eee'}; color: {option.txtClr ?? '#000'};"
 			>
-				{option.label}
+				{option.label}{option.note ? ` (${option.note})` : ''}
 			</button>
 		{/each}
 	</div>
 
 	<!-- Hidden native input for form submission -->
-	<input type="hidden" {id} value={value?.value || ''} {required} />
+	<select
+		bind:this={nativeSelect}
+		{id}
+		name={id}
+		{required}
+		style="opacity: 0; position: absolute; width: 100%; height: 100%; pointer-events: none;"
+		aria-hidden="true"
+		tabindex="-1"
+	>
+		<option value="">Select one</option>
+		{#each options as option}
+			<option value={option} selected={option == value}>{option.label}</option>
+		{/each}
+	</select>
 </div>
 <br />
 

@@ -23,8 +23,11 @@
 
 	async function handleSubmit(event) {
 		event.preventDefault();
-		/* BUG check dropdowns mandatory */
-		/* TODO validate date_to >= date_from */
+
+		if (new Date(date_to) < new Date(date_from)) {
+			alert("date_to < date_from");
+			return;
+		}
 
 		const rolesToRet = [];
 		for (const [roleId, selectedUser] of Object.entries(selectedUsersByRole)) {
@@ -48,6 +51,9 @@
 			background_color,
 			roles: rolesToRet
 		};
+
+		alert('submit');
+		console.log(toSend);
 
 		/* const response = await fetch('/api/auth/login', {
 			method: 'POST',
