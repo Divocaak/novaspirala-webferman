@@ -10,23 +10,62 @@
 	<thead>
 		<tr>
 			<th scope="col">id</th>
+			<th scope="col">id_order</th>
 			<th scope="col">label</th>
-			<th scope="col">address</th>
-			<th scope="col"></th>
+			<th scope="col">date(s)</th>
+			<th scope="col">description</th>
+			<th scope="col">created_by</th>
+			<th scope="col">venue</th>
+			<th scope="col">genre</th>
+			{#each data.roles as role}
+				<th
+					scope="col"
+					class="tooltip"
+					style="background-color: {role.bgClr}; color: {role.txtClr}"
+				>
+					{role.label}&nbsp;(?)<span class="tooltip-text">{role.note}</span>
+				</th>
+			{/each}
 		</tr>
 	</thead>
 	<tbody>
 		{#each data.events as event}
 			<tr>
-				<!-- <td>
-					{venue.id}
-				</td>
-				<td style="background-color: {venue.bgClr}">
-					<b style="color: {venue.txtClr}">{venue.label}</b>
+				<td>
+					{event.id}
 				</td>
 				<td>
-					<b>{venue.addr_label}</b><br>({venue.addr_street},<br>{venue.addr_postal}&nbsp;{venue.addr_town}, {venue.addr_country_code})
+					{event.id_order}
 				</td>
+				<td style="background-color: {event.bgClr}">
+					<b style="color: {event.txtClr}">{event.label}</b>
+				</td>
+				<td>
+					{event.date_from} - {event.date_to}
+				</td>
+				<td>
+					{event.description}
+				</td>
+				<td class="tooltip">
+					{event.l_name}&nbsp;{event.f_name}&nbsp;(?)
+					<span class="tooltip-text">
+						{event.login},<br />
+						<a href="mailto:{event.email}">{event.email}</a>,<br />
+						<a href="tel:{event.phone}">{event.phone}</a>
+					</span>
+				</td>
+				<td class="tooltip" style="background-color: {event.vBgClr}">
+					<b style="color: {event.vTxtClr}">{event.addr_label}</b>&nbsp;(?)
+					<span class="tooltip-text"
+						>{event.addr_street},<br />{event.addr_postal}&nbsp;{event.addr_town}, {event.addr_country_code}</span
+					>
+				</td>
+				<td class="tooltip" style="background-color: {event.gBgClr}">
+					<b style="color: {event.gTxtClr}">{event.gLabel}</b>&nbsp;(?)
+					<span class="tooltip-text">{event.note}</span>
+				</td>
+
+				<!-- 
 				<td>
 					<a href="/sysadmin/venues/form?id={venue.id}">edit</a>
 				</td> -->
@@ -34,3 +73,31 @@
 		{/each}
 	</tbody>
 </table>
+
+<style>
+	.tooltip .tooltip-text {
+		visibility: hidden;
+		background-color: #1e1e1e;
+		color: #fff;
+		text-align: center;
+		padding: 0.5rem;
+		border-radius: 6px;
+
+		width: max-content;
+		max-width: 300px;
+
+		position: absolute;
+		bottom: 100%;
+		left: 0%;
+		z-index: 1;
+
+		opacity: 0;
+		transition: all 0.2s ease-in-out;
+	}
+
+	.tooltip:hover .tooltip-text {
+		visibility: visible;
+		opacity: 1;
+		font-weight: normal;
+	}
+</style>

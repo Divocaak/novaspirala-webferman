@@ -25,7 +25,7 @@
 		event.preventDefault();
 
 		if (new Date(date_to) < new Date(date_from)) {
-			alert("date_to < date_from");
+			alert('date_to < date_from');
 			return;
 		}
 
@@ -52,23 +52,21 @@
 			roles: rolesToRet
 		};
 
-		alert('submit');
-		console.log(toSend);
-
-		/* const response = await fetch('/api/auth/login', {
+		const response = await fetch('/api/events/add', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ login, password })
+			body: JSON.stringify(toSend)
 		});
 
 		if (response.ok) {
 			success = 'succ';
-			login = password = passwordAgain = '';
+			/* TODO clear form */
+			//login = password = passwordAgain = '';
 			error = '';
 		} else {
 			const data = await response.json();
 			error = data.message;
-		} */
+		}
 	}
 </script>
 

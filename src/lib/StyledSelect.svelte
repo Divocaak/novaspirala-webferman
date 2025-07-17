@@ -1,8 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 
-	/* TODO add null option */
-
 	export let id = '';
 	export let label = '';
 	export let required = false;
@@ -24,9 +22,7 @@
 		value = option;
 		isOpen = false;
 
-		if (nativeSelect) {
-			nativeSelect.value = option; // Set native <select>'s value manually
-		}
+		if (nativeSelect) nativeSelect.value = option;
 
 		dispatch('input', value);
 	}
@@ -40,6 +36,7 @@
 		class="selected"
 		on:click={toggle}
 		style="background-color: {value?.bgClr || '#eee'}; color: {value?.txtClr || '#000'};"
+		type="button"
 	>
 		{value?.label || 'Vybrat'}
 	</button>
@@ -48,13 +45,15 @@
 		<button
 			class="option"
 			on:click={() => selectOption(null)}
-			style="background-color: #eee; color: #000;">-</button
+			style="background-color: #eee; color: #000;"
+			type="button">-</button
 		>
 		{#each options as option}
 			<button
 				class="option"
 				on:click={() => selectOption(option)}
 				style="background-color: {option.bgClr ?? '#eee'}; color: {option.txtClr ?? '#000'};"
+				type="button"
 			>
 				{option.label}{option.note ? ` (${option.note})` : ''}
 			</button>

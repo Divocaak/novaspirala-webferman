@@ -1,18 +1,31 @@
-import { pool } from "$lib/db/mysql.js";
+import { pool } from '$lib/db/mysql.js';
+import { json } from '@sveltejs/kit';
 
 export async function POST({ request }) {
+    let connection;
+    try {
+        const { id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, roles } = await request.json();
 
-    const data = await request.json();
-    const [sql, _] = await pool.query("INSERT INTO venue (label, addr_label, addr_street, addr_town, addr_postal, addr_country_code, text_color, background_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", [
-        data.label,
-        data.addr_label,
-        data.addr_street,
-        data.addr_town,
-        data.addr_postal,
-        data.addr_country_code,
-        data.text_color,
-        data.background_color
-    ]);
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
 
-    return new Response(JSON.stringify({ status: 200, message: sql.insertId }, { status: 200 }));
+        const [result] = await connection.query("INSERT INTO event (id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+            [id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color]);
+
+        const insertedId = result.insertId;
+        const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
+        const values = roles.flatMap(role => [role.uid, role.rid, insertedId]);
+        const sql = `INSERT INTO user_event (id_user, id_role, id_event, active) VALUES ${placeholders}`;
+        await connection.query(sql, values);
+
+        await connection.commit();
+
+        return json({ message: 'event added successfully.' }, { status: 200 });
+    } catch (error) {
+        await connection.rollback();
+        console.error(error);
+        return json({ message: 'error occurred while adding the event' }, { status: 500 });
+    } finally {
+        connection.release();
+    }
 }
