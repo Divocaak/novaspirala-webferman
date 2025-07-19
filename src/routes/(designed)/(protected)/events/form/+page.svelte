@@ -4,17 +4,19 @@
 
 	const myIndex = data.usersAllowedToWrite.findIndex((user) => user.id === data.user.id);
 
-	let id = '';
-	let id_created_by = data.usersAllowedToWrite[myIndex];
-	let id_venue = null;
-	let id_genre = null;
-	let id_order = '';
-	let label = '';
-	let date_from = '';
-	let date_to = '';
-	let description = '';
-	let text_color = '#ffffff';
-	let background_color = '#000000';
+	event;
+
+	let id = data.event?.id ?? '';
+	let id_created_by = data.event?.id_created_by ?? data.usersAllowedToWrite[myIndex];
+	let id_venue = data.event?.id_venue ?? null;
+	let id_genre = data.event?.id_genre ?? null;
+	let id_order = data.event?.id_order ?? '';
+	let label = data.event?.label ?? '';
+	let date_from = data.event?.date_from ?? '';
+	let date_to = data.event?.date_to ?? '';
+	let description = data.event?.description ?? '';
+	let text_color = data.event?.text_color ?? '#ffffff';
+	let background_color = data.event?.background_color ?? '#000000';
 
 	let selectedUsersByRole = {};
 
@@ -31,10 +33,7 @@
 
 		const rolesToRet = [];
 		for (const [roleId, selectedUser] of Object.entries(selectedUsersByRole)) {
-			if (selectedUser) {
-				console.log(`roleId: ${roleId}, userId: ${selectedUser.id}`);
-				rolesToRet.push({ rid: Number(roleId), uid: selectedUser.id });
-			}
+			if (selectedUser) rolesToRet.push({ rid: Number(roleId), uid: selectedUser.id });
 		}
 
 		const toSend = {
@@ -63,9 +62,11 @@
 			/* TODO clear form */
 			//login = password = passwordAgain = '';
 			error = '';
+			alert("event added succesfully")
 		} else {
 			const data = await response.json();
 			error = data.message;
+			alert("error")
 		}
 	}
 </script>

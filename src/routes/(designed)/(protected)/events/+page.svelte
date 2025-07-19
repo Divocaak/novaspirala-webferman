@@ -1,5 +1,9 @@
 <script>
+	import { getLocalisedDate } from "$lib/dateParser";
+	import { User } from '$lib/classes/user.js';
+	
 	export let data;
+	const user = User.fromJSON(data.user);
 </script>
 
 <h2>eventy</h2>
@@ -26,6 +30,8 @@
 					{role.label}&nbsp;(?)<span class="tooltip-text">{role.note}</span>
 				</th>
 			{/each}
+			<th scope="col"></th>
+			<th scope="col"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -41,7 +47,7 @@
 					<b style="color: {event.txtClr}">{event.label}</b>
 				</td>
 				<td>
-					{event.date_from} - {event.date_to}
+					{getLocalisedDate(event.date_from)} - {getLocalisedDate(event.date_to)}
 				</td>
 				<td>
 					{event.description}
@@ -55,20 +61,39 @@
 					</span>
 				</td>
 				<td class="tooltip" style="background-color: {event.vBgClr}">
-					<b style="color: {event.vTxtClr}">{event.addr_label}</b>&nbsp;(?)
+					<b style="color: {event.vTxtClr}">{event.vLabel}</b>&nbsp;(?)
 					<span class="tooltip-text"
-						>{event.addr_street},<br />{event.addr_postal}&nbsp;{event.addr_town}, {event.addr_country_code}</span
+						>{event.addr_label}, {event.addr_street},<br />{event.addr_postal}&nbsp;{event.addr_town}, {event.addr_country_code}</span
 					>
 				</td>
 				<td class="tooltip" style="background-color: {event.gBgClr}">
 					<b style="color: {event.gTxtClr}">{event.gLabel}</b>&nbsp;(?)
 					<span class="tooltip-text">{event.note}</span>
 				</td>
-
-				<!-- 
+				{#each data.roles as role}
+					<td>
+						{#each event.users.filter((user) => user.id_role === role.id) as user}
+							<div class="tooltip">
+								{user.l_name}&nbsp;{user.f_name}
+								<span class="tooltip-text">
+									{user.login},<br />
+									<a href="mailto:{user.email}">{user.email}</a>,<br />
+									<a href="tel:{user.phone}">{user.phone}</a>
+								</span>
+							</div>
+						{/each}
+					</td>
+				{/each}
+				{#if user.isAllowedToCreate() && event.createdById == user.id}
+				<!-- TODO test condition -->
 				<td>
-					<a href="/sysadmin/venues/form?id={venue.id}">edit</a>
-				</td> -->
+					<a href="/events/form?id={event.id}">edit</a>
+				</td>
+				<td>
+					<!-- TODO delete if my event or superadmin -->
+					<a href="/">delete</a>
+				</td>
+				{/if}
 			</tr>
 		{/each}
 	</tbody>
@@ -89,7 +114,7 @@
 		position: absolute;
 		bottom: 100%;
 		left: 0%;
-		z-index: 1;
+		z-index: 100;
 
 		opacity: 0;
 		transition: all 0.2s ease-in-out;

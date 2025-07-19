@@ -1,4 +1,9 @@
-export const load = async ({ params, fetch }) => {
+import { User } from '$lib/classes/user';
+
+export const load = async ({ locals, params, fetch }) => {
+
+    const user = User.fromJSON(locals.user);
+    if (!user.isAllowedToRead()) return;
 
     const rolesResult = await fetch("/api/roles/getAll");
     const rolesData = await rolesResult.json();

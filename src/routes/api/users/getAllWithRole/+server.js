@@ -10,5 +10,3 @@ export async function GET({ request, params, url }) {
 
     return new Response(JSON.stringify(rows));
 }
-
-import { pool } from "$lib/db/mysql.js";
