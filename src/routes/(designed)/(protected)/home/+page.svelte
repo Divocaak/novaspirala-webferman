@@ -9,7 +9,7 @@
 	let allVenues = [];
 	const dateVenueMap = new Map();
 	if (data.events) {
-		const events = data.events; // your event array
+		const events = data.events;
 
 		for (const event of events) {
 			const start = new Date(event.date_from);
@@ -25,7 +25,6 @@
 			}
 		}
 
-		// Step 2: Build sorted rows and columns
 		allDays = Array.from(dateVenueMap.keys()).sort();
 		allVenues = [...new Set(events.map((e) => e.vLabel))].sort();
 	}
@@ -43,7 +42,6 @@
 		const mapKey = `${dateKey}|${venueKey}`;
 		visibleEventMap.set(mapKey, { ...ev, daySpan: span });
 
-		// Skip all subsequent days this event covers
 		for (let i = 1; i < span; i++) {
 			const d = new Date(start);
 			d.setDate(d.getDate() + i);
@@ -51,6 +49,23 @@
 			skippedCells.add(skipKey);
 		}
 	}
+
+	const rolesMap = new Map(data.roles.map((role) => [role.id, role]));
+
+	let showModal = false;
+	let selectedData = null;
+
+	const openModal = (eventData) => {
+		alert('Asd');
+		console.log(eventData);
+		selectedData = eventData;
+		showModal = true;
+	};
+
+	const closeModal = () => {
+		showModal = false;
+		selectedData = null;
+	};
 </script>
 
 <h2>home</h2>
@@ -67,7 +82,11 @@
 			<div class="date-cell">{date}</div>
 			{#each allVenues as venue}
 				{#if visibleEventMap.has(`${date}|${venue}`)}
-					<EventCell event={visibleEventMap.get(`${date}|${venue}`)} />
+					<EventCell
+						event={visibleEventMap.get(`${date}|${venue}`)}
+						roles={rolesMap}
+						on:select={(eventData) => openModal(eventData)}
+					/>
 				{:else if skippedCells.has(`${date}|${venue}`)}
 					<!-- Skip rendering: cell is part of a rowspan event above -->
 				{:else}
@@ -75,6 +94,16 @@
 				{/if}
 			{/each}
 		{/each}
+	</div>
+{/if}
+
+{#if showModal}
+	<div class="modal-backdrop" on:click={closeModal}>
+		<div class="modal" on:click|stopPropagation>
+			<button class="close" on:click={closeModal}>×</button>
+			<h2>{selectedData.title}</h2>
+			<p>{selectedData.description}</p>
+		</div>
 	</div>
 {/if}
 
@@ -108,5 +137,32 @@
 	.empty-cell {
 		background: #f9f9f9;
 		min-height: 1rem;
+	}
+
+	.modal-backdrop {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.6);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.modal {
+		background: white;
+		padding: 1.5rem;
+		border-radius: 8px;
+		max-width: 500px;
+		width: 100%;
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	}
+
+	.close {
+		position: absolute;
+		right: 1rem;
+		top: 1rem;
+		background: none;
+		border: none;
+		font-size: 1.5rem;
 	}
 </style>
