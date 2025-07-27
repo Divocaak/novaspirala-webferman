@@ -35,6 +35,10 @@ export class User {
     isAllowedToRead() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_READ); }
     // isAllowedToCreate = can add and edit events, has privilege to write and edit
     isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
+    // isAllowedToEdit = created event or is sysadmin
+    isAllowedToEdit(createdById) {return this.isSysAdmin() || this.id == createdById}
+    // isAllowedToDelete = created event or is sysadmin
+    isAllowedToDelete(createdById) {return this.isSysAdmin() || this.id == createdById}
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
 
     getInfoString() { return `logged in as <b>${this.lName} ${this.fName}</b> (${this.email}, ${this.phone}, id: <i>${this.id}</i>)`; }

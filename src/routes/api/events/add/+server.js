@@ -9,8 +9,8 @@ export async function POST({ request }) {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
-        const [result] = await connection.query("INSERT INTO event (id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-            [id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color]);
+        const [result] = await connection.query("INSERT INTO event (id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+            [id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, 1]);
 
         const insertedId = result.insertId;
         const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');

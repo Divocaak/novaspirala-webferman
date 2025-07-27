@@ -4,6 +4,7 @@
 	export let id = '';
 	export let label = '';
 	export let required = false;
+	export let readonly = false;
 
 	export let options = [];
 	export let value = null;
@@ -15,6 +16,7 @@
 	let isOpen = false;
 
 	function toggle() {
+		if (readonly) return;
 		isOpen = !isOpen;
 	}
 
@@ -36,6 +38,7 @@
 		class="selected"
 		on:click={toggle}
 		style="background-color: {value?.bgClr || '#eee'}; color: {value?.txtClr || '#000'};"
+		class:readonly
 		type="button"
 	>
 		{value?.label || 'Vybrat'}
@@ -66,6 +69,7 @@
 		{id}
 		name={id}
 		{required}
+		{readonly}
 		style="opacity: 0; position: absolute; width: 100%; height: 100%; pointer-events: none;"
 		aria-hidden="true"
 		tabindex="-1"
@@ -116,5 +120,9 @@
 	}
 	.option:hover {
 		opacity: 0.8;
+	}
+
+	.readonly {
+		cursor: unset;
 	}
 </style>

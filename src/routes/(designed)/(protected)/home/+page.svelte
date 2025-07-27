@@ -76,8 +76,9 @@
 {#if user.isAllowedToCreate()}<a href="/events">eventy</a><br />{/if}
 
 {#if showModal}
-	<button class="modal-backdrop" on:click={closeModal}>
-		<div class="modal">
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div class="modal-backdrop" on:click={closeModal} role="button" tabindex="0">
+		<div class="modal" on:click|stopPropagation  role="button" tabindex="1">
 			<h1>
 				<Pill
 					label={selectedData.event.label}
@@ -143,9 +144,9 @@
 					</span>
 				</p>
 			{/each}
-			<a on:click={alert("clck")}>tst</a>
+			<!-- TODO edit and delete btns -->
 		</div>
-	</button>
+	</div>
 {/if}
 
 {#if user.isAllowedToRead()}

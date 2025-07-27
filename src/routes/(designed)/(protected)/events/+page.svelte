@@ -1,9 +1,23 @@
 <script>
-	import { getLocalisedDate } from "$lib/dateParser";
+	import { getLocalisedDate } from '$lib/dateParser';
 	import { User } from '$lib/classes/user.js';
-	
+
 	export let data;
 	const user = User.fromJSON(data.user);
+
+	const deleteEvent = async (eventId) => {
+		if (!confirm('Delete event?')) return;
+
+		const deleteResult = await fetch(`/api/events/delete?id=${eventId}`);
+		const response = await deleteResult.json();
+
+		if (response.status == 200) {
+			alert(response.message);
+		} else {
+			console.log(response.message);
+			alert('error');
+		}
+	};
 </script>
 
 <h2>eventy</h2>
@@ -63,7 +77,8 @@
 				<td class="tooltip" style="background-color: {event.vBgClr}">
 					<b style="color: {event.vTxtClr}">{event.vLabel}</b>&nbsp;(?)
 					<span class="tooltip-text"
-						>{event.addr_label}, {event.addr_street},<br />{event.addr_postal}&nbsp;{event.addr_town}, {event.addr_country_code}</span
+						>{event.addr_label}, {event.addr_street},<br
+						/>{event.addr_postal}&nbsp;{event.addr_town}, {event.addr_country_code}</span
 					>
 				</td>
 				<td class="tooltip" style="background-color: {event.gBgClr}">
@@ -84,15 +99,17 @@
 						{/each}
 					</td>
 				{/each}
-				{#if user.isAllowedToCreate() && event.createdById == user.id}
 				<!-- TODO test condition -->
-				<td>
-					<a href="/events/form?id={event.id}">edit</a>
-				</td>
-				<td>
-					<!-- TODO delete if my event or superadmin -->
-					<a href="/">delete</a>
-				</td>
+				{#if user.isAllowedToEdit()}
+					<td>
+						<a href="/events/form?id={event.id}">edit</a>
+					</td>
+				{/if}
+				<!-- TODO test condition -->
+				{#if user.isAllowedToDelete(event.createdById)}
+					<td>
+						<button class="delete-btn" on:click={() => deleteEvent(event.id)}>delete</button>
+					</td>
 				{/if}
 			</tr>
 		{/each}
@@ -124,5 +141,11 @@
 		visibility: visible;
 		opacity: 1;
 		font-weight: normal;
+	}
+
+	.delete-btn {
+		all: unset;
+		cursor: pointer;
+		color: #5755d9;
 	}
 </style>

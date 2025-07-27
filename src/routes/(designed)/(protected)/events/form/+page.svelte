@@ -1,19 +1,29 @@
 <script>
+	import { getLocalisedDate } from '$lib/dateParser.js';
 	import StyledSelect from '$lib/StyledSelect.svelte';
 	export let data = null;
 
-	const myIndex = data.usersAllowedToWrite.findIndex((user) => user.id === data.user.id);
+	console.log(data);
 
-	event;
+	const findInSelect = (dataset, uid) => dataset[dataset.findIndex((user) => user.id === uid)] ?? null;
+
+	const toDateInputValue = (dateStr) => {
+		if (!dateStr) return '';
+		const date = new Date(dateStr);
+		// Correct for timezone offset so it doesn’t shift the date
+		const timezoneOffset = date.getTimezoneOffset() * 60000;
+		const localDate = new Date(date.getTime() - timezoneOffset);
+		return localDate.toISOString().split('T')[0]; // YYYY-MM-DD
+	};
 
 	let id = data.event?.id ?? '';
-	let id_created_by = data.event?.id_created_by ?? data.usersAllowedToWrite[myIndex];
-	let id_venue = data.event?.id_venue ?? null;
-	let id_genre = data.event?.id_genre ?? null;
+	let id_created_by = findInSelect(data.usersAllowedToWrite, data.event?.id_created_by ?? data.user.id);
+	let id_venue = findInSelect(data.venues, data.event?.id_venue ?? null);
+	let id_genre = findInSelect(data.genres, data.event?.id_genre ?? null);
 	let id_order = data.event?.id_order ?? '';
 	let label = data.event?.label ?? '';
-	let date_from = data.event?.date_from ?? '';
-	let date_to = data.event?.date_to ?? '';
+	let date_from = toDateInputValue(data.event?.date_from);
+	let date_to = toDateInputValue(data.event?.date_to);
 	let description = data.event?.description ?? '';
 	let text_color = data.event?.text_color ?? '#ffffff';
 	let background_color = data.event?.background_color ?? '#000000';
@@ -62,11 +72,11 @@
 			/* TODO clear form */
 			//login = password = passwordAgain = '';
 			error = '';
-			alert("event added succesfully")
+			alert('event added succesfully');
 		} else {
 			const data = await response.json();
 			error = data.message;
-			alert("error")
+			alert('error');
 		}
 	}
 </script>
@@ -74,15 +84,16 @@
 <a href="/events">zpět</a><br />
 
 <form on:submit={handleSubmit}>
-	<label for="id">id</label>
+	<label for="id">id (readonly)</label>
 	<input id="id" type="number" bind:value={id} readonly disabled /><br />
 
 	<StyledSelect
-		label="created by"
+		label="created by (readonly)"
 		id="id_created_by"
 		bind:value={id_created_by}
 		required={true}
 		options={data.usersAllowedToWrite}
+		readonly={true}
 	/>
 
 	<StyledSelect

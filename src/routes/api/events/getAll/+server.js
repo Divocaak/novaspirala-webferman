@@ -9,7 +9,8 @@ export async function GET() {
         FROM event e
         INNER JOIN user u ON e.id_created_by = u.id
         INNER JOIN venue v ON e.id_venue = v.id
-        INNER JOIN genre g ON e.id_genre = g.id;`);
+        INNER JOIN genre g ON e.id_genre = g.id
+        WHERE e.active IS TRUE;`);
 
     return new Response(JSON.stringify(rows));
 }
