@@ -1,3 +1,4 @@
+<!-- TODO merge to home screen with switch (show table or calendar) -->
 <script>
 	import { getLocalisedDate } from '$lib/dateParser';
 	import { User } from '$lib/classes/user.js';
@@ -13,6 +14,7 @@
 
 		if (response.status == 200) {
 			alert(response.message);
+			/* TODO reload page */
 		} else {
 			console.log(response.message);
 			alert('error');
@@ -100,7 +102,7 @@
 					</td>
 				{/each}
 				<!-- TODO test condition -->
-				{#if user.isAllowedToEdit()}
+				{#if user.isAllowedToEdit(event.createdById)}
 					<td>
 						<a href="/events/form?id={event.id}">edit</a>
 					</td>

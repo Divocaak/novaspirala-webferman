@@ -23,7 +23,7 @@ export async function POST({ request }) {
         // Insert the new user into the database
         const passwordHash = hashPassword(password);
         const [result] = await connection.query('INSERT INTO user (login, pass_hash, email, phone, f_name, l_name) VALUES (?, ?, ?, ?, ?, ?)',
-            [login, passwordHash, email, phone, fName, lName]
+            [login, passwordHash, email, (phone ? parseInt(phone) : null), fName, lName]
         );
 
         /* const insertedId = result.insertId;

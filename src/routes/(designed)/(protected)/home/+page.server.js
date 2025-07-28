@@ -3,7 +3,7 @@ import { User } from '$lib/classes/user';
 export const load = async ({ locals, params, fetch }) => {
 
     const user = User.fromJSON(locals.user);
-    if (!user.isAllowedToRead()) return;
+    if (!user.isAllowedToRead()) return {roles: [], events: []};
 
     const rolesResult = await fetch("/api/roles/getAll");
     const rolesData = await rolesResult.json();
@@ -22,7 +22,6 @@ export const load = async ({ locals, params, fetch }) => {
             };
         })
     );
-
 
     return {
         roles: rolesData,

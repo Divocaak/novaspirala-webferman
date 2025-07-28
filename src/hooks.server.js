@@ -23,7 +23,14 @@ export async function handle({ event, resolve }) {
 
         // Restrict access to /sysadmin for non-sysadmins
         if (pathname.includes('/sysadmin') && !user.isSysAdmin()) throw redirect(302, '/403'); // Redirect to Forbidden page
-        if (pathname.includes('/events') && !user.isAllowedToCreate()) throw redirect(302, '/403'); // Redirect to Forbidden page
+        if (pathname.includes('/events')) {
+            if (!user.isAllowedToCreate()) throw redirect(302, '/403'); // Redirect to Forbidden page
+
+            /* BUG make sure user with privilege to create events cannot enter edit form for event not created by him */
+            /* const searchParams = event.url.searchParams;
+            const eid = searchParams.get('id');
+            if (pathname.includes("/form") && eid && !user.isAllowedToEdit(eid)) throw redirect(302, '/403'); */
+        }
     }
 
     return resolve(event);

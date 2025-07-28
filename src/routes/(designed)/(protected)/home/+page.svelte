@@ -10,6 +10,7 @@
 	let allDays = [];
 	let allVenues = [];
 	const dateVenueMap = new Map();
+
 	if (data.events) {
 		const events = data.events;
 
@@ -58,9 +59,7 @@
 	let selectedData = null;
 
 	const openModal = (eventData) => {
-		console.log(eventData);
 		selectedData = eventData.detail;
-		console.log(selectedData);
 		showModal = true;
 	};
 

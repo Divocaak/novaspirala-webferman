@@ -9,7 +9,7 @@ export async function POST({ params, request }) {
 
         for (let [key, value] of Object.entries(data.updates)) {
             await connection.query("INSERT INTO user_privilege (id_user, id_privilege, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?",
-                [parseInt(data.uid), value.id_privilege, value.active, value.active]
+                [parseInt(data.uid), value.roleId, value.active, value.active]
             );
         }
 

@@ -3,9 +3,8 @@
 	import StyledSelect from '$lib/StyledSelect.svelte';
 	export let data = null;
 
-	console.log(data);
-
-	const findInSelect = (dataset, uid) => dataset[dataset.findIndex((user) => user.id === uid)] ?? null;
+	const findInSelect = (dataset, uid) =>
+		dataset[dataset.findIndex((user) => user.id === uid)] ?? null;
 
 	const toDateInputValue = (dateStr) => {
 		if (!dateStr) return '';
@@ -17,7 +16,10 @@
 	};
 
 	let id = data.event?.id ?? '';
-	let id_created_by = findInSelect(data.usersAllowedToWrite, data.event?.id_created_by ?? data.user.id);
+	let id_created_by = findInSelect(
+		data.usersAllowedToWrite,
+		data.event?.id_created_by ?? data.user.id
+	);
 	let id_venue = findInSelect(data.venues, data.event?.id_venue ?? null);
 	let id_genre = findInSelect(data.genres, data.event?.id_genre ?? null);
 	let id_order = data.event?.id_order ?? '';
@@ -29,6 +31,11 @@
 	let background_color = data.event?.background_color ?? '#000000';
 
 	let selectedUsersByRole = {};
+	for (const role of data.roles) {
+		if (!data.event) break;
+		const assigned = data.event?.assignedRoles?.find((r) => r.rid === role.role.id);
+		if (assigned) selectedUsersByRole[role.role.id] = role.users.find((u) => u.id === assigned.uid);
+	}
 
 	let error = '';
 	let success = '';
@@ -61,6 +68,7 @@
 			roles: rolesToRet
 		};
 
+		/* BUG edit when edit more */
 		const response = await fetch('/api/events/add', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
