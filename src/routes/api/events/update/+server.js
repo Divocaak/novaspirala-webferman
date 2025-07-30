@@ -1,19 +1,47 @@
-import { pool } from "$lib/db/mysql.js";
+import { pool } from '$lib/db/mysql.js';
+import { json } from '@sveltejs/kit';
 
 export async function POST({ request }) {
+    let connection;
+    try {
+        const { id, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, roles } = await request.json();
 
-    const data = await request.json();
-    await pool.query("UPDATE venue SET label=?, addr_label=?, addr_street=?, addr_town=?, addr_postal=?, addr_country_code=?, text_color=?, background_color=? WHERE id=?;", [
-        data.label,
-        data.addr_label,
-        data.addr_street,
-        data.addr_town,
-        data.addr_postal,
-        data.addr_country_code,
-        data.text_color,
-        data.background_color,
-        data.id
-    ]);
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
 
-    return new Response(JSON.stringify({ status: 200, message: "upraveno v db" }, { status: 200 }));
+        await connection.query(
+            `UPDATE event
+             SET id_venue = ?, id_genre = ?, id_order = ?, label = ?, date_from = ?, date_to = ?, description = ?, text_color = ?, background_color = ?
+             WHERE id = ?`,
+            [id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, id]
+        );
+
+        await connection.query(
+            `UPDATE user_event SET active = 0 WHERE id_event = ?`,
+            [id]
+        );
+
+        if (roles.length > 0) {
+            const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
+            const values = roles.flatMap(role => [role.uid, role.rid, id]);
+
+            const sql = `
+                INSERT INTO user_event (id_user, id_role, id_event, active)
+                VALUES ${placeholders}
+                ON DUPLICATE KEY UPDATE active = VALUES(active)
+            `;
+
+            await connection.query(sql, values);
+        }
+
+        await connection.commit();
+        return json({ message: 'event updated successfully' }, { status: 200 });
+
+    } catch (error) {
+        await connection.rollback();
+        console.error(error);
+        return json({ message: 'error occurred while updating the event' }, { status: 500 });
+    } finally {
+        connection.release();
+    }
 }

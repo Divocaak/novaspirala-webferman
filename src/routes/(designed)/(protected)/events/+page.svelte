@@ -101,13 +101,11 @@
 						{/each}
 					</td>
 				{/each}
-				<!-- TODO test condition -->
 				{#if user.isAllowedToEdit(event.createdById)}
 					<td>
 						<a href="/events/form?id={event.id}">edit</a>
 					</td>
 				{/if}
-				<!-- TODO test condition -->
 				{#if user.isAllowedToDelete(event.createdById)}
 					<td>
 						<button class="delete-btn" on:click={() => deleteEvent(event.id)}>delete</button>

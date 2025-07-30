@@ -39,7 +39,7 @@
 
 	let error = '';
 	let success = '';
-
+	const apiPath = data.event ? '/api/events/update' : '/api/events/add';
 	async function handleSubmit(event) {
 		event.preventDefault();
 
@@ -68,8 +68,7 @@
 			roles: rolesToRet
 		};
 
-		/* BUG edit when edit more */
-		const response = await fetch('/api/events/add', {
+		const response = await fetch(apiPath, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(toSend)
@@ -80,7 +79,7 @@
 			/* TODO clear form */
 			//login = password = passwordAgain = '';
 			error = '';
-			alert('event added succesfully');
+			alert(`event ${data.event ? 'updated' : 'added'} succesfully`);
 		} else {
 			const data = await response.json();
 			error = data.message;
