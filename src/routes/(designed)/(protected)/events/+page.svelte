@@ -2,6 +2,10 @@
 <script>
 	import { getLocalisedDate } from '$lib/dateParser';
 	import { User } from '$lib/classes/user.js';
+	import Tooltip from '$lib/Tooltip.svelte';
+	import Pill from '$lib/Pill.svelte';
+	import TooltipUser from '$lib/TooltipUser.svelte';
+	import TooltipVenue from '$lib/TooltipVenue.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -38,12 +42,11 @@
 			<th scope="col">venue</th>
 			<th scope="col">genre</th>
 			{#each data.roles as role}
-				<th
-					scope="col"
-					class="tooltip"
-					style="background-color: {role.bgClr}; color: {role.txtClr}"
-				>
-					{role.label}&nbsp;(?)<span class="tooltip-text">{role.note}</span>
+				<th scope="col">
+					<Tooltip>
+						<Pill bgClr={role.bgClr} txtClr={role.txtClr} label="{role.label}&nbsp;(?)"></Pill>
+						<span slot="tooltip">{role.note}</span>
+					</Tooltip>
 				</th>
 			{/each}
 			<th scope="col"></th>
@@ -68,20 +71,26 @@
 				<td>
 					{event.description}
 				</td>
-				<td class="tooltip">
-					{event.l_name}&nbsp;{event.f_name}&nbsp;(?)
-					<span class="tooltip-text">
-						{event.login},<br />
-						<a href="mailto:{event.email}">{event.email}</a>,<br />
-						<a href="tel:{event.phone}">{event.phone}</a>
-					</span>
+				<td>
+					<TooltipUser
+						l_name={event.l_name}
+						f_name={event.f_name}
+						login={event.login}
+						email={event.email}
+						phone={event.phone}
+					/>
 				</td>
-				<td class="tooltip" style="background-color: {event.vBgClr}">
-					<b style="color: {event.vTxtClr}">{event.vLabel}</b>&nbsp;(?)
-					<span class="tooltip-text"
-						>{event.addr_label}, {event.addr_street},<br
-						/>{event.addr_postal}&nbsp;{event.addr_town}, {event.addr_country_code}</span
-					>
+				<td>
+					<TooltipVenue
+						bgClr={event.vBgClr}
+						txtClr={event.vTxtClr}
+						label={event.vLabel}
+						addr_label={event.addr_label}
+						addr_street={event.addr_street}
+						addr_postal={event.addr_postal}
+						addr_town={event.addr_town}
+						addr_country_code={event.addr_country_code}
+					/>
 				</td>
 				<td class="tooltip" style="background-color: {event.gBgClr}">
 					<b style="color: {event.gTxtClr}">{event.gLabel}</b>&nbsp;(?)
@@ -90,14 +99,13 @@
 				{#each data.roles as role}
 					<td>
 						{#each event.users.filter((user) => user.id_role === role.id) as user}
-							<div class="tooltip">
-								{user.l_name}&nbsp;{user.f_name}
-								<span class="tooltip-text">
-									{user.login},<br />
-									<a href="mailto:{user.email}">{user.email}</a>,<br />
-									<a href="tel:{user.phone}">{user.phone}</a>
-								</span>
-							</div>
+							<TooltipUser
+								l_name={user.l_name}
+								f_name={user.f_name}
+								login={user.login}
+								email={user.email}
+								phone={user.phone}
+							/>
 						{/each}
 					</td>
 				{/each}
