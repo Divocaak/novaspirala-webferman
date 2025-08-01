@@ -13,5 +13,7 @@
 		border-radius: 0.5rem;
 		padding: 0.2rem 0.4rem;
 		margin: 0.1rem;
+
+		white-space: nowrap;
 	}
 </style>

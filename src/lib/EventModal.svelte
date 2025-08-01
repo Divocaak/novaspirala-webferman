@@ -1,6 +1,12 @@
 <script>
-	import { getLocalisedDate } from '$lib/dateParser';
 	import Pill from '$lib/Pill.svelte';
+	import EventDeleteButton from './EventDeleteButton.svelte';
+	import LocalisedDateRange from './LocalisedDateRange.svelte';
+	import Tooltip from './Tooltip.svelte';
+	import TooltipGenre from './TooltipGenre.svelte';
+	import TooltipUser from './TooltipUser.svelte';
+	import TooltipVenue from './TooltipVenue.svelte';
+
 	export let selectedData = null;
 	export let closeModal;
 </script>
@@ -16,64 +22,62 @@
 			/>
 		</h1>
 		<p>
-			<span class="tooltip">
-				<Pill
-					label="{selectedData.event.vLabel}&nbsp;(?)"
-					txtClr={selectedData.event.vTxtClr}
-					bgClr={selectedData.event.vBgClr}
-				/>
-				<span class="tooltip-text">
-					{selectedData.event.addr_label}, {selectedData.event.addr_street},<br />
-					{selectedData.event.addr_postal}&nbsp;{selectedData.event.addr_town}, {selectedData.event
-						.addr_country_code}
-				</span>
-			</span>
-			<span class="tooltip">
-				<Pill
-					label="{selectedData.event.gLabel}&nbsp;(?)"
-					txtClr={selectedData.event.gTxtClr}
-					bgClr={selectedData.event.gBgClr}
-				/>
-				<span class="tooltip-text">{selectedData.event.note}</span>
-			</span>
+			<TooltipVenue
+				bgClr={selectedData.event.vBgClr}
+				txtClr={selectedData.event.vTxtClr}
+				label={selectedData.event.vLabel}
+				addr_label={selectedData.event.addr_label}
+				addr_street={selectedData.event.addr_street}
+				addr_postal={selectedData.event.addr_postal}
+				addr_town={selectedData.event.addr_town}
+				addr_country_code={selectedData.event.addr_country_code}
+			/>
+			<TooltipGenre
+				bgClr={selectedData.event.gBgClr}
+				txtClr={selectedData.event.gTxtClr}
+				label={selectedData.event.gLabel}
+				note={selectedData.event.note}
+			/>
 		</p>
 		{#if selectedData.event.id_order}
 			<p>ID objednávky:&nbsp;<i>{selectedData.event.id_order}</i></p>
 		{/if}
 		<p>
-			{getLocalisedDate(selectedData.event.date_from)}&nbsp;-&nbsp;{getLocalisedDate(
-				selectedData.event.date_to
-			)}
+			<LocalisedDateRange from={selectedData.event.date_from} to={selectedData.event.date_to} />
 		</p>
 		<p>{selectedData.event.description}</p>
 		<p>
-			Vytvořil:&nbsp;<span class="tooltip">
-				{selectedData.event.l_name}&nbsp;{selectedData.event.f_name}&nbsp;(?)
-				<span class="tooltip-text">
-					{selectedData.event.login},<br />
-					<a href="mailto:{selectedData.event.email}">{selectedData.event.email}</a>,<br />
-					<a href="tel:{selectedData.event.phone}">{selectedData.event.phone}</a>
-				</span>
-			</span>
+			Vytvořil:
+			<TooltipUser
+				l_name={selectedData.event.l_name}
+				f_name={selectedData.event.f_name}
+				login={selectedData.event.login}
+				email={selectedData.event.email}
+				phone={selectedData.event.phone}
+			/>
 		</p>
 		{#each selectedData.enrichedUsers as user}
 			<p>
-				<span class="tooltip">
-					<Pill label="{user.role.label} (?)" txtClr={user.role.txtClr} bgClr={user.role.bgClr} />
-					<span class="tooltip-text">{user.role.note}</span>
-				</span>
+				<Tooltip>
+					<Pill
+						bgClr={user.role.bgClr}
+						txtClr={user.role.txtClr}
+						label="{user.role.label}&nbsp;(?)"
+					/>
+					<span slot="tooltip">{user.role.note}</span>
+				</Tooltip>
 				&rarr;
-				<span class="tooltip">
-					{user.l_name}&nbsp;{user.f_name}&nbsp;(?)
-					<span class="tooltip-text">
-						{user.login},<br />
-						<a href="mailto:{user.email}">{user.email}</a>,<br />
-						<a href="tel:{user.phone}">{user.phone}</a>
-					</span>
-				</span>
+				<TooltipUser
+					l_name={user.l_name}
+					f_name={user.f_name}
+					login={user.login}
+					email={user.email}
+					phone={user.phone}
+				/>
 			</p>
 		{/each}
-		<!-- TODO edit and delete btns -->
+		<a href="/events/form?id={selectedData.event.id}">edit</a>
+		<EventDeleteButton id={selectedData.event.id} />
 	</div>
 </div>
 
@@ -111,31 +115,5 @@
 
 		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 		z-index: 10000;
-	}
-
-	.tooltip .tooltip-text {
-		visibility: hidden;
-		background-color: #1e1e1e;
-		color: #fff;
-		text-align: center;
-		padding: 0.5rem;
-		border-radius: 6px;
-
-		width: max-content;
-		max-width: 300px;
-
-		position: absolute;
-		bottom: 100%;
-		left: 0%;
-		z-index: 100;
-
-		opacity: 0;
-		transition: all 0.2s ease-in-out;
-	}
-
-	.tooltip:hover .tooltip-text {
-		visibility: visible;
-		opacity: 1;
-		font-weight: normal;
 	}
 </style>

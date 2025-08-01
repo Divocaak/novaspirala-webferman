@@ -27,6 +27,7 @@
 		if (nativeSelect) nativeSelect.value = option;
 
 		dispatch('input', value);
+		dispatch('change', { value });
 	}
 </script>
 

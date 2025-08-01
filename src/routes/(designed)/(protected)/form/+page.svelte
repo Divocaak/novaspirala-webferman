@@ -1,10 +1,8 @@
 <script>
-	import { getLocalisedDate } from '$lib/dateParser.js';
 	import StyledSelect from '$lib/StyledSelect.svelte';
-	export let data = null;
+	import { findInSelect } from '$lib/findInSelect.js';
 
-	const findInSelect = (dataset, uid) =>
-		dataset[dataset.findIndex((user) => user.id === uid)] ?? null;
+	export let data = null;
 
 	const toDateInputValue = (dateStr) => {
 		if (!dateStr) return '';
@@ -88,7 +86,7 @@
 	}
 </script>
 
-<a href="/events">zpět</a><br />
+<a href="/">zpět</a><br />
 
 <form on:submit={handleSubmit}>
 	<label for="id">id (readonly)</label>
