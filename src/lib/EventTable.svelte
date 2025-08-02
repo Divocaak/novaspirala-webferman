@@ -15,14 +15,14 @@
 <table>
 	<thead>
 		<tr>
-			<th scope="col">id</th>
-			<th scope="col">id_order</th>
-			<th scope="col">label</th>
-			<th scope="col">date(s)</th>
-			<th scope="col">description</th>
-			<th scope="col">created_by</th>
-			<th scope="col">venue</th>
-			<th scope="col">genre</th>
+			<th scope="col">ID</th>
+			<th scope="col">ID Objednávky</th>
+			<th scope="col">Název</th>
+			<th scope="col">Datum</th>
+			<th scope="col">Popis</th>
+			<th scope="col">Vytvořil</th>
+			<th scope="col">Prostor</th>
+			<th scope="col">Žánr/typ</th>
 			{#each roles as role}
 				<th scope="col">
 					<Tooltip>
@@ -97,7 +97,7 @@
 				{/each}
 				{#if user.isAllowedToEdit(event.createdById)}
 					<td>
-						<a href="/events/form?id={event.id}">edit</a>
+						<a href="/events/form?id={event.id}">Upravit</a>
 					</td>
 				{/if}
 				{#if user.isAllowedToDelete(event.createdById)}

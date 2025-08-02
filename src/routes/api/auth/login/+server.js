@@ -13,11 +13,11 @@ export async function POST({ request, cookies }) {
         [login]);
 
     if (rows.length === 0) {
-        return json({ message: 'user does not exist' }, { status: 401 });
+        return json({ message: 'Uživatel neexistuje' }, { status: 401 });
     }
 
     if (!validatePassword(password, rows[0].pass_hash)) {
-        return json({ message: 'invalid credentials' }, { status: 401 });
+        return json({ message: 'Špatné přihlašovací údaje' }, { status: 401 });
     }
 
     const user = new User({
@@ -45,5 +45,5 @@ export async function POST({ request, cookies }) {
         path: '/',
     });
 
-    return json({ message: 'successful' });
+    return json({ message: 'Úspěšně přihlášen' });
 }

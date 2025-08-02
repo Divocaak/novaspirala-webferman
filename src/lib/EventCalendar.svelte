@@ -61,7 +61,7 @@
 {#if showModal}<EventModal {selectedData} {closeModal} />{/if}
 
 <div class="calendar-grid" style="--venue-count: {allVenues.length}">
-	<div class="header">Date</div>
+	<div class="header">Datum</div>
 	{#each allVenues as venue}<div class="header">{venue}</div>{/each}
 	{#each allDays as date}
 		<div class="date-cell">{date}</div>

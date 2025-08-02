@@ -2,16 +2,16 @@
 	export let data;
 </script>
 
-<h2>roles</h2>
-<a href="/sysadmin">zpět</a><br />
-<a href="/sysadmin/roles/form">add</a>
+<h2>Role</h2>
+<a href="/sysadmin">Zpět</a><br />
+<a href="/sysadmin/roles/form">Přidat</a>
 
 <table>
 	<thead>
 		<tr>
-			<th scope="col">id</th>
-			<th scope="col">label</th>
-			<th scope="col">note</th>
+			<th scope="col">ID</th>
+			<th scope="col">Název</th>
+			<th scope="col">Poznámka</th>
 			<th scope="col"></th>
 		</tr>
 	</thead>
@@ -28,7 +28,7 @@
 					{role.note}
 				</td>
 				<td>
-					<a href="/sysadmin/roles/form?id={role.id}">edit</a>
+					<a href="/sysadmin/roles/form?id={role.id}">Upravit</a>
 				</td>
 			</tr>
 		{/each}

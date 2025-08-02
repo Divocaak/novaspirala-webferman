@@ -8,42 +8,51 @@
         "id": {
             "type": "integer",
             "format": "number",
+            "title": "ID",
             "readonly": true
         },
         "label": {
             "type": "string",
+            "title": "Název",
             "maxLength": 32
         },
         "addr_label": {
             "type": "string",
+            "title": "Název adresy",
             "maxLength": 32
         },
         "addr_street": {
             "type": "string",
+            "title": "Ulice",
             "maxLength": 32
         },
         "addr_town": {
             "type": "string",
+            "title": "Město",
             "maxLength": 32
         },
         "addr_postal": {
             "type": "integer",
             "format": "number",
+            "title": "PSČ",
             "maximum": 99999
         },
         "addr_country_code": {
             "type": "string",
             "default": "CZ",
+            "title": "Kód země",
             "maxLength": 2
         },
         "text_color": {
             "type": "string",
             "format": "color",
+            "title": "Barva textu",
             "default": "#ffffff"
         },
         "background_color": {
             "type": "string",
             "format": "color",
+            "title": "Barva pozadí",
             "defaultValue": "#000000"
         }
     },

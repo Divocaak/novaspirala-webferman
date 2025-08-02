@@ -8,25 +8,30 @@
         "id": {
             "type": "integer",
             "format": "number",
+            "title": "ID",
             "readonly": true
         },
         "label": {
             "type": "string",
+            "title": "Název",
             "maxLength": 16
         },
         "note": {
             "type": "string",
             "format":"textarea",
+            "title": "Poznámka",
             "maxLength": 64
         },
         "text_color": {
             "type": "string",
             "format": "color",
+            "title": "Barva textu",
             "default": "#ffffff"
         },
         "background_color": {
             "type": "string",
             "format": "color",
+            "title": "Barva pozadí",
             "defaultValue": "#000000"
         }
     },

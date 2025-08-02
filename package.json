@@ -32,6 +32,7 @@
 	},
 	"dependencies": {
 		"@json-editor/json-editor": "^2.15.2",
-		"mysql2": "^3.14.1"
+		"mysql2": "^3.14.1",
+		"xlsx": "^0.18.5"
 	}
 }

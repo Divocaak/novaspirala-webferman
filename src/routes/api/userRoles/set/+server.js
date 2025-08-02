@@ -13,11 +13,11 @@ export async function POST({ params, request }) {
         }
 
         await connection.commit();
-        return new Response(JSON.stringify({ success: true, message: "updated" }), { status: 200 });
+        return new Response(JSON.stringify({ success: true, message: "Upraveno" }), { status: 200 });
     } catch (error) {
         await connection.rollback();
         console.error('Error during transaction:', error);
-        return new Response(JSON.stringify({ success: false, message: "error" }), { status: 500 });
+        return new Response(JSON.stringify({ success: false, message: "Stala se chyba" }), { status: 500 });
     } finally {
         connection.release();
     }

@@ -20,11 +20,11 @@ export async function POST({ request }) {
 
         await connection.commit();
 
-        return json({ message: 'event added successfully.' }, { status: 200 });
+        return json({ message: 'Event přidán.' }, { status: 200 });
     } catch (error) {
         await connection.rollback();
         console.error(error);
-        return json({ message: 'error occurred while adding the event' }, { status: 500 });
+        return json({ message: 'Stala se chyba' }, { status: 500 });
     } finally {
         connection.release();
     }

@@ -75,7 +75,7 @@
 		aria-hidden="true"
 		tabindex="-1"
 	>
-		<option value="">Select one</option>
+		<option value="">Vyberte</option>
 		{#each options as option}
 			<option value={option} selected={option == value}>{option.label}</option>
 		{/each}

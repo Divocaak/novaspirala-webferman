@@ -11,5 +11,5 @@ export async function POST({ request }) {
         data.id
     ]);
 
-    return new Response(JSON.stringify({ status: 200, message: "upraveno v db" }, { status: 200 }));
+    return new Response(JSON.stringify({ status: 200, message: "Role upravena" }, { status: 200 }));
 }

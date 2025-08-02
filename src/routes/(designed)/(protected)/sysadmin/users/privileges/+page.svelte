@@ -29,16 +29,17 @@
 	}
 </script>
 
-<a href="/sysadmin/users">zpět</a><br />
+<a href="/sysadmin/users">Zpět</a><br />
 
-<h2>právo</h2>
+<h2>Práva</h2>
 <form on:submit={handleSubmit}>
 	<input readonly id="uid" name="uid" value={data.uid} style="display:none" />
 	<table>
 		<thead>
 			<tr>
-				<th>práva</th>
-				<th>přiřazení</th>
+				<th>Práva</th>
+				<th>Přiřazení</th>
+				<th>Popis</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -58,5 +59,5 @@
 			{/each}
 		</tbody>
 	</table>
-	<input type="submit" value="uložit" />
+	<input type="submit" value="Uložit" />
 </form>

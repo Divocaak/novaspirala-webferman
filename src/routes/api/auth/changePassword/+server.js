@@ -8,7 +8,7 @@ export async function POST({ request }) {
         const { uid, currentPassword, password } = await request.json();
 
         if (!currentPassword || !password) {
-            return json({ message: 'required old and new passwords' }, { status: 400 });
+            return json({ message: 'Staré a nové heslo jsou povinné položky' }, { status: 400 });
         }
 
         connection = await pool.getConnection();
@@ -17,12 +17,12 @@ export async function POST({ request }) {
         // Check if the user exists
         const [rows] = await pool.query('SELECT id, pass_hash FROM user WHERE id = ?', [uid]);
         if (rows.length <= 0) {
-            return json({ message: 'user not found' }, { status: 409 });
+            return json({ message: 'Uživatel nenalezen' }, { status: 409 });
         }
 
         // check current password
         if (!validatePassword(currentPassword, rows[0].pass_hash)) {
-            return json({ message: 'invalid current password' }, { status: 401 });
+            return json({ message: 'Chybné aktuální heslo' }, { status: 401 });
         }
 
         // override users password
@@ -34,11 +34,11 @@ export async function POST({ request }) {
 
         await connection.commit();
 
-        return json({ message: 'registered successfully.' }, { status: 201 });
+        return json({ message: 'Heslo změněno.' }, { status: 201 });
     } catch (error) {
         await connection.rollback();
         console.error(error);
-        return json({ message: 'error occurred while registering the user.' }, { status: 500 });
+        return json({ message: 'Stala se chyba.' }, { status: 500 });
     } finally {
         connection.release();
     }

@@ -2,15 +2,16 @@
 	export let data;
 </script>
 
-<h2>žánry</h2>
-<a href="/sysadmin">zpět</a><br />
-<a href="/sysadmin/genres/form">add</a>
+<h2>Žánry/typy</h2>
+<a href="/sysadmin">Zpět</a><br />
+<a href="/sysadmin/genres/form">Přidat</a>
 
 <table>
 	<thead>
 		<tr>
-			<th scope="col">id</th>
-			<th scope="col">label</th>
+			<th scope="col">ID</th>
+			<th scope="col">Název</th>
+			<th scope="col">Poznámka</th>
 			<th scope="col"></th>
 		</tr>
 	</thead>
@@ -27,7 +28,7 @@
 					{genre.note}
 				</td>
 				<td>
-					<a href="/sysadmin/genres/form?id={genre.id}">edit</a>
+					<a href="/sysadmin/genres/form?id={genre.id}">Upravit</a>
 				</td>
 			</tr>
 		{/each}

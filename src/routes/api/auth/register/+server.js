@@ -8,7 +8,7 @@ export async function POST({ request }) {
         const { login, password, email, phone, fName, lName } = await request.json();
 
         if (!login || !password) {
-            return json({ message: 'required login and password' }, { status: 400 });
+            return json({ message: 'Login a heslo jsou povinné položky' }, { status: 400 });
         }
 
         connection = await pool.getConnection();
@@ -17,7 +17,7 @@ export async function POST({ request }) {
         // Check if the username is already taken
         const [existingUser] = await pool.query('SELECT id FROM user WHERE login = ?', [login]);
         if (existingUser.length > 0) {
-            return json({ message: 'login already registered' }, { status: 409 });
+            return json({ message: 'Uživatel již existuje' }, { status: 409 });
         }
 
         // Insert the new user into the database
@@ -26,21 +26,13 @@ export async function POST({ request }) {
             [login, passwordHash, email, (phone ? parseInt(phone) : null), fName, lName]
         );
 
-        /* const insertedId = result.insertId;
-        // id of status "neutral"
-        const statusId = 1;
-        await connection.query(
-            'INSERT INTO user_status (id_user, id_status) VALUES (?, ?)',
-            [insertedId, 1]
-        ); */
-
         await connection.commit();
 
-        return json({ message: 'registered successfully.' }, { status: 201 });
+        return json({ message: 'Registrace proběhla úspěšně.' }, { status: 201 });
     } catch (error) {
         await connection.rollback();
         console.error(error);
-        return json({ message: 'error occurred while registering the user.' }, { status: 500 });
+        return json({ message: 'Stala se chyba.' }, { status: 500 });
     } finally {
         connection.release();
     }

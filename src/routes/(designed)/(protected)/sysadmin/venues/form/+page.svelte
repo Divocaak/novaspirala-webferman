@@ -3,7 +3,7 @@
 	export let data = null;
 </script>
 
-<a href="/sysadmin/venues">zpět</a><br />
+<a href="/sysadmin/venues">Zpět</a><br />
 
 <AdminForm
 	schemaPath="/schemas/admin/venue.json"

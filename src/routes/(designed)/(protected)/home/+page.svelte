@@ -6,6 +6,7 @@
 	import StyledSelect from '$lib/StyledSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -48,53 +49,49 @@
 <h2>home</h2>
 <br />
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
-{#if user.isAllowedToCreate()}<a href="/form">add event</a><br />{/if}
+{#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
 
 {#if user.isAllowedToRead()}
-	<div>
-		<form bind:this={filterForm} on:submit={applyFilters}>
-			<label for="date_from">* od</label>
-			<input
-				id="date_from"
-				type="date"
-				bind:value={date_from}
-				required
-				on:change={() => filterForm.requestSubmit()}
-			/>
-			<br />
-
-			<label for="date_to">* do</label>
-			<input
-				id="date_to"
-				type="date"
-				bind:value={date_to}
-				required
-				on:change={() => filterForm.requestSubmit()}
-			/>
-			<br />
-
-			<StyledSelect
-				label="prostor"
-				id="id_venue"
-				bind:value={id_venue}
-				options={data.venues}
-				on:change={() => filterForm.requestSubmit()}
-			/>
-			<StyledSelect
-				label="žánr/typ"
-				id="id_genre"
-				bind:value={id_genre}
-				options={data.genres}
-				on:change={() => filterForm.requestSubmit()}
-			/>
-
-			<button type="submit" hidden>Použít filtry</button>
-		</form>
-	</div>
-	<button on:click={(showTable = !showTable)}>{showTable ? 'kalendář' : 'tabulka'}</button>
+	<form bind:this={filterForm} on:submit={applyFilters}>
+		<label for="date_from">* Od</label>
+		<input
+			id="date_from"
+			type="date"
+			bind:value={date_from}
+			required
+			on:change={() => filterForm.requestSubmit()}
+		/>
+		<br />
+		<label for="date_to">* Do</label>
+		<input
+			id="date_to"
+			type="date"
+			bind:value={date_to}
+			required
+			on:change={() => filterForm.requestSubmit()}
+		/>
+		<br />
+		<StyledSelect
+			label="Prostor"
+			id="id_venue"
+			bind:value={id_venue}
+			options={data.venues}
+			on:change={() => filterForm.requestSubmit()}
+		/>
+		<StyledSelect
+			label="Žánr/typ"
+			id="id_genre"
+			bind:value={id_genre}
+			options={data.genres}
+			on:change={() => filterForm.requestSubmit()}
+		/>
+		<button type="submit" hidden>Použít filtry</button>
+	</form>
+	<button on:click={(showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
 		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} />
 	{:else}
+		<ExportToExcelButton events={data.events} roles={data.roles} {date_from} {date_to} />
 		<EventTable events={data.events} roles={data.roles} {user} />
 	{/if}
 {/if}

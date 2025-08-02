@@ -3,7 +3,7 @@
 	export let data = null;
 </script>
 
-<a href="/sysadmin/users">zpět</a><br />
+<a href="/sysadmin/users">Zpět</a><br />
 
 <AdminForm
 	schemaPath="/schemas/admin/user.json"

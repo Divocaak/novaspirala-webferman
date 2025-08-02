@@ -42,7 +42,7 @@
 		event.preventDefault();
 
 		if (new Date(date_to) < new Date(date_from)) {
-			alert('date_to < date_from');
+			alert('Hodnota Od musí být dřív než hodnota Do');
 			return;
 		}
 
@@ -73,11 +73,20 @@
 		});
 
 		if (response.ok) {
-			success = 'succ';
-			/* TODO clear form */
-			//login = password = passwordAgain = '';
+			success = 'Uloženo';
+
+			id_venue = null;
+			id_genre = null;
+			id_order = '';
+			label = '';
+			date_from = '';
+			date_to = '';
+			description = '';
+			text_color = '#ffffff';
+			background_color = '#000000';
+
 			error = '';
-			alert(`event ${data.event ? 'updated' : 'added'} succesfully`);
+			alert(`Event úspěšně ${data.event ? 'upraven' : 'vytvořen'}`);
 		} else {
 			const data = await response.json();
 			error = data.message;
@@ -89,11 +98,11 @@
 <a href="/">zpět</a><br />
 
 <form on:submit={handleSubmit}>
-	<label for="id">id (readonly)</label>
+	<label for="id">ID (readonly)</label>
 	<input id="id" type="number" bind:value={id} readonly disabled /><br />
 
 	<StyledSelect
-		label="created by (readonly)"
+		label="Vytvořil (readonly)"
 		id="id_created_by"
 		bind:value={id_created_by}
 		required={true}
@@ -102,7 +111,7 @@
 	/>
 
 	<StyledSelect
-		label="prostor"
+		label="Prostor"
 		id="id_venue"
 		bind:value={id_venue}
 		required={true}
@@ -110,39 +119,39 @@
 	/>
 
 	<StyledSelect
-		label="žánr/typ"
+		label="Žánr/typ"
 		id="id_genre"
 		bind:value={id_genre}
 		required={true}
 		options={data.genres}
 	/>
 
-	<label for="id_order">objednávka</label>
+	<label for="id_order">ID Objednávky</label>
 	<input id="id_order" type="text" bind:value={id_order} maxlength="16" /><br />
 
-	<label for="label">* název</label>
+	<label for="label">* Název</label>
 	<input id="label" type="text" bind:value={label} required maxlength="32" /><br />
 
-	<label for="date_from">* od</label>
+	<label for="date_from">* Od</label>
 	<input id="date_from" type="date" bind:value={date_from} required /><br />
 
-	<label for="date_to">* do</label>
+	<label for="date_to">* Do</label>
 	<input id="date_to" type="date" bind:value={date_to} required /><br />
 
-	<label for="description">popis</label>
+	<label for="description">Popis</label>
 	<textarea id="description" rows="4" cols="50" bind:value={description} maxlength="256"></textarea>
 	<br />
 
-	<label for="text_color">* barva textu</label>
+	<label for="text_color">* Barva textu</label>
 	<input id="text_color" type="color" bind:value={text_color} required /><br />
 
-	<label for="background_color">* barva pozadí</label>
+	<label for="background_color">* Barva pozadí</label>
 	<input id="background_color" type="color" bind:value={background_color} required /><br />
 
 	{#each data.roles as role, i}
 		<div style="background-color: {role.role.bgClr}; color: {role.role.txtClr}">
 			{#if role.users.length < 1}
-				<p>počet uživatelů s rolí <b>{role.role.label}</b> je 0</p>
+				<p>Počet uživatelů s rolí <b>{role.role.label}</b> je 0</p>
 			{:else}
 				<StyledSelect
 					label={role.role.label}
@@ -165,5 +174,5 @@
 		<br />
 	{/if}
 
-	<button type="submit">odeslat</button><br />
+	<button type="submit">Uložit</button><br />
 </form>

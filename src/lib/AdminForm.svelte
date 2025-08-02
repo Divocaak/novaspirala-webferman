@@ -46,14 +46,14 @@
 
 				const responseData = await response.json();
 				if (responseData.status === 200) {
-					alert('Saved successfully!');
+					alert('úspěšně uloženo!');
 				} else {
 					console.error(responseData);
-					alert('Failed to save file. Check console for more information');
+					alert('chyba při ukládání');
 				}
 			} catch (error) {
 				console.error('Error:', error);
-				alert('Error saving data.');
+				alert('při ukládání došlo k chybě');
 			}
 		}
 	}

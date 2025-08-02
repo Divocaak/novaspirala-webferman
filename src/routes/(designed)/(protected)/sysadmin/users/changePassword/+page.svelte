@@ -11,7 +11,7 @@
 		event.preventDefault();
 
 		if (password !== passwordAgain) {
-			error = 'passwords do not match';
+			error = 'Nová hesla se neshodují';
 			return;
 		}
 
@@ -22,7 +22,7 @@
 		});
 
 		if (response.ok) {
-			success = 'succ';
+			success = 'Úspěšně uloženo';
 			currentPassword = password = passwordAgain = '';
 			error = '';
 		} else {
@@ -32,16 +32,16 @@
 	}
 </script>
 
-<a href="/sysadmin/users">zpět</a><br />
+<a href="/sysadmin/users">Zpět</a><br />
 
 <form on:submit={handleSubmit} autocomplete="off">
-	<label for="currentPassword">* current password</label>
+	<label for="currentPassword">* Aktuální heslo</label>
 	<input id="currentPassword" type="password" bind:value={currentPassword} required /><br />
 
-	<label for="password">* new password</label>
+	<label for="password">* Nové heslo</label>
 	<input id="password" type="password" bind:value={password} required /><br />
 
-	<label for="passwordAgain">* new password again</label>
+	<label for="passwordAgain">* Nové heslo znovu</label>
 	<input id="passwordAgain" type="password" bind:value={passwordAgain} required /><br />
 
 	{#if error}
@@ -54,5 +54,5 @@
 		<br />
 	{/if}
 
-	<button type="submit">změnit heslo</button><br />
+	<button type="submit">Změnit heslo</button><br />
 </form>

@@ -7,9 +7,9 @@
 
 <p>
 	{@html user.getInfoString()}
-	<a href="/logout">logout</a>
+	<a href="/logout">Odhlásit se</a>
 	<br />
-	(privileges: {#each user.privileges as privilege}
+	(práva: {#each user.privileges as privilege}
 		{privilege.id}: <b>{privilege.label}</b>
 		{#if privilege.structureLabel}(<i>{privilege.structureLabel}</i>){/if},&nbsp;
 	{/each})

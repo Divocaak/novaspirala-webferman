@@ -2,7 +2,7 @@
 	export let id;
 
 	const deleteEvent = async (eventId) => {
-		if (!confirm('Delete event?')) return;
+		if (!confirm('Opravdu?')) return;
 
 		const deleteResult = await fetch(`/api/events/delete?id=${eventId}`);
 		const response = await deleteResult.json();
@@ -17,7 +17,7 @@
 	};
 </script>
 
-<button class="delete-btn" on:click={() => deleteEvent(id)}>delete</button>
+<button class="delete-btn" on:click={() => deleteEvent(id)}>Smazat</button>
 
 <style>
 	.delete-btn {

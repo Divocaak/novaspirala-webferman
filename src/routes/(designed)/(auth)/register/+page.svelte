@@ -14,7 +14,7 @@
 		event.preventDefault();
 
 		if (password !== passwordAgain) {
-			error = 'passwords do not match';
+			error = 'hesla se neshodují';
 			return;
 		}
 
@@ -36,25 +36,25 @@
 </script>
 
 <form on:submit={handleSubmit} autocomplete="off">
-	<label for="login">* login</label>
+	<label for="login">* Login</label>
 	<input id="login" type="text" bind:value={login} required maxlength="16" /><br />
 
-	<label for="email">email</label>
+	<label for="email">E-mail</label>
 	<input id="email" type="email" bind:value={email} maxlength="32"/><br />
 
-	<label for="password">* password</label>
+	<label for="password">* Heslo</label>
 	<input id="password" type="password" bind:value={password} required /><br />
 
-	<label for="passwordAgain">* password check</label>
+	<label for="passwordAgain">* Heslo znovu</label>
 	<input id="passwordAgain" type="password" bind:value={passwordAgain} required /><br />
 
-	<label for="phone">tel</label>
+	<label for="phone">Telefon</label>
 	<input id="phone" type="tel" bind:value={phone} /><br />
 
-	<label for="fname">f nane</label>
+	<label for="fname">Jméno</label>
 	<input id="fname" type="text" bind:value={fName} maxlength="16"/><br />
 
-	<label for="lname">l name</label>
+	<label for="lname">Příjmení</label>
 	<input id="lname" type="text" bind:value={lName} maxlength="16"/><br />
 
 	{#if error}
@@ -67,6 +67,6 @@
 		<br />
 	{/if}
 
-	<button type="submit">Register</button><br />
-	<a href="/login">login</a><br />
+	<button type="submit">Vytvořit účet</button><br />
+	<a href="/login">Přihlásit se</a><br />
 </form>

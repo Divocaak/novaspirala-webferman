@@ -1,6 +1,7 @@
 <script>
 	import Pill from '$lib/Pill.svelte';
 	import EventDeleteButton from './EventDeleteButton.svelte';
+	import ExportToCalendarsButton from './ExportToCalendarsButton.svelte';
 	import LocalisedDateRange from './LocalisedDateRange.svelte';
 	import Tooltip from './Tooltip.svelte';
 	import TooltipGenre from './TooltipGenre.svelte';
@@ -76,8 +77,9 @@
 				/>
 			</p>
 		{/each}
-		<a href="/events/form?id={selectedData.event.id}">edit</a>
+		<a href="/events/form?id={selectedData.event.id}">Upravit</a>
 		<EventDeleteButton id={selectedData.event.id} />
+		<ExportToCalendarsButton event={selectedData.event} />
 	</div>
 </div>
 

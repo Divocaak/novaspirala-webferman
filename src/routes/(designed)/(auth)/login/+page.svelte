@@ -21,10 +21,10 @@
 </script>
 
 <form on:submit={handleSubmit}>
-	<label for="login">login</label>
+	<label for="login">Login</label>
 	<input id="login" type="text" bind:value={login} required /><br />
 
-	<label for="password">password</label>
+	<label for="password">Heslo</label>
 	<input id="password" type="password" bind:value={password} required /><br />
 
 	{#if error}
@@ -32,6 +32,6 @@
 		<br />
 	{/if}
 
-	<button type="submit">Login</button><br />
-	<a href="/register">register</a><br />
+	<button type="submit">Přihlásit se</button><br />
+	<a href="/register">Registrovat se</a><br />
 </form>

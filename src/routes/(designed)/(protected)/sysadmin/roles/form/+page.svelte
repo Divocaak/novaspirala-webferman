@@ -3,7 +3,7 @@
 	export let data = null;
 </script>
 
-<a href="/sysadmin/roles">zpět</a><br />
+<a href="/sysadmin/roles">Zpět</a><br />
 
 <AdminForm
 	schemaPath="/schemas/admin/role.json"
