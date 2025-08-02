@@ -1,0 +1,50 @@
+{
+    "type": "object",
+    "title": "Uživatel",
+    "options": {
+        "titleHidden": true
+    },
+    "properties": {
+        "id": {
+            "type": "integer",
+            "format": "number",
+            "title": "ID",
+            "readonly": true
+        },
+        "login": {
+            "type": "string",
+            "title": "Login",
+            "maxLength": 16
+        },
+        "email": {
+            "type": "string",
+            "format": "email",
+            "title": "E-mail",
+            "maxLength": 32
+        },
+        "phone": {
+            "type": "integer",
+            "format": "number",
+            "title": "Telefon",
+            "maximum": 999999999
+        },
+        "f_name": {
+            "type": "string",
+            "title": "Jméno",
+            "maxLength": 16
+        },
+        "l_name": {
+            "type": "string",
+            "title": "Příjmení",
+            "maxLength": 16
+        }
+    },
+    "required": [
+        "id",
+        "login",
+        "email",
+        "phone",
+        "f_name",
+        "l_name"
+    ]
+}
