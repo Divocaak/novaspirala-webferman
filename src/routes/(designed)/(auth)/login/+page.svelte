@@ -35,3 +35,19 @@
 	<button type="submit">Přihlásit se</button><br />
 	<a href="/register">Registrovat se</a><br />
 </form>
+
+<p class="signature">
+	Designed, coded & maintained by <a href="https://divokyvojtech.cz/" target="_blank"
+		>Vojtěch Divoký</a
+	>
+</p>
+
+<style>
+	.signature {
+		position: absolute;
+		bottom: 0;
+		width: calc(100% - 100px);
+		text-align: end;
+		font-size: small;
+	}
+</style>

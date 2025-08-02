@@ -11,7 +11,7 @@
 	:global(table) {
 		border-collapse: collapse;
 		margin-top: 20px;
-		
+
 		/* display: block;
 		overflow: auto;
 		position: relative; */
