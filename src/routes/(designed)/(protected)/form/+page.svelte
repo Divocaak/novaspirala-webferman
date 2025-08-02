@@ -75,15 +75,17 @@
 		if (response.ok) {
 			success = 'Uloženo';
 
-			id_venue = null;
-			id_genre = null;
-			id_order = '';
-			label = '';
-			date_from = '';
-			date_to = '';
-			description = '';
-			text_color = '#ffffff';
-			background_color = '#000000';
+			if (!data.event) {
+				id_venue = null;
+				id_genre = null;
+				id_order = '';
+				label = '';
+				date_from = '';
+				date_to = '';
+				description = '';
+				text_color = '#ffffff';
+				background_color = '#000000';
+			}
 
 			error = '';
 			alert(`Event úspěšně ${data.event ? 'upraven' : 'vytvořen'}`);

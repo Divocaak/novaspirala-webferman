@@ -77,7 +77,7 @@
 				/>
 			</p>
 		{/each}
-		<a href="/events/form?id={selectedData.event.id}">Upravit</a>
+		<a href="/form?id={selectedData.event.id}">Upravit</a>
 		<EventDeleteButton id={selectedData.event.id} />
 		<ExportToCalendarsButton event={selectedData.event} />
 	</div>

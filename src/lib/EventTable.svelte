@@ -97,7 +97,7 @@
 				{/each}
 				{#if user.isAllowedToEdit(event.createdById)}
 					<td>
-						<a href="/events/form?id={event.id}">Upravit</a>
+						<a href="/form?id={event.id}">Upravit</a>
 					</td>
 				{/if}
 				{#if user.isAllowedToDelete(event.createdById)}

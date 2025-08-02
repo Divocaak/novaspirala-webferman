@@ -9,7 +9,7 @@
 
 		if (response.status == 200) {
 			alert(response.message);
-			/* TODO reload page */
+			location.reload();
 		} else {
 			console.log(response.message);
 			alert('error');
