@@ -50,7 +50,7 @@
 				<td>
 					<LocalisedDateRange from={event.date_from} to={event.date_to} />
 				</td>
-				<td>
+				<td style="white-space: pre-line;">
 					{event.description}
 				</td>
 				<td>

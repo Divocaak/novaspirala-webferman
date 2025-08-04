@@ -112,6 +112,7 @@
 
 	.empty-cell {
 		background: #f9f9f9;
+		opacity: .5;
 		min-height: 1rem;
 	}
 

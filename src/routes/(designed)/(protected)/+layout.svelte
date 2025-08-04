@@ -5,13 +5,19 @@
 	export let data;
 	const user = User.fromJSON(data.user);
 
-	const bodyBgClr = parseInt(user.id) === 2 ? '#fea9dd' : 'white';
+	const martinLoggedIn = parseInt(user.id) === 2;
 	onMount(() => {
-		document.body.style.backgroundColor = bodyBgClr;
+		if (martinLoggedIn) {
+			document.body.style.backgroundColor = '#fea9dd';
+			document.body.style.backgroundImage = "url('/background.jpg')";
+			document.body.style.backgroundAttachment = 'fixed';
+			document.body.style.backgroundPosition = 'center';
+			document.body.style.backgroundSize = 'contain';
+		}
 	});
 </script>
 
-<p style="--body-bg-clr: {bodyBgClr};">
+<p>
 	{@html user.getInfoString()}
 	<a href="/logout">Odhlásit se</a>
 	<br />
