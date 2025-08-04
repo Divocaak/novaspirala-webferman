@@ -46,7 +46,7 @@
 		<p>
 			<LocalisedDateRange from={selectedData.event.date_from} to={selectedData.event.date_to} />
 		</p>
-		<p>{selectedData.event.description}</p>
+		<p style="white-space: pre-line;">{selectedData.event.description}</p>
 		<p>
 			Vytvořil:
 			<TooltipUser

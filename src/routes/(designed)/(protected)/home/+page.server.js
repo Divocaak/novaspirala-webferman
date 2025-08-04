@@ -24,19 +24,22 @@ export const load = async ({ locals, url, params, fetch }) => {
         genresRes.json()
     ]);
 
-    const enrichedEvents = await Promise.all(
-        eventsData.map(async (event) => {
-            const usersInEventWithRoleResult = await fetch(`/api/users/getAllInEventWithRole?eid=${event.id}`);
-            const usersInEventWithRoleData = await usersInEventWithRoleResult.json();
+    let enrichedEvents = [];
+    if (eventsData) {
+        enrichedEvents = await Promise.all(
+            eventsData.map(async (event) => {
+                const usersInEventWithRoleResult = await fetch(`/api/users/getAllInEventWithRole?eid=${event.id}`);
+                const usersInEventWithRoleData = await usersInEventWithRoleResult.json();
 
-            return {
-                ...event,
-                users: usersInEventWithRoleData,
-                venues: venuesData,
-                genres: genresData
-            };
-        })
-    );
+                return {
+                    ...event,
+                    users: usersInEventWithRoleData,
+                    venues: venuesData,
+                    genres: genresData
+                };
+            })
+        );
+    }
 
     return {
         roles: rolesData,

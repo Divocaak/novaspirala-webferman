@@ -1,12 +1,12 @@
 {
 	"name": "novaspirala-webferman",
 	"private": true,
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"start": "HOST=127.0.0.1 PORT=3013 node build",
+		"start": "HOST=127.0.0.1 PORT=3014 node build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write .",
