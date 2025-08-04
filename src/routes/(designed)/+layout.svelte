@@ -27,6 +27,6 @@
 	}
 
 	:global(body) {
-		margin: 50px;
+		margin: 50px !important;
 	}
 </style>
