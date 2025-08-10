@@ -50,7 +50,6 @@
 <br />
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
 {#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
-
 {#if user.isAllowedToRead()}
 	<form bind:this={filterForm} on:submit={applyFilters}>
 		<label for="date_from">* Od</label>
