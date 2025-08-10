@@ -74,6 +74,13 @@
 	.users-wrapper {
 		position: relative;
 		padding: 0.5rem;
+		
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		overflow: hidden;
+
+		justify-content: center;
 	}
 
 	button:hover {

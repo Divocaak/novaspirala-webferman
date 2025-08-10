@@ -15,5 +15,8 @@
 		margin: 0.1rem;
 
 		white-space: nowrap;
+
+		flex-shrink: 1;
+		min-width: 0;
 	}
 </style>

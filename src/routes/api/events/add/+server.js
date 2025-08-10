@@ -15,6 +15,7 @@ export async function POST({ request }) {
         const insertedId = result.insertId;
         const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
         const values = roles.flatMap(role => [role.uid, role.rid, insertedId]);
+        /* BUG check if values not empty (allow adding no user at no role events) */
         const sql = `INSERT INTO user_event (id_user, id_role, id_event, active) VALUES ${placeholders}`;
         await connection.query(sql, values);
 
