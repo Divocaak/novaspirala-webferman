@@ -1,71 +1,82 @@
 <script>
-	import { onMount } from 'svelte';
-
 	export let event;
 
-	onMount(() => {
-		const script = document.createElement('script');
-		script.src = 'https://cdn.addevent.com/libs/atc/1.6.1/atc.min.js';
-		script.async = true;
-		script.defer = true;
-		document.head.appendChild(script);
-	});
+	const formatDateForICS = (date) => {
+		const d = new Date(date);
+		const year = d.getFullYear();
+		const month = String(d.getMonth() + 1).padStart(2, '0');
+		const day = String(d.getDate()).padStart(2, '0');
+		return `${year}${month}${day}`;
+	};
 
-	const getUsableDate = (date) => {
-		const dateDate = new Date(date);
-		const year = dateDate.getFullYear();
-		const month = (dateDate.getMonth() + 1).toString().padStart(2, '0');
-		const day = dateDate.getDate().toString().padStart(2, '0');
-		return `${day}/${month}/${year}`;
+	const getLocation = () =>
+		`${event.addr_label || ''}, ${event.addr_street || ''}, ${event.addr_postal || ''} ${event.addr_town || ''}, ${event.addr_country_code || ''}`;
+
+	const generateICS = () => {
+		const endDate = new Date(event.date_to);
+		endDate.setDate(endDate.getDate() + 1);
+
+		const icsContent = `BEGIN:VCALENDAR
+			VERSION:2.0
+			PRODID:-//FermanNovaSpirala//EN
+			BEGIN:VEVENT
+			UID:${Date.now()}@fermannovaspirala.cz
+			DTSTAMP:${formatDateForICS(new Date())}
+			DTSTART;VALUE=DATE:${formatDateForICS(event.date_from)}
+			DTEND;VALUE=DATE:${formatDateForICS(endDate)}
+			SUMMARY:${event.label}
+			DESCRIPTION:${(event.description || '').replace(/\n/g, '\\n')}
+			LOCATION:${getLocation()}
+			END:VEVENT
+			END:VCALENDAR`;
+
+		// Create download link
+		const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${event.label}.ics`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
+
+	const openGoogleCalendar = () => {
+		const start = formatDateForICS(event.date_from);
+		const endDate = new Date(event.date_to);
+		endDate.setDate(endDate.getDate() + 1);
+		const end = formatDateForICS(endDate);
+
+		const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
+		const url = `${base}&text=${encodeURIComponent(event.label)}
+			&dates=${start}/${end}
+			&details=${encodeURIComponent(event.description || '')}
+			&location=${encodeURIComponent(getLocation())}
+			&ctz=Europe/Prague`;
+		window.open(url, '_blank');
 	};
 </script>
 
 <div class="wrapper">
-	<div title="Přidat do kalendáře" class="addeventatc" data-dropdown-y="up">
-		<p>Přidat do kalendáře</p>
-		<span class="start">{getUsableDate(event.date_from)}</span>
-		<span class="end">{getUsableDate(event.date_to)}</span>
-		<span class="all_day_event">true</span>
-		<span class="date_format">DD/MM/YYYY</span>
-		<span class="timezone">Europe/Prague</span>
-		<span class="title">{event.label}</span>
-		<span class="description">{event.description}</span>
-		<span class="location">
-			{event.addr_label}, {event.addr_street}, {event.addr_postal}
-			{event.addr_town}, {event.addr_country_code}
-		</span>
-	</div>
+	<button on:click={openGoogleCalendar}>Přidat do Google Kalendáře</button>
+	<button on:click={generateICS}>Stáhnout pro Apple/Outlook</button>
 </div>
 
 <style>
 	.wrapper {
-		position: relative;
-		height: 100%;
 		display: flex;
-		flex-direction: row;
+		gap: 1rem;
 	}
-
-	.addeventatc {
-		all: unset;
-
-		box-shadow: none !important;
+	button {
 		cursor: pointer;
 		padding: 0.6rem 1.2rem;
-		z-index: 1000;
-	}
-
-	.addeventatc p {
-		all: unset;
-
-		position: relative;
 		color: #5755d9;
-		font-size: medium;
-
-		padding-left: 1.25rem;
-		padding-top: 0.25rem;
+		background: none;
+		border: 1px solid #5755d9;
+		border-radius: 4px;
 	}
-
-	.addeventatc:hover {
-		background-color: transparent;
+	button:hover {
+		background: #f0f0ff;
 	}
 </style>
