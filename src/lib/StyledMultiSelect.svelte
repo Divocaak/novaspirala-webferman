@@ -71,6 +71,7 @@
 
 	.option[aria-selected='true'] {
 		background-color: #def;
+        color: #013;
 	}
 
 	input[disabled] {
