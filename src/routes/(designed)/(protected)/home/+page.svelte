@@ -6,7 +6,6 @@
 	import StyledSelect from '$lib/StyledSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -50,7 +49,6 @@
 <br />
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
 {#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
-
 {#if user.isAllowedToRead()}
 	<form bind:this={filterForm} on:submit={applyFilters}>
 		<label for="date_from">* Od</label>
@@ -91,7 +89,6 @@
 	{#if !showTable}
 		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} />
 	{:else}
-		<ExportToExcelButton events={data.events} roles={data.roles} {date_from} {date_to} />
 		<EventTable events={data.events} roles={data.roles} {user} />
 	{/if}
 {/if}

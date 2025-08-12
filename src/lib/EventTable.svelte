@@ -6,12 +6,24 @@
 	import TooltipGenre from '$lib/TooltipGenre.svelte';
 	import LocalisedDateRange from '$lib/LocalisedDateRange.svelte';
 	import EventDeleteButton from './EventDeleteButton.svelte';
+	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
 
 	export let events;
 	export let roles;
 	export let user;
+
+	let eventsAsc = true;
+	$: sortedEvents = [...events].sort(
+		(a, b) =>
+			new Date(eventsAsc ? a.date_from : b.date_from) -
+			new Date(eventsAsc ? b.date_from : a.date_from)
+	);
 </script>
 
+<p style="padding-top: 50px;">
+	Řadit <button on:click={(eventsAsc = !eventsAsc)}>{eventsAsc ? 'sestupně' : 'vzestupně'}</button>
+</p>
+<ExportToExcelButton events={sortedEvents} {roles}/>
 <table>
 	<thead>
 		<tr>
@@ -36,7 +48,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each events as event}
+		{#each sortedEvents as event}
 			<tr>
 				<td>
 					{event.id}

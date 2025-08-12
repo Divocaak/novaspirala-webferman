@@ -12,9 +12,9 @@
 		border-collapse: collapse;
 		margin-top: 20px;
 
-		/* display: block;
+		display: block;
 		overflow: auto;
-		position: relative; */
+		position: relative;
 	}
 
 	:global(td) {

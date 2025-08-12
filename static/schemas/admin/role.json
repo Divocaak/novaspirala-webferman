@@ -18,9 +18,12 @@
         },
         "note": {
             "type": "string",
-            "format":"textarea",
+            "format": "textarea",
             "title": "Poznámka",
-            "maxLength": 64
+            "maxLength": 64,
+            "options": {
+                "input_height": "200px"
+            }
         },
         "text_color": {
             "type": "string",

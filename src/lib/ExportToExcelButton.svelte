@@ -1,10 +1,10 @@
 <script>
 	import * as XLSX from 'xlsx';
+	import LocalisedDateRange from './LocalisedDateRange.svelte';
+	import { getLocalisedDate } from './localisedDateRangeText';
 
 	export let events;
 	export let roles;
-    export let date_from;
-    export let date_to;
 
 	function exportToExcel() {
 		if (!events?.length) {
@@ -14,15 +14,15 @@
 
 		const rows = events.map((e) => {
 			const base = {
-				ID: e.id,
-				OrderID: e.id_order,
-				Label: e.label,
-				From: e.date_from,
-				To: e.date_to,
-				Description: e.description,
-				Venue: e.vLabel,
-				Genre: e.gLabel,
-				CreatedBy: `${e.f_name} ${e.l_name} (${e.phone})`
+				"ID": e.id,
+				"ID Objednávky": e.id_order,
+				"Název": e.label,
+				"Od": getLocalisedDate(e.date_from),
+				"Do": getLocalisedDate(e.date_to),
+				"Popis": e.description,
+				"Vytvořil": `${e.f_name} ${e.l_name} (${e.phone})`,
+				"Prostor": e.vLabel,
+				"Žánr/typ": e.gLabel,
 			};
 
 			roles.forEach((role) => {
@@ -41,7 +41,7 @@
 		const workbook = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(workbook, worksheet, 'Eventy');
 
-		const filename = `novaspirala_${date_from}_to_${date_to}.xlsx`;
+		const filename = `novaspirala_ferman.xlsx`;
 		XLSX.writeFile(workbook, filename);
 	}
 </script>

@@ -12,11 +12,13 @@ export async function POST({ request }) {
         const [result] = await connection.query("INSERT INTO event (id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
             [id_created_by, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, 1]);
 
-        const insertedId = result.insertId;
-        const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
-        const values = roles.flatMap(role => [role.uid, role.rid, insertedId]);
-        const sql = `INSERT INTO user_event (id_user, id_role, id_event, active) VALUES ${placeholders}`;
-        await connection.query(sql, values);
+        if (roles.length > 0) {
+            const insertedId = result.insertId;
+            const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
+            const values = roles.flatMap(role => [role.uid, role.rid, insertedId]);
+            const sql = `INSERT INTO user_event (id_user, id_role, id_event, active) VALUES ${placeholders}`;
+            await connection.query(sql, values);
+        }
 
         await connection.commit();
 
