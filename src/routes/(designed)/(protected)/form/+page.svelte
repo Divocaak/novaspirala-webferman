@@ -1,4 +1,5 @@
 <script>
+	import StyledMultiSelect from '$lib/StyledMultiSelect.svelte';
 	import StyledSelect from '$lib/StyledSelect.svelte';
 	import { findInSelect } from '$lib/findInSelect.js';
 
@@ -31,8 +32,13 @@
 	let selectedUsersByRole = {};
 	for (const role of data.roles) {
 		if (!data.event) break;
-		const assigned = data.event?.assignedRoles?.find((r) => r.rid === role.role.id);
-		if (assigned) selectedUsersByRole[role.role.id] = role.users.find((u) => u.id === assigned.uid);
+
+		const assigned =
+			data.event?.assignedRoles
+				?.filter((r) => r.rid === role.role.id)
+				.map((r) => role.users.find((u) => u.id === r.uid))
+				.filter(Boolean) || [];
+		selectedUsersByRole[role.role.id] = assigned;
 	}
 
 	let error = '';
@@ -47,9 +53,9 @@
 		}
 
 		const rolesToRet = [];
-		for (const [roleId, selectedUser] of Object.entries(selectedUsersByRole)) {
-			if (selectedUser) rolesToRet.push({ rid: Number(roleId), uid: selectedUser.id });
-		}
+		for (const [roleId, selectedUsers] of Object.entries(selectedUsersByRole))
+			if (selectedUsers && selectedUsers.length)
+				for (const user of selectedUsers) rolesToRet.push({ rid: Number(roleId), uid: user.id });
 
 		const toSend = {
 			id,
@@ -140,8 +146,9 @@
 	<label for="date_to">* Do</label>
 	<input id="date_to" type="date" bind:value={date_to} required /><br />
 
-	<label for="description">Popis</label>
-	<textarea id="description" rows="4" cols="50" bind:value={description} maxlength="256"></textarea>
+	<label for="description">Popis</label><br />
+	<textarea id="description" rows="10" cols="50" bind:value={description} maxlength="256"
+	></textarea>
 	<br />
 
 	<label for="text_color">* Barva textu</label>
@@ -153,9 +160,9 @@
 	{#each data.roles as role, i}
 		<div style="background-color: {role.role.bgClr}; color: {role.role.txtClr}">
 			{#if role.users.length < 1}
-				<p>Počet uživatelů s rolí <b>{role.role.label}</b> je 0</p>
+				<p>Počet uživatelů s rolí "<b>{role.role.label}</b>" je 0</p>
 			{:else}
-				<StyledSelect
+				<StyledMultiSelect
 					label={role.role.label}
 					id="id_role_{role.role.id}"
 					bind:value={selectedUsersByRole[role.role.id]}
@@ -178,3 +185,13 @@
 
 	<button type="submit">Uložit</button><br />
 </form>
+
+<style>
+	input {
+		margin: 10px 0;
+	}
+
+	input:last-of-type {
+		margin-bottom: 20px;
+	}
+</style>
