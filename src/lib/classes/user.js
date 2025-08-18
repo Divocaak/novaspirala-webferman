@@ -1,4 +1,5 @@
 import { Privilege } from "$lib/classes/privilege";
+import { Role } from "$lib/classes/role";
 import { PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_READ, PUBLIC_PRIVILEGE_ID_WRITE } from "$env/static/public";
 
 export class User {
@@ -10,9 +11,11 @@ export class User {
     fName = "";
     lName = "";
     privileges = [];
+    roles = [];
+    hasManagingRole = false;
 
-    constructor({ id, login, email = "", phone, fName = "", lName = "", privileges = [] }) {
-        Object.assign(this, { id, login, email, phone, fName, lName, privileges });
+    constructor({ id, login, email = "", phone, fName = "", lName = "", privileges = [], roles = [], hasManagingRole = false }) {
+        Object.assign(this, { id, login, email, phone, fName, lName, privileges, roles, hasManagingRole });
     }
 
     static fromJSON(json) {
@@ -23,12 +26,18 @@ export class User {
             fName: json.fName,
             lName: json.lName,
             phone: json.phone,
-            privileges: User.createPrivileges(json.privileges)
+            privileges: User.createPrivileges(json.privileges),
+            roles: User.createRoles(json.roles),
+            hasManagingRole: User.hasManagingRole(json.roles)
         });
     }
 
     setPrivileges(json) { this.privileges = User.createPrivileges(json); }
     static createPrivileges(json) { return json.map(privilege => new Privilege({ id: privilege.id, label: privilege.label })); }
+
+    setRoles(json) { this.roles = User.createRoles(json); }
+    static createRoles(json) { return json.map(role => new Role({ id: role.id, label: role.label, manager: role.manager })); }
+    static hasManagingRole(json) { return json.some(r => r.manager); }
 
     isSysAdmin() { return this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SYS_ADMIN); }
     // isAllowedToRead = can see events, has privilege to read
@@ -36,9 +45,9 @@ export class User {
     // isAllowedToCreate = can add and edit events, has privilege to write and edit
     isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
     // isAllowedToEdit = created event or is sysadmin
-    isAllowedToEdit(createdById) {return this.isSysAdmin() || this.id == createdById}
+    isAllowedToEdit(createdById) { return this.isSysAdmin() || this.id == createdById || this.hasManagingRole }
     // isAllowedToDelete = created event or is sysadmin
-    isAllowedToDelete(createdById) {return this.isSysAdmin() || this.id == createdById}
+    isAllowedToDelete(createdById) { return this.isSysAdmin() || this.id == createdById }
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
 
     getInfoString() { return `Přihlášen jako <b>${this.lName} ${this.fName}</b> (${this.email}, ${this.phone}, id: <i>${this.id}</i>)`; }

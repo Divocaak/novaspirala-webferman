@@ -6,9 +6,12 @@ export async function POST({ params, request }) {
     try {
         await connection.beginTransaction();
 
-        for (const { roleId, active } of data.updates) {
-            await connection.query("INSERT INTO user_role (id_user, id_role, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?",
-                [data.uid, roleId, active, active]
+        for (const { roleId, active, manager } of data.updates) {
+            await connection.query(
+                `INSERT INTO user_role (id_user, id_role, active, manager)
+                 VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE active = VALUES(active), manager = VALUES(manager)`,
+                [data.uid, roleId, active, manager || false]
             );
         }
 

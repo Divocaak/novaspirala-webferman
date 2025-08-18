@@ -1,6 +1,7 @@
 <script>
 	import Pill from '$lib/Pill.svelte';
 	import EventDeleteButton from './EventDeleteButton.svelte';
+	import EventEditButton from './EventEditButton.svelte';
 	import ExportToCalendarsButton from './ExportToCalendarsButton.svelte';
 	import LocalisedDateRange from './LocalisedDateRange.svelte';
 	import Tooltip from './Tooltip.svelte';
@@ -10,6 +11,7 @@
 
 	export let selectedData = null;
 	export let closeModal;
+	export let user;
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -77,8 +79,8 @@
 				/>
 			</p>
 		{/each}
-		<a href="/form?id={selectedData.event.id}">Upravit</a>
-		<EventDeleteButton id={selectedData.event.id} />
+		<EventEditButton id={selectedData.event.id} {user} />
+		<EventDeleteButton id={selectedData.event.id} {user} />
 		<ExportToCalendarsButton event={selectedData.event} />
 	</div>
 </div>

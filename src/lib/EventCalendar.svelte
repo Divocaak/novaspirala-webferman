@@ -6,6 +6,7 @@
 	export let roles = null;
 	export let date_from;
 	export let date_to;
+	export let user;
 
 	function toLocalISO(date) {
 		const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -28,7 +29,11 @@
 			const effectiveStart = new Date(Math.max(start, visibleStart));
 			const effectiveEnd = new Date(Math.min(end, visibleEnd));
 
-			for (let d = new Date(effectiveStart); d <= effectiveEnd; d = new Date(d.getTime() + 86400000)) {
+			for (
+				let d = new Date(effectiveStart);
+				d <= effectiveEnd;
+				d = new Date(d.getTime() + 86400000)
+			) {
 				const dayKey = toLocalISO(d);
 				if (!dateVenueMap.has(dayKey)) dateVenueMap.set(dayKey, new Map());
 
@@ -58,7 +63,7 @@
 	};
 </script>
 
-{#if showModal}<EventModal {selectedData} {closeModal} />{/if}
+{#if showModal}<EventModal {selectedData} {closeModal} {user} />{/if}
 
 <div class="calendar-grid" style="--venue-count: {allVenues.length}">
 	<div class="header">Datum</div>
@@ -112,7 +117,7 @@
 
 	.empty-cell {
 		background: #f9f9f9;
-		opacity: .5;
+		opacity: 0.5;
 		min-height: 1rem;
 	}
 

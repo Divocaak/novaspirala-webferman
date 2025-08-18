@@ -1,5 +1,9 @@
 <script>
+	import { User } from './classes/user';
+
 	export let id;
+	export let user;
+	const userObject = User.fromJSON(user);
 
 	const deleteEvent = async (eventId) => {
 		if (!confirm('Opravdu?')) return;
@@ -17,7 +21,9 @@
 	};
 </script>
 
-<button class="delete-btn" on:click={() => deleteEvent(id)}>Smazat</button>
+{#if userObject.isAllowedToDelete(event.createdById)}
+	<button class="delete-btn" on:click={() => deleteEvent(id)}>Smazat</button>
+{/if}
 
 <style>
 	.delete-btn {
