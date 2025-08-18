@@ -2,7 +2,9 @@ const options = {
     weekday: 'long',
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
 };
 
 export function getLocalisedDate(date) {

@@ -59,8 +59,8 @@
 				<td style="background-color: {event.bgClr}">
 					<b style="color: {event.txtClr}">{event.label}</b>
 				</td>
-				<td>
-					<LocalisedDateRange from={event.date_from} to={event.date_to} />
+				<td class="cell-max">
+					<LocalisedDateRange from={event.date_from} to={event.date_to} wrap={true}/>
 				</td>
 				<td style="white-space: pre-line;">
 					{event.description}
@@ -121,3 +121,9 @@
 		{/each}
 	</tbody>
 </table>
+
+<style>
+	.cell-max{
+		text-wrap: nowrap;
+	}
+</style>

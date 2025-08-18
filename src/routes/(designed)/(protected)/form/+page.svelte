@@ -8,10 +8,15 @@
 	const toDateInputValue = (dateStr) => {
 		if (!dateStr) return '';
 		const date = new Date(dateStr);
-		// Correct for timezone offset so it doesn’t shift the date
 		const timezoneOffset = date.getTimezoneOffset() * 60000;
 		const localDate = new Date(date.getTime() - timezoneOffset);
-		return localDate.toISOString().split('T')[0]; // YYYY-MM-DD
+		const iso = localDate.toISOString();
+		return iso.slice(0, 16);
+	};
+
+	const formatForMySQL = (dateStr) => {
+		if (!dateStr) return null;
+		return dateStr.replace('T', ' ') + ':00';  // "2025-08-18T14:30" → "2025-08-18 14:30:00"
 	};
 
 	let id = data.event?.id ?? '';
@@ -64,8 +69,8 @@
 			id_genre: id_genre.id,
 			id_order,
 			label,
-			date_from,
-			date_to,
+			date_from: formatForMySQL(date_from),
+			date_to: formatForMySQL(date_to),
 			description,
 			text_color,
 			background_color,
@@ -141,10 +146,10 @@
 	<input id="label" type="text" bind:value={label} required maxlength="32" /><br />
 
 	<label for="date_from">* Od</label>
-	<input id="date_from" type="date" bind:value={date_from} required /><br />
+	<input id="date_from" type="datetime-local" bind:value={date_from} required /><br />
 
 	<label for="date_to">* Do</label>
-	<input id="date_to" type="date" bind:value={date_to} required /><br />
+	<input id="date_to" type="datetime-local" bind:value={date_to} required /><br />
 
 	<label for="description">Popis</label><br />
 	<textarea id="description" rows="10" cols="50" bind:value={description} maxlength="256"
