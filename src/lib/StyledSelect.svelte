@@ -125,5 +125,10 @@
 
 	.readonly {
 		cursor: unset;
+		background-color: rgb(240, 240, 240);
+		color: rgb(118, 118, 118);
+		border: none;
+		cursor: not-allowed;
+		opacity: .75;
 	}
 </style>

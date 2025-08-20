@@ -7,6 +7,7 @@
 	import LocalisedDateRange from '$lib/LocalisedDateRange.svelte';
 	import EventDeleteButton from './EventDeleteButton.svelte';
 	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
+	import EventEditButton from './EventEditButton.svelte';
 
 	export let events;
 	export let roles;
@@ -23,7 +24,7 @@
 <p style="padding-top: 50px;">
 	Řadit <button on:click={(eventsAsc = !eventsAsc)}>{eventsAsc ? 'sestupně' : 'vzestupně'}</button>
 </p>
-<ExportToExcelButton events={sortedEvents} {roles}/>
+<ExportToExcelButton events={sortedEvents} {roles} />
 <table>
 	<thead>
 		<tr>
@@ -59,8 +60,8 @@
 				<td style="background-color: {event.bgClr}">
 					<b style="color: {event.txtClr}">{event.label}</b>
 				</td>
-				<td>
-					<LocalisedDateRange from={event.date_from} to={event.date_to} />
+				<td class="cell-max">
+					<LocalisedDateRange from={event.date_from} to={event.date_to} wrap={true} />
 				</td>
 				<td style="white-space: pre-line;">
 					{event.description}
@@ -107,17 +108,15 @@
 						{/each}
 					</td>
 				{/each}
-				{#if user.isAllowedToEdit(event.createdById)}
-					<td>
-						<a href="/form?id={event.id}">Upravit</a>
-					</td>
-				{/if}
-				{#if user.isAllowedToDelete(event.createdById)}
-					<td>
-						<EventDeleteButton id={event.id} />
-					</td>
-				{/if}
+				<td><EventEditButton id={event.id} {user} /></td>
+				<td><EventDeleteButton id={event.id} {user} /></td>
 			</tr>
 		{/each}
 	</tbody>
 </table>
+
+<style>
+	.cell-max {
+		text-wrap: nowrap;
+	}
+</style>

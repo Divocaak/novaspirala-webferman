@@ -38,6 +38,16 @@ export async function POST({ request, cookies }) {
         [user.id]);
     user.setPrivileges(prows)
 
+    const [rrows] = await pool.query(`
+        SELECT r.id, r.label, ur.manager
+        FROM user_role ur
+        INNER JOIN role r ON ur.id_role=r.id
+        WHERE ur.id_user = ?
+        AND ur.active IS TRUE;`,
+        [user.id]
+    );
+    user.setRoles(rrows);
+
     cookies.set('session', JSON.stringify(user), {
         httpOnly: true,
         secure: true,

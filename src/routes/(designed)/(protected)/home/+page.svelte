@@ -87,7 +87,7 @@
 	</form>
 	<button on:click={(showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
-		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} />
+		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} {user} />
 	{:else}
 		<EventTable events={data.events} roles={data.roles} {user} />
 	{/if}

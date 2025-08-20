@@ -1,8 +1,9 @@
 <script>
-	import { getLocalisedDate } from "./localisedDateRangeText";
+	import { getLocalisedDate } from './localisedDateRangeText';
 
 	export let from;
 	export let to;
+	export let wrap = false;
 </script>
 
-<p>{getLocalisedDate(from)}&nbsp;-&nbsp;{getLocalisedDate(to)}</p>
+<p>{getLocalisedDate(from)}{@html wrap ? '<br />' : '&nbsp;-&nbsp;'}{getLocalisedDate(to)}</p>
