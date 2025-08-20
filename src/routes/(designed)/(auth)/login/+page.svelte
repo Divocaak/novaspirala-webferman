@@ -1,4 +1,6 @@
 <script>
+	import { version } from '$app/environment';
+
 	let login = '';
 	let password = '';
 	let error = '';
@@ -37,9 +39,9 @@
 </form>
 
 <p class="signature">
-	Designed, coded & maintained by <a href="https://divokyvojtech.cz/" target="_blank"
-		>Vojtěch Divoký</a
-	>
+	Designed, coded & maintained by
+	<a href="https://divokyvojtech.cz/" target="_blank">Vojtěch Divoký</a><br />
+	build:&nbsp;{version}
 </p>
 
 <style>
