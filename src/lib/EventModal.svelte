@@ -110,8 +110,8 @@
 		opacity: 1 !important;
 
 		position: relative;
-		max-width: 90vw;
-		max-height: 90vh;
+		max-width: 50%;
+		max-height: 50%;
 
 		background: #f0f0f0;
 		padding: 1.5rem;
