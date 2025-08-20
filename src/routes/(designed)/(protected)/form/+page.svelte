@@ -1,9 +1,11 @@
 <script>
 	import StyledMultiSelect from '$lib/StyledMultiSelect.svelte';
 	import StyledSelect from '$lib/StyledSelect.svelte';
+	import { User } from '$lib/classes/user.js';
 	import { findInSelect } from '$lib/findInSelect.js';
 
 	export let data = null;
+	const user = User.fromJSON(data.user);
 
 	const toDateInputValue = (dateStr) => {
 		if (!dateStr) return '';
@@ -16,14 +18,11 @@
 
 	const formatForMySQL = (dateStr) => {
 		if (!dateStr) return null;
-		return dateStr.replace('T', ' ') + ':00';  // "2025-08-18T14:30" → "2025-08-18 14:30:00"
+		return dateStr.replace('T', ' ') + ':00'; // "2025-08-18T14:30" → "2025-08-18 14:30:00"
 	};
 
 	let id = data.event?.id ?? '';
-	let id_created_by = findInSelect(
-		data.usersAllowedToWrite,
-		data.event?.id_created_by ?? data.user.id
-	);
+	let id_created_by = findInSelect(data.usersAllowedToWrite, data.event?.id_created_by ?? user.id);
 	let id_venue = findInSelect(data.venues, data.event?.id_venue ?? null);
 	let id_genre = findInSelect(data.genres, data.event?.id_genre ?? null);
 	let id_order = data.event?.id_order ?? '';
@@ -33,6 +32,8 @@
 	let description = data.event?.description ?? '';
 	let text_color = data.event?.text_color ?? '#ffffff';
 	let background_color = data.event?.background_color ?? '#000000';
+
+	const isAllowedToEditFull = !user.isAllowedToEditFull(id_created_by.id);
 
 	let selectedUsersByRole = {};
 	for (const role of data.roles) {
@@ -112,7 +113,7 @@
 
 <form on:submit={handleSubmit}>
 	<label for="id">ID (readonly)</label>
-	<input id="id" type="number" bind:value={id} readonly disabled /><br />
+	<input id="id" type="number" bind:value={id} readonly /><br />
 
 	<StyledSelect
 		label="Vytvořil (readonly)"
@@ -129,6 +130,7 @@
 		bind:value={id_venue}
 		required={true}
 		options={data.venues}
+		readonly={isAllowedToEditFull}
 	/>
 
 	<StyledSelect
@@ -137,30 +139,74 @@
 		bind:value={id_genre}
 		required={true}
 		options={data.genres}
+		readonly={isAllowedToEditFull}
 	/>
 
 	<label for="id_order">ID Objednávky</label>
-	<input id="id_order" type="text" bind:value={id_order} maxlength="16" /><br />
+	<input
+		id="id_order"
+		type="text"
+		bind:value={id_order}
+		maxlength="16"
+		readonly={isAllowedToEditFull}
+	/><br />
 
 	<label for="label">* Název</label>
-	<input id="label" type="text" bind:value={label} required maxlength="32" /><br />
+	<input
+		id="label"
+		type="text"
+		bind:value={label}
+		required
+		maxlength="32"
+		readonly={isAllowedToEditFull}
+	/><br />
 
 	<label for="date_from">* Od</label>
-	<input id="date_from" type="datetime-local" bind:value={date_from} required /><br />
+	<input
+		id="date_from"
+		type="datetime-local"
+		bind:value={date_from}
+		required
+		readonly={isAllowedToEditFull}
+	/><br />
 
 	<label for="date_to">* Do</label>
-	<input id="date_to" type="datetime-local" bind:value={date_to} required /><br />
+	<input
+		id="date_to"
+		type="datetime-local"
+		bind:value={date_to}
+		required
+		readonly={isAllowedToEditFull}
+	/><br />
 
 	<label for="description">Popis</label><br />
-	<textarea id="description" rows="10" cols="50" bind:value={description} maxlength="256"
+	<textarea
+		id="description"
+		rows="10"
+		cols="50"
+		bind:value={description}
+		maxlength="256"
+		readonly={isAllowedToEditFull}
 	></textarea>
 	<br />
 
 	<label for="text_color">* Barva textu</label>
-	<input id="text_color" type="color" bind:value={text_color} required /><br />
+	<input
+		id="text_color"
+		type="color"
+		bind:value={text_color}
+		required
+		disabled={isAllowedToEditFull}
+	/><br />
 
 	<label for="background_color">* Barva pozadí</label>
-	<input id="background_color" type="color" bind:value={background_color} required /><br />
+	<input
+		id="background_color"
+		type="color"
+		bind:value={background_color}
+		required
+		disabled={isAllowedToEditFull}
+	/><br />
 
 	{#each data.roles as role, i}
 		<div style="background-color: {role.role.bgClr}; color: {role.role.txtClr}">
@@ -172,6 +218,7 @@
 					id="id_role_{role.role.id}"
 					bind:value={selectedUsersByRole[role.role.id]}
 					options={role.users}
+					readonly={!user.isRolesManager(id_created_by.id, role.role.id)}
 				/>
 			{/if}
 			<p>{role.role.note}</p>
@@ -198,5 +245,13 @@
 
 	input:last-of-type {
 		margin-bottom: 20px;
+	}
+
+	input:read-only,
+	textarea:read-only,
+	input:disabled {
+		background-color: rgb(240, 240, 240);
+		color: rgb(118, 118, 118);
+		border: none;
 	}
 </style>

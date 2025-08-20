@@ -12,7 +12,7 @@
 			document.body.style.backgroundImage = "url('/background.jpg')";
 			document.body.style.backgroundAttachment = 'fixed';
 			document.body.style.backgroundPosition = 'center';
-			document.body.style.backgroundSize = 'contain';
+			document.body.style.backgroundSize = 'cover';
 		}
 	});
 </script>
