@@ -47,15 +47,15 @@ export class User {
     isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
     // isAllowedToEdit = created event or is sysadmin or manages at least one role
     // used when accessing edit form
-    isAllowedToEdit(createdById) { return this.isAllowedToEditFull(createdById) || this.hasManagingRole }
+    isAllowedToEdit(createdById, pastEditable) { return this.isAllowedToEditFull(createdById) || this.hasManagingRole && pastEditable}
     // isAllowedToEdit = created event or is sysadmin
     // used for determining if input field should be readonly or not
-    isAllowedToEditFull(createdById) { return this.isSysAdmin() || this.id == createdById }
+    isAllowedToEditFull(createdById, pastEditable) { return this.isSysAdmin() || this.id == createdById && pastEditable }
     //isRolesManager = can user manage people for this role
     // used for determining if input field should be readonly or not
     isRolesManager(createdById, roleId) { return this.isAllowedToEditFull(createdById) || this.#checkForRole(roleId); }
     // isAllowedToDelete = created event or is sysadmin
-    isAllowedToDelete(createdById) { return this.isSysAdmin() || this.id == createdById }
+    isAllowedToDelete(createdById, pastEditable) { return this.isSysAdmin() || this.id == createdById && pastEditable }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

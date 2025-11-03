@@ -7,6 +7,7 @@
 	export let date_from;
 	export let date_to;
 	export let user;
+	export let startOfDay;
 
 	function toLocalISO(date) {
 		const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -63,7 +64,7 @@
 	};
 </script>
 
-{#if showModal}<EventModal {selectedData} {closeModal} {user} />{/if}
+{#if showModal}<EventModal {selectedData} {closeModal} {user} {startOfDay} />{/if}
 
 <div class="calendar-grid" style="--venue-count: {allVenues.length}">
 	<div class="header">Datum</div>

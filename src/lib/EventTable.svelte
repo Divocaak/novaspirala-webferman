@@ -12,6 +12,7 @@
 	export let events;
 	export let roles;
 	export let user;
+	export let startOfDay;
 
 	let eventsAsc = true;
 	$: sortedEvents = [...events].sort(
@@ -108,8 +109,12 @@
 						{/each}
 					</td>
 				{/each}
-				<td><EventEditButton id={event.id} {user} /></td>
-				<td><EventDeleteButton id={event.id} {user} /></td>
+				<td>
+					<EventEditButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+				</td>
+				<td>
+					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+				</td>
 			</tr>
 		{/each}
 	</tbody>

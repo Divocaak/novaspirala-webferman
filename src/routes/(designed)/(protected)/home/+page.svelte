@@ -10,6 +10,9 @@
 	export let data;
 	const user = User.fromJSON(data.user);
 
+	const now = new Date();
+	const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
 	const formatDate = (date) => date.toISOString().split('T')[0];
 
 	let filterForm;
@@ -87,8 +90,8 @@
 	</form>
 	<button on:click={(showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
-		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} {user} />
+		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} {user} {startOfDay}/>
 	{:else}
-		<EventTable events={data.events} roles={data.roles} {user} />
+		<EventTable events={data.events} roles={data.roles} {user} {startOfDay}/>
 	{/if}
 {/if}

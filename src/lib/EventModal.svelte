@@ -4,6 +4,7 @@
 	import EventEditButton from './EventEditButton.svelte';
 	import ExportToCalendarsButton from './ExportToCalendarsButton.svelte';
 	import LocalisedDateRange from './LocalisedDateRange.svelte';
+	import { getLocalisedDate } from './localisedDateRangeText';
 	import Tooltip from './Tooltip.svelte';
 	import TooltipGenre from './TooltipGenre.svelte';
 	import TooltipUser from './TooltipUser.svelte';
@@ -12,6 +13,7 @@
 	export let selectedData = null;
 	export let closeModal;
 	export let user;
+	export let startOfDay;
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -79,8 +81,16 @@
 				/>
 			</p>
 		{/each}
-		<EventEditButton id={selectedData.event.id} {user} />
-		<EventDeleteButton id={selectedData.event.id} {user} />
+		<EventEditButton
+			id={selectedData.event.id}
+			{user}
+			pastEditable={selectedData.event.date_from_ts >= startOfDay}
+		/>
+		<EventDeleteButton
+			id={selectedData.event.id}
+			{user}
+			pastEditable={selectedData.event.date_from_ts >= startOfDay}
+		/>
 		<ExportToCalendarsButton event={selectedData.event} />
 	</div>
 </div>

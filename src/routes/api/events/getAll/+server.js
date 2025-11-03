@@ -41,5 +41,11 @@ export async function GET({ url }) {
         ${conditions}`,
         params);
 
-    return new Response(JSON.stringify(rows));
+    const events = rows.map(event => ({
+        ...event,
+        date_from_ts: new Date(event.date_from).getTime(),
+        date_to_ts: new Date(event.date_to).getTime()
+    }));
+
+    return new Response(JSON.stringify(events));
 }
