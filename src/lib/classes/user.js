@@ -47,11 +47,14 @@ export class User {
     isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
     // isAllowedToEdit = created event or is sysadmin or manages at least one role
     // used when accessing edit form
-    isAllowedToEdit(createdById, pastEditable) { return this.isAllowedToEditFull(createdById) || this.hasManagingRole && pastEditable}
+    isAllowedToEdit(createdById, pastEditable) { return this.isAllowedToEditFull(createdById) || this.hasManagingRole && pastEditable }
     // isAllowedToEdit = created event or is sysadmin
     // used for determining if input field should be readonly or not
     isAllowedToEditFull(createdById, pastEditable) { return this.isSysAdmin() || this.id == createdById && pastEditable }
-    //isRolesManager = can user manage people for this role
+    // isAllowedToEditDescription = sysadmin, any roles manager, created this event
+    // used for all roles managers to be allowed to edit description
+    isAllowedToEditDescription(createdById) { return this.isSysAdmin() || this.hasManagingRole || this.id == createdById }
+    // isRolesManager = can user manage people for this role
     // used for determining if input field should be readonly or not
     isRolesManager(createdById, roleId) { return this.isAllowedToEditFull(createdById) || this.#checkForRole(roleId); }
     // isAllowedToDelete = created event or is sysadmin

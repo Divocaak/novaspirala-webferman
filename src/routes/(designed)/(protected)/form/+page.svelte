@@ -34,6 +34,7 @@
 	let background_color = data.event?.background_color ?? '#000000';
 
 	const isAllowedToEditFull = !user.isAllowedToEditFull(id_created_by.id);
+	const isAllowedToEditDescription = !user.isAllowedToEditDescription(id_created_by.id,)
 
 	let selectedUsersByRole = {};
 	for (const role of data.roles) {
@@ -186,7 +187,7 @@
 		cols="50"
 		bind:value={description}
 		maxlength="256"
-		readonly={isAllowedToEditFull}
+		readonly={isAllowedToEditDescription}
 	></textarea>
 	<br />
 
