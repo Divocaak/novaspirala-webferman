@@ -124,7 +124,8 @@
 
 	.stacked-cell {
 		display: flex;
-		flex-direction: row;
-		justify-content: center;
+		flex-direction: column;
+		justify-content: flex-start;
+		gap: 1px;
 	}
 </style>

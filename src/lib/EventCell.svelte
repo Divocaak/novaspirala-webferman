@@ -62,6 +62,8 @@
 		transition: all 0.35s ease-in-out;
 
 		cursor: pointer;
+
+		padding-top: 1.5rem;
 	}
 
 	button svg {
