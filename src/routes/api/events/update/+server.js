@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 export async function POST({ request }) {
     let connection;
     try {
-        const { id, id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, roles } = await request.json();
+        const { id, id_venue, id_genre, id_order, label, date_ranges, description, text_color, background_color, roles } = await request.json();
 
         connection = await pool.getConnection();
         await connection.beginTransaction();
@@ -13,7 +13,7 @@ export async function POST({ request }) {
             `UPDATE event
              SET id_venue = ?, id_genre = ?, id_order = ?, label = ?, date_from = ?, date_to = ?, description = ?, text_color = ?, background_color = ?
              WHERE id = ?`,
-            [id_venue, id_genre, id_order, label, date_from, date_to, description, text_color, background_color, id]
+            [id_venue, id_genre, id_order, label, date_ranges[0].date_from, date_ranges[0].date_to, description, text_color, background_color, id]
         );
 
         await connection.query(

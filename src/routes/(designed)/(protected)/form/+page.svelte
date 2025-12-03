@@ -34,7 +34,25 @@
 	let background_color = data.event?.background_color ?? '#000000';
 
 	const isAllowedToEditFull = !user.isAllowedToEditFull(id_created_by.id);
-	const isAllowedToEditDescription = !user.isAllowedToEditDescription(id_created_by.id,)
+	const isAllowedToEditDescription = !user.isAllowedToEditDescription(id_created_by.id);
+
+	// ----- MULTIPLE DATES -----
+	let dateRanges = data.event
+		? [
+				{
+					uid: crypto.randomUUID(),
+					from: toDateInputValue(data.event.date_from),
+					to: toDateInputValue(data.event.date_to)
+				}
+			]
+		: [{ uid: crypto.randomUUID(), from: '', to: '' }];
+	const addDateRange = () => {
+		dateRanges = [...dateRanges, { uid: crypto.randomUUID(), from: '', to: '' }];
+	};
+
+	const removeDateRange = (uid) => {
+		dateRanges = dateRanges.filter((d) => d.uid !== uid);
+	};
 
 	let selectedUsersByRole = {};
 	for (const role of data.roles) {
@@ -71,8 +89,10 @@
 			id_genre: id_genre.id,
 			id_order,
 			label,
-			date_from: formatForMySQL(date_from),
-			date_to: formatForMySQL(date_to),
+			date_ranges: dateRanges.map((d) => ({
+				date_from: formatForMySQL(d.from),
+				date_to: formatForMySQL(d.to)
+			})),
 			description,
 			text_color,
 			background_color,
@@ -93,8 +113,7 @@
 				id_genre = null;
 				id_order = '';
 				label = '';
-				date_from = '';
-				date_to = '';
+				dateRanges = [{ from: '', to: '' }];
 				description = '';
 				text_color = '#ffffff';
 				background_color = '#000000';
@@ -162,23 +181,53 @@
 		readonly={isAllowedToEditFull}
 	/><br />
 
-	<label for="date_from">* Od</label>
-	<input
-		id="date_from"
-		type="datetime-local"
-		bind:value={date_from}
-		required
-		readonly={isAllowedToEditFull}
-	/><br />
+	{#if !data.event}
+		{#each dateRanges as range (range.uid)}
+			<div>
+				<label for="date_from_{range.uid}">* Od</label>
+				<input
+					id="date_from_{range.uid}"
+					type="datetime-local"
+					bind:value={range.from}
+					required
+					readonly={isAllowedToEditFull}
+				/>
 
-	<label for="date_to">* Do</label>
-	<input
-		id="date_to"
-		type="datetime-local"
-		bind:value={date_to}
-		required
-		readonly={isAllowedToEditFull}
-	/><br />
+				<label for="date_to_{range.uid}">* Do</label>
+				<input
+					id="date_to_{range.uid}"
+					type="datetime-local"
+					bind:value={range.to}
+					required
+					readonly={isAllowedToEditFull}
+				/>
+
+				{#if dateRanges.length > 1}
+					<button type="button" on:click={() => removeDateRange(range.uid)}>Odstranit termín</button
+					>
+				{/if}
+			</div>
+		{/each}
+		<button type="button" on:click={addDateRange}>Přidat další termín</button><br /><br />
+	{:else}
+		<label for="date_from">* Od</label>
+		<input
+			id="date_from"
+			type="datetime-local"
+			bind:value={dateRanges[0].from}
+			required
+			readonly={isAllowedToEditFull}
+		/>
+
+		<label for="date_to">* Do</label>
+		<input
+			id="date_to"
+			type="datetime-local"
+			bind:value={dateRanges[0].to}
+			required
+			readonly={isAllowedToEditFull}
+		/><br />
+	{/if}
 
 	<label for="description">Popis</label><br />
 	<textarea
