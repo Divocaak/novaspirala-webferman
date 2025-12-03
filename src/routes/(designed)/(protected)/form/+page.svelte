@@ -68,7 +68,7 @@
 
 	let error = '';
 	let success = '';
-	const apiPath = data.event ? '/api/events/update' : '/api/events/add';
+	let apiPath = data.event ? '/api/events/update' : '/api/events/add';
 	async function handleSubmit(event) {
 		event.preventDefault();
 
@@ -126,6 +126,24 @@
 			error = data.message;
 			alert('error');
 		}
+	}
+
+	async function copyEvent(event) {
+		id = '';
+
+		// Duplicate date ranges (to avoid mutating original)
+		dateRanges = dateRanges.map((d) => ({
+			uid: crypto.randomUUID(),
+			from: d.from,
+			to: d.to
+		}));
+
+		success = '';
+		error = '';
+
+		apiPath = '/api/events/add';
+
+		await handleSubmit(event);
 	}
 </script>
 
@@ -286,6 +304,9 @@
 	{/if}
 
 	<button type="submit">Uložit</button><br />
+	{#if data.event}
+		<button type="button" on:click={copyEvent}>Kopírovat událost</button>
+	{/if}
 </form>
 
 <style>
