@@ -97,8 +97,7 @@
 
 <style>
 	.modal-backdrop {
-		all: unset;
-
+		box-sizing: border-box;
 		position: fixed;
 		inset: 0;
 
@@ -112,16 +111,14 @@
 		height: 100%;
 
 		z-index: 9999;
+
+		overflow: hidden;
 	}
 
 	.modal {
-		display: unset !important;
+		display: block !important;
 		overflow: auto !important;
 		opacity: 1 !important;
-
-		position: relative;
-		max-width: 50%;
-		max-height: 50%;
 
 		background: #f0f0f0;
 		padding: 1.5rem;
@@ -129,5 +126,18 @@
 
 		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 		z-index: 10000;
+
+		position: relative;
+		box-sizing: border-box;
+		max-width: 90vw;
+		max-height: 90vh;
+	}
+
+	@media (max-width: 600px) {
+		.modal {
+			padding: 1rem;
+			max-width: 95vw;
+			max-height: 90vh;
+		}
 	}
 </style>
