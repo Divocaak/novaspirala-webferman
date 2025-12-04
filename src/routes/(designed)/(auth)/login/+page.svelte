@@ -1,5 +1,6 @@
 <script>
 	import { version } from '$app/environment';
+	import { goto } from '$app/navigation';
 
 	let login = '';
 	let password = '';
@@ -14,7 +15,7 @@
 		});
 
 		if (response.ok) {
-			window.location = '/';
+			window.location.href = '/';
 		} else {
 			const data = await response.json();
 			error = data.message;
