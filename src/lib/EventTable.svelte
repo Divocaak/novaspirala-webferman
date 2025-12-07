@@ -8,11 +8,13 @@
 	import EventDeleteButton from './EventDeleteButton.svelte';
 	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
 	import EventEditButton from './EventEditButton.svelte';
+	import EventBookButton from './EventBookButton.svelte';
 
 	export let events;
 	export let roles;
 	export let user;
 	export let startOfDay;
+	export let openBookingModalFunction;
 
 	let eventsAsc = true;
 	$: sortedEvents = [...events].sort(
@@ -45,6 +47,7 @@
 					</Tooltip>
 				</th>
 			{/each}
+			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 		</tr>
@@ -114,6 +117,14 @@
 				</td>
 				<td>
 					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+				</td>
+				<td>
+					<EventBookButton
+						id={event.id}
+						{user}
+						pastBookable={event.date_from_ts >= startOfDay}
+						openModalFunction={() => openBookingModalFunction(event)}
+					/>
 				</td>
 			</tr>
 		{/each}

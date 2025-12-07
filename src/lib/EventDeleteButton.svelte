@@ -24,13 +24,5 @@
 </script>
 
 {#if userObject.isAllowedToDelete(event.createdById, pastEditable)}
-	<button class="delete-btn" on:click={() => deleteEvent(id)}>Smazat</button>
+	<button class="custom-btn" on:click={() => deleteEvent(id)}>Smazat</button>
 {/if}
-
-<style>
-	.delete-btn {
-		all: unset;
-		cursor: pointer;
-		color: #5755d9;
-	}
-</style>

@@ -6,6 +6,7 @@
 	import StyledSelect from '$lib/StyledSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import BookingModal from '$lib/BookingModal.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -46,6 +47,19 @@
 
 		goto(`/home?${params.toString()}`);
 	}
+
+	let showBookingModal = false;
+	let selectedEvent = null;
+
+	const openBookingModal = (eventData) => {
+		selectedEvent = eventData;
+		showBookingModal = true;
+	};
+
+	const closeBookingModal = () => {
+		showBookingModal = false;
+		selectedEvent = null;
+	};
 </script>
 
 <h2>home</h2>
@@ -90,8 +104,26 @@
 	</form>
 	<button on:click={(showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
-		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} {user} {startOfDay}/>
+		<EventCalendar
+			events={data.events}
+			roles={data.roles}
+			{date_from}
+			{date_to}
+			{user}
+			{startOfDay}
+			openBookingModalFunction={openBookingModal}
+		/>
 	{:else}
-		<EventTable events={data.events} roles={data.roles} {user} {startOfDay}/>
+		<EventTable
+			events={data.events}
+			roles={data.roles}
+			{user}
+			{startOfDay}
+			openBookingModalFunction={openBookingModal}
+		/>
+	{/if}
+
+	{#if showBookingModal}
+		<BookingModal {selectedEvent} closeModalFunction={closeBookingModal} {user} />
 	{/if}
 {/if}

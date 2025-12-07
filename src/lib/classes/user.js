@@ -1,6 +1,6 @@
 import { Privilege } from "$lib/classes/privilege";
 import { Role } from "$lib/classes/role";
-import { PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_READ, PUBLIC_PRIVILEGE_ID_WRITE } from "$env/static/public";
+import { PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_READ, PUBLIC_PRIVILEGE_ID_WRITE, PUBLIC_PRIVILEGE_ID_BOOKING } from "$env/static/public";
 
 export class User {
 
@@ -43,6 +43,8 @@ export class User {
     isSysAdmin() { return this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SYS_ADMIN); }
     // isAllowedToRead = can see events, has privilege to read
     isAllowedToRead() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_READ); }
+    // isAllowedToBook = allows users to book their shifts in advance
+    isAllowedToBook(pastBookable) { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_BOOKING) && pastBookable; }
     // isAllowedToCreate = can add and edit events, has privilege to write and edit
     isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
     // isAllowedToEdit = created event or is sysadmin or manages at least one role

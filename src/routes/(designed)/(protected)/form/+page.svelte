@@ -308,21 +308,3 @@
 		<button type="button" on:click={copyEvent}>Kopírovat událost</button>
 	{/if}
 </form>
-
-<style>
-	input {
-		margin: 10px 0;
-	}
-
-	input:last-of-type {
-		margin-bottom: 20px;
-	}
-
-	input:read-only,
-	textarea:read-only,
-	input:disabled {
-		background-color: rgb(240, 240, 240);
-		color: rgb(118, 118, 118);
-		border: none;
-	}
-</style>

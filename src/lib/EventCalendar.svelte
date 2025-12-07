@@ -8,6 +8,7 @@
 	export let date_to;
 	export let user;
 	export let startOfDay;
+	export let openBookingModalFunction;
 
 	function toLocalISO(date) {
 		const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -64,7 +65,9 @@
 	};
 </script>
 
-{#if showModal}<EventModal {selectedData} {closeModal} {user} {startOfDay} />{/if}
+{#if showModal}
+	<EventModal {selectedData} closeModalFunction={closeModal} {user} {startOfDay} {openBookingModalFunction}/>
+{/if}
 
 <div class="calendar-grid" style="--venue-count: {allVenues.length}">
 	<div class="header">Datum</div>
