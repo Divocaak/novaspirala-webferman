@@ -18,6 +18,13 @@ export const load = async ({ url, fetch }) => {
     label: `${user.l_name} ${user.f_name} (${user.login})`
   }));
 
+  const eid = url.searchParams.get('id');
+
+  /* TODO api ednpoint */
+  /* need rid and uid pairs */
+  const bookedUsersRes = await fetch(`/api/users/booking/getAll?eid=${eid}`);
+  const bookedUsers = await bookedUsersRes.json()
+
   const roles = await Promise.all(
     rolesData.map(async role => {
       const res = await fetch(`/api/users/getAllWithRole?rid=${role.id}`);
@@ -27,15 +34,17 @@ export const load = async ({ url, fetch }) => {
         role,
         users: users.map(user => ({
           id: user.id,
-          label: `${user.l_name} ${user.f_name} (${user.login})`
+          label: `${user.l_name} ${user.f_name} (${user.login})`,
+          booked: bookedUsers.some(
+            b => b.roleid === role.id && b.userid === user.id
+          )
         }))
       };
     })
   );
 
-  const id = url.searchParams.get('id');
-  const event = id
-    ? await fetch(`/api/events/get?id=${id}`).then(res => res.json())
+  const event = eid
+    ? await fetch(`/api/events/get?id=${eid}`).then(res => res.json())
     : null;
 
   return {
@@ -46,3 +55,11 @@ export const load = async ({ url, fetch }) => {
     roles
   };
 };
+
+/* const [assignedRoles] = await pool.query(`
+        SELECT ur.id_user AS uid, ur.id_role AS rid
+        FROM user_event ur
+        INNER JOIN user u ON ur.id_user = u.id
+        INNER JOIN role r ON ur.id_role = r.id
+        WHERE ur.id_event = ? AND ur.active IS TRUE
+        `, eid); */

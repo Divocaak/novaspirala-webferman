@@ -44,7 +44,7 @@
 				on:change={() => toggleOption(option)}
 				disabled={readonly}
 			/>
-			{option.label}</label
+			{option.booked}: {option.label}</label
 		>
 	{/each}
 </div>
@@ -71,7 +71,7 @@
 
 	.option[aria-selected='true'] {
 		background-color: #def;
-        color: #013;
+		color: #013;
 	}
 
 	input[disabled] {
