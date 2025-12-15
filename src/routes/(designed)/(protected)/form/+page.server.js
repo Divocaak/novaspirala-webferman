@@ -20,9 +20,7 @@ export const load = async ({ url, fetch }) => {
 
   const eid = url.searchParams.get('id');
 
-  /* TODO api ednpoint */
-  /* need rid and uid pairs */
-  const bookedUsersRes = await fetch(`/api/users/booking/getAll?eid=${eid}`);
+  const bookedUsersRes = await fetch(`/api/userBooking/getAll?eid=${eid}`);
   const bookedUsers = await bookedUsersRes.json()
 
   const roles = await Promise.all(
@@ -36,7 +34,7 @@ export const load = async ({ url, fetch }) => {
           id: user.id,
           label: `${user.l_name} ${user.f_name} (${user.login})`,
           booked: bookedUsers.some(
-            b => b.roleid === role.id && b.userid === user.id
+            b => b.rid === role.id && b.uid === user.id
           )
         }))
       };
@@ -55,11 +53,3 @@ export const load = async ({ url, fetch }) => {
     roles
   };
 };
-
-/* const [assignedRoles] = await pool.query(`
-        SELECT ur.id_user AS uid, ur.id_role AS rid
-        FROM user_event ur
-        INNER JOIN user u ON ur.id_user = u.id
-        INNER JOIN role r ON ur.id_role = r.id
-        WHERE ur.id_event = ? AND ur.active IS TRUE
-        `, eid); */
