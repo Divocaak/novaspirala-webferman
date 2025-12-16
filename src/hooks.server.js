@@ -12,7 +12,6 @@ export async function handle({ event, resolve }) {
 
     const pathname = event.route?.id ?? event.url.pathname;
 
-    console.log(pathname);
     if (pathname == "/") throw redirect(302, !event.locals.user ? '/login' : "/home");
 
     if (pathname.startsWith('/(designed)/(protected)')) {

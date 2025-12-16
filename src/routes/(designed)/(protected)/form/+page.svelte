@@ -7,18 +7,16 @@
 	export let data = null;
 	const user = User.fromJSON(data.user);
 
+	// MySQL DATETIME → "YYYY-MM-DDTHH:mm"
 	const toDateInputValue = (dateStr) => {
 		if (!dateStr) return '';
-		const date = new Date(dateStr);
-		const timezoneOffset = date.getTimezoneOffset() * 60000;
-		const localDate = new Date(date.getTime() - timezoneOffset);
-		const iso = localDate.toISOString();
-		return iso.slice(0, 16);
+		return dateStr.replace(' ', 'T').slice(0, 16);
 	};
 
+	// "2025-08-18T14:30" → "2025-08-18 14:30:00"
 	const formatForMySQL = (dateStr) => {
 		if (!dateStr) return null;
-		return dateStr.replace('T', ' ') + ':00'; // "2025-08-18T14:30" → "2025-08-18 14:30:00"
+		return dateStr.replace('T', ' ') + ':00';
 	};
 
 	let id = data.event?.id ?? '';
