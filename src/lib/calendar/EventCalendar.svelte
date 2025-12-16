@@ -1,6 +1,6 @@
 <script>
-	import EventCell from './EventCell.svelte';
-	import EventModal from './EventModal.svelte';
+	import EventCell from '$lib/calendar/EventCell.svelte';
+	import EventModal from '$lib/modal/EventModal.svelte';
 
 	export let events = null;
 	export let roles = null;

@@ -1,14 +1,14 @@
 <script>
-	import Tooltip from '$lib/Tooltip.svelte';
+	import Tooltip from '$lib/tooltip/Tooltip.svelte';
 	import Pill from '$lib/Pill.svelte';
-	import TooltipUser from '$lib/TooltipUser.svelte';
-	import TooltipVenue from '$lib/TooltipVenue.svelte';
-	import TooltipGenre from '$lib/TooltipGenre.svelte';
-	import LocalisedDateRange from '$lib/LocalisedDateRange.svelte';
-	import EventDeleteButton from './EventDeleteButton.svelte';
-	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
-	import EventEditButton from './EventEditButton.svelte';
-	import EventBookButton from './EventBookButton.svelte';
+	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
+	import TooltipVenue from '$lib/tooltip/TooltipVenue.svelte';
+	import TooltipGenre from '$lib/tooltip/TooltipGenre.svelte';
+	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
+	import EventDeleteButton from '$lib/buttons/EventDeleteButton.svelte';
+	import ExportToExcelButton from '$lib/buttons/ExportToExcelButton.svelte';
+	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
+	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
 
 	export let events;
 	export let roles;

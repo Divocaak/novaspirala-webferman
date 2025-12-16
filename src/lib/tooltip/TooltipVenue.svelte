@@ -1,6 +1,6 @@
 <script>
-	import Pill from './Pill.svelte';
-	import Tooltip from './Tooltip.svelte';
+	import Pill from '$lib/Pill.svelte';
+	import Tooltip from '$lib/tooltip/Tooltip.svelte';
 
 	export let bgClr;
 	export let txtClr;

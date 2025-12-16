@@ -1,8 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
-	import { User } from './classes/user';
-	import Modal from './Modal.svelte';
-	import Pill from './Pill.svelte';
+	import { User } from '$lib/classes/user';
+	import Modal from '$lib/modal/Modal.svelte';
+	import Pill from '$lib/Pill.svelte';
 
 	export let selectedEvent;
 	export let closeModalFunction;

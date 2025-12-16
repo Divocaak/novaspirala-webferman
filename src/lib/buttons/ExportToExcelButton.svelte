@@ -1,7 +1,7 @@
 <script>
 	import * as XLSX from 'xlsx';
-	import LocalisedDateRange from './LocalisedDateRange.svelte';
-	import { getLocalisedDate } from './localisedDateRangeText';
+	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
+	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 
 	export let events;
 	export let roles;

@@ -1,5 +1,5 @@
 <script>
-	import Pill from './Pill.svelte';
+	import Pill from '$lib/Pill.svelte';
 	export let event;
 	export let roles;
 

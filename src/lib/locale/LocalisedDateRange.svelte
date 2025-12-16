@@ -1,5 +1,5 @@
 <script>
-	import { getLocalisedDate } from './localisedDateRangeText';
+	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 
 	export let from;
 	export let to;

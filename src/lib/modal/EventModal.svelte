@@ -1,16 +1,16 @@
 <script>
 	import Pill from '$lib/Pill.svelte';
-	import EventBookButton from './EventBookButton.svelte';
-	import EventDeleteButton from './EventDeleteButton.svelte';
-	import EventEditButton from './EventEditButton.svelte';
-	import ExportToCalendarsButton from './ExportToCalendarsButton.svelte';
-	import LocalisedDateRange from './LocalisedDateRange.svelte';
-	import { getLocalisedDate } from './localisedDateRangeText';
-	import Modal from './Modal.svelte';
-	import Tooltip from './Tooltip.svelte';
-	import TooltipGenre from './TooltipGenre.svelte';
-	import TooltipUser from './TooltipUser.svelte';
-	import TooltipVenue from './TooltipVenue.svelte';
+	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
+	import EventDeleteButton from '$lib/buttons/EventDeleteButton.svelte';
+	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
+	import ExportToCalendarsButton from '$lib/buttons/ExportToCalendarsButton.svelte';
+	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
+	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
+	import Modal from '$lib/modal/Modal.svelte';
+	import Tooltip from '$lib/tooltip/Tooltip.svelte';
+	import TooltipGenre from '$lib/tooltip/TooltipGenre.svelte';
+	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
+	import TooltipVenue from '$lib/tooltip/TooltipVenue.svelte';
 
 	export let selectedData = null;
 	export let closeModalFunction;

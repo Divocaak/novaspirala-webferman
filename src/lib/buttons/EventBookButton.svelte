@@ -1,5 +1,5 @@
 <script>
-	import { User } from './classes/user';
+	import { User } from '$lib/classes/user';
 
 	export let user;
 	export let pastBookable;

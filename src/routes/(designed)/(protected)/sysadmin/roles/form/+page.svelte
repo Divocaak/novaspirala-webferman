@@ -1,5 +1,5 @@
 <script>
-	import AdminForm from '$lib/AdminForm.svelte';
+	import AdminForm from '$lib/form/AdminForm.svelte';
 	export let data = null;
 </script>
 

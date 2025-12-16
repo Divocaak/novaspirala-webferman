@@ -1,8 +1,8 @@
 <script>
-	import StyledMultiSelect from '$lib/StyledMultiSelect.svelte';
-	import StyledSelect from '$lib/StyledSelect.svelte';
+	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
+	import StyledSelect from '$lib/form/StyledSelect.svelte';
 	import { User } from '$lib/classes/user.js';
-	import { findInSelect } from '$lib/findInSelect.js';
+	import { findInSelect } from '$lib/form/findInSelect.js';
 
 	export let data = null;
 	const user = User.fromJSON(data.user);

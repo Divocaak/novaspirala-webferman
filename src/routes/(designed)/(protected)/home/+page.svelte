@@ -1,12 +1,12 @@
 <script>
-	import { User } from '$lib/classes/user';
-	import EventCalendar from '$lib/EventCalendar.svelte';
-	import EventTable from '$lib/EventTable.svelte';
-	import { findInSelect } from '$lib/findInSelect.js';
-	import StyledSelect from '$lib/StyledSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import BookingModal from '$lib/BookingModal.svelte';
+	import { User } from '$lib/classes/user';
+	import EventCalendar from '$lib/calendar/EventCalendar.svelte';
+	import EventTable from '$lib/EventTable.svelte';
+	import { findInSelect } from '$lib/form/findInSelect.js';
+	import StyledSelect from '$lib/form/StyledSelect.svelte';
+	import BookingModal from '$lib/modal/BookingModal.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
