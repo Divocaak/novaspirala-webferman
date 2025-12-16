@@ -18,6 +18,11 @@ export const load = async ({ url, fetch }) => {
     label: `${user.l_name} ${user.f_name} (${user.login})`
   }));
 
+  const eid = url.searchParams.get('id');
+
+  const bookedUsersRes = await fetch(`/api/userBooking/getAll?eid=${eid}`);
+  const bookedUsers = await bookedUsersRes.json()
+
   const roles = await Promise.all(
     rolesData.map(async role => {
       const res = await fetch(`/api/users/getAllWithRole?rid=${role.id}`);
@@ -27,15 +32,17 @@ export const load = async ({ url, fetch }) => {
         role,
         users: users.map(user => ({
           id: user.id,
-          label: `${user.l_name} ${user.f_name} (${user.login})`
+          label: `${user.l_name} ${user.f_name} (${user.login})`,
+          booked: bookedUsers.some(
+            b => b.rid === role.id && b.uid === user.id
+          )
         }))
       };
     })
   );
 
-  const id = url.searchParams.get('id');
-  const event = id
-    ? await fetch(`/api/events/get?id=${id}`).then(res => res.json())
+  const event = eid
+    ? await fetch(`/api/events/get?id=${eid}`).then(res => res.json())
     : null;
 
   return {

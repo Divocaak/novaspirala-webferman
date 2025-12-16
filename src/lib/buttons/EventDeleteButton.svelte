@@ -1,8 +1,10 @@
 <script>
-	import { User } from './classes/user';
+	import { User } from '$lib/classes/user';
 
 	export let id;
 	export let user;
+	export let pastEditable;
+
 	const userObject = User.fromJSON(user);
 
 	const deleteEvent = async (eventId) => {
@@ -21,14 +23,6 @@
 	};
 </script>
 
-{#if userObject.isAllowedToDelete(event.createdById)}
-	<button class="delete-btn" on:click={() => deleteEvent(id)}>Smazat</button>
+{#if userObject.isAllowedToDelete(event.createdById, pastEditable)}
+	<button class="custom-btn" on:click={() => deleteEvent(id)}>Smazat</button>
 {/if}
-
-<style>
-	.delete-btn {
-		all: unset;
-		cursor: pointer;
-		color: #5755d9;
-	}
-</style>

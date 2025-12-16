@@ -1,14 +1,18 @@
 <script>
-	import { User } from '$lib/classes/user';
-	import EventCalendar from '$lib/EventCalendar.svelte';
-	import EventTable from '$lib/EventTable.svelte';
-	import { findInSelect } from '$lib/findInSelect.js';
-	import StyledSelect from '$lib/StyledSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { User } from '$lib/classes/user';
+	import EventCalendar from '$lib/calendar/EventCalendar.svelte';
+	import EventTable from '$lib/EventTable.svelte';
+	import { findInSelect } from '$lib/form/findInSelect.js';
+	import StyledSelect from '$lib/form/StyledSelect.svelte';
+	import BookingModal from '$lib/modal/BookingModal.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
+
+	const now = new Date();
+	const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
 	const formatDate = (date) => date.toISOString().split('T')[0];
 
@@ -43,6 +47,19 @@
 
 		goto(`/home?${params.toString()}`);
 	}
+
+	let showBookingModal = false;
+	let selectedEvent = null;
+
+	const openBookingModal = (eventData) => {
+		selectedEvent = eventData;
+		showBookingModal = true;
+	};
+
+	const closeBookingModal = () => {
+		showBookingModal = false;
+		selectedEvent = null;
+	};
 </script>
 
 <h2>home</h2>
@@ -87,8 +104,26 @@
 	</form>
 	<button on:click={(showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
-		<EventCalendar events={data.events} roles={data.roles} {date_from} {date_to} {user} />
+		<EventCalendar
+			events={data.events}
+			roles={data.roles}
+			{date_from}
+			{date_to}
+			{user}
+			{startOfDay}
+			openBookingModalFunction={openBookingModal}
+		/>
 	{:else}
-		<EventTable events={data.events} roles={data.roles} {user} />
+		<EventTable
+			events={data.events}
+			roles={data.roles}
+			{user}
+			{startOfDay}
+			openBookingModalFunction={openBookingModal}
+		/>
+	{/if}
+
+	{#if showBookingModal}
+		<BookingModal {selectedEvent} closeModalFunction={closeBookingModal} {user} />
 	{/if}
 {/if}

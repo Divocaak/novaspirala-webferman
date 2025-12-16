@@ -1,17 +1,20 @@
 <script>
-	import Tooltip from '$lib/Tooltip.svelte';
+	import Tooltip from '$lib/tooltip/Tooltip.svelte';
 	import Pill from '$lib/Pill.svelte';
-	import TooltipUser from '$lib/TooltipUser.svelte';
-	import TooltipVenue from '$lib/TooltipVenue.svelte';
-	import TooltipGenre from '$lib/TooltipGenre.svelte';
-	import LocalisedDateRange from '$lib/LocalisedDateRange.svelte';
-	import EventDeleteButton from './EventDeleteButton.svelte';
-	import ExportToExcelButton from '$lib/ExportToExcelButton.svelte';
-	import EventEditButton from './EventEditButton.svelte';
+	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
+	import TooltipVenue from '$lib/tooltip/TooltipVenue.svelte';
+	import TooltipGenre from '$lib/tooltip/TooltipGenre.svelte';
+	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
+	import EventDeleteButton from '$lib/buttons/EventDeleteButton.svelte';
+	import ExportToExcelButton from '$lib/buttons/ExportToExcelButton.svelte';
+	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
+	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
 
 	export let events;
 	export let roles;
 	export let user;
+	export let startOfDay;
+	export let openBookingModalFunction;
 
 	let eventsAsc = true;
 	$: sortedEvents = [...events].sort(
@@ -44,6 +47,7 @@
 					</Tooltip>
 				</th>
 			{/each}
+			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 		</tr>
@@ -108,8 +112,20 @@
 						{/each}
 					</td>
 				{/each}
-				<td><EventEditButton id={event.id} {user} /></td>
-				<td><EventDeleteButton id={event.id} {user} /></td>
+				<td>
+					<EventEditButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+				</td>
+				<td>
+					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+				</td>
+				<td>
+					<EventBookButton
+						id={event.id}
+						{user}
+						pastBookable={event.date_from_ts >= startOfDay}
+						openModalFunction={() => openBookingModalFunction(event)}
+					/>
+				</td>
 			</tr>
 		{/each}
 	</tbody>

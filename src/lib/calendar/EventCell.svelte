@@ -1,5 +1,5 @@
 <script>
-	import Pill from './Pill.svelte';
+	import Pill from '$lib/Pill.svelte';
 	export let event;
 	export let roles;
 
@@ -62,6 +62,8 @@
 		transition: all 0.35s ease-in-out;
 
 		cursor: pointer;
+
+		padding-top: 1.5rem;
 	}
 
 	button svg {

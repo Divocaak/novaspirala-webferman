@@ -35,7 +35,7 @@
 </b>
 <div class="multi-select-checkbox" aria-multiselectable="true" role="listbox">
 	{#each options as option (option.id)}
-		<label class="option" for={id} aria-selected={isSelected(option)}>
+		<label class="option" for={id} aria-selected={isSelected(option)} class:booked={option.booked}>
 			<input
 				type="checkbox"
 				name={id}
@@ -71,10 +71,15 @@
 
 	.option[aria-selected='true'] {
 		background-color: #def;
-        color: #013;
+		color: #013;
 	}
 
 	input[disabled] {
 		cursor: not-allowed;
+	}
+
+	.booked{
+		background-color: #80EF80;
+		border-radius: 0.5rem;
 	}
 </style>

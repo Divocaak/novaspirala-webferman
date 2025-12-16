@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import { pool } from "$lib/db/mysql.js";
 import { validatePassword } from '$lib/auth';
 import { json } from '@sveltejs/kit';
@@ -50,7 +51,8 @@ export async function POST({ request, cookies }) {
 
     cookies.set('session', JSON.stringify(user), {
         httpOnly: true,
-        secure: true,
+        secure: !dev,
+        sameSite: "lax",
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
     });

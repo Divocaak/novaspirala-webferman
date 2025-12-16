@@ -1,24 +1,22 @@
 <script>
-	import StyledMultiSelect from '$lib/StyledMultiSelect.svelte';
-	import StyledSelect from '$lib/StyledSelect.svelte';
+	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
+	import StyledSelect from '$lib/form/StyledSelect.svelte';
 	import { User } from '$lib/classes/user.js';
-	import { findInSelect } from '$lib/findInSelect.js';
+	import { findInSelect } from '$lib/form/findInSelect.js';
 
 	export let data = null;
 	const user = User.fromJSON(data.user);
 
+	// MySQL DATETIME → "YYYY-MM-DDTHH:mm"
 	const toDateInputValue = (dateStr) => {
 		if (!dateStr) return '';
-		const date = new Date(dateStr);
-		const timezoneOffset = date.getTimezoneOffset() * 60000;
-		const localDate = new Date(date.getTime() - timezoneOffset);
-		const iso = localDate.toISOString();
-		return iso.slice(0, 16);
+		return dateStr.replace(' ', 'T').slice(0, 16);
 	};
 
+	// "2025-08-18T14:30" → "2025-08-18 14:30:00"
 	const formatForMySQL = (dateStr) => {
 		if (!dateStr) return null;
-		return dateStr.replace('T', ' ') + ':00'; // "2025-08-18T14:30" → "2025-08-18 14:30:00"
+		return dateStr.replace('T', ' ') + ':00';
 	};
 
 	let id = data.event?.id ?? '';
@@ -34,6 +32,25 @@
 	let background_color = data.event?.background_color ?? '#000000';
 
 	const isAllowedToEditFull = !user.isAllowedToEditFull(id_created_by.id);
+	const isAllowedToEditDescription = !user.isAllowedToEditDescription(id_created_by.id);
+
+	// ----- MULTIPLE DATES -----
+	let dateRanges = data.event
+		? [
+				{
+					uid: crypto.randomUUID(),
+					from: toDateInputValue(data.event.date_from),
+					to: toDateInputValue(data.event.date_to)
+				}
+			]
+		: [{ uid: crypto.randomUUID(), from: '', to: '' }];
+	const addDateRange = () => {
+		dateRanges = [...dateRanges, { uid: crypto.randomUUID(), from: '', to: '' }];
+	};
+
+	const removeDateRange = (uid) => {
+		dateRanges = dateRanges.filter((d) => d.uid !== uid);
+	};
 
 	let selectedUsersByRole = {};
 	for (const role of data.roles) {
@@ -49,7 +66,7 @@
 
 	let error = '';
 	let success = '';
-	const apiPath = data.event ? '/api/events/update' : '/api/events/add';
+	let apiPath = data.event ? '/api/events/update' : '/api/events/add';
 	async function handleSubmit(event) {
 		event.preventDefault();
 
@@ -70,8 +87,10 @@
 			id_genre: id_genre.id,
 			id_order,
 			label,
-			date_from: formatForMySQL(date_from),
-			date_to: formatForMySQL(date_to),
+			date_ranges: dateRanges.map((d) => ({
+				date_from: formatForMySQL(d.from),
+				date_to: formatForMySQL(d.to)
+			})),
 			description,
 			text_color,
 			background_color,
@@ -92,8 +111,7 @@
 				id_genre = null;
 				id_order = '';
 				label = '';
-				date_from = '';
-				date_to = '';
+				dateRanges = [{ from: '', to: '' }];
 				description = '';
 				text_color = '#ffffff';
 				background_color = '#000000';
@@ -106,6 +124,24 @@
 			error = data.message;
 			alert('error');
 		}
+	}
+
+	async function copyEvent(event) {
+		id = '';
+
+		// Duplicate date ranges (to avoid mutating original)
+		dateRanges = dateRanges.map((d) => ({
+			uid: crypto.randomUUID(),
+			from: d.from,
+			to: d.to
+		}));
+
+		success = '';
+		error = '';
+
+		apiPath = '/api/events/add';
+
+		await handleSubmit(event);
 	}
 </script>
 
@@ -161,23 +197,53 @@
 		readonly={isAllowedToEditFull}
 	/><br />
 
-	<label for="date_from">* Od</label>
-	<input
-		id="date_from"
-		type="datetime-local"
-		bind:value={date_from}
-		required
-		readonly={isAllowedToEditFull}
-	/><br />
+	{#if !data.event}
+		{#each dateRanges as range (range.uid)}
+			<div>
+				<label for="date_from_{range.uid}">* Od</label>
+				<input
+					id="date_from_{range.uid}"
+					type="datetime-local"
+					bind:value={range.from}
+					required
+					readonly={isAllowedToEditFull}
+				/>
 
-	<label for="date_to">* Do</label>
-	<input
-		id="date_to"
-		type="datetime-local"
-		bind:value={date_to}
-		required
-		readonly={isAllowedToEditFull}
-	/><br />
+				<label for="date_to_{range.uid}">* Do</label>
+				<input
+					id="date_to_{range.uid}"
+					type="datetime-local"
+					bind:value={range.to}
+					required
+					readonly={isAllowedToEditFull}
+				/>
+
+				{#if dateRanges.length > 1}
+					<button type="button" on:click={() => removeDateRange(range.uid)}>Odstranit termín</button
+					>
+				{/if}
+			</div>
+		{/each}
+		<button type="button" on:click={addDateRange}>Přidat další termín</button><br /><br />
+	{:else}
+		<label for="date_from">* Od</label>
+		<input
+			id="date_from"
+			type="datetime-local"
+			bind:value={dateRanges[0].from}
+			required
+			readonly={isAllowedToEditFull}
+		/>
+
+		<label for="date_to">* Do</label>
+		<input
+			id="date_to"
+			type="datetime-local"
+			bind:value={dateRanges[0].to}
+			required
+			readonly={isAllowedToEditFull}
+		/><br />
+	{/if}
 
 	<label for="description">Popis</label><br />
 	<textarea
@@ -186,7 +252,7 @@
 		cols="50"
 		bind:value={description}
 		maxlength="256"
-		readonly={isAllowedToEditFull}
+		readonly={isAllowedToEditDescription}
 	></textarea>
 	<br />
 
@@ -236,22 +302,7 @@
 	{/if}
 
 	<button type="submit">Uložit</button><br />
+	{#if data.event}
+		<button type="button" on:click={copyEvent}>Kopírovat událost</button>
+	{/if}
 </form>
-
-<style>
-	input {
-		margin: 10px 0;
-	}
-
-	input:last-of-type {
-		margin-bottom: 20px;
-	}
-
-	input:read-only,
-	textarea:read-only,
-	input:disabled {
-		background-color: rgb(240, 240, 240);
-		color: rgb(118, 118, 118);
-		border: none;
-	}
-</style>
