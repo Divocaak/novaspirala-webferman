@@ -14,11 +14,15 @@
 	let uid = userData.id;
 
 	let selectedRoles = {};
+	let initialRoles = {};
 	onMount(async () => {
 		const res = await fetch(`/api/userBooking/get?eid=${eid}&uid=${uid}`);
-		let selectedRolesData = await res.json();
+		const selectedRolesData = await res.json();
+
 		const roleIds = selectedRolesData.map((r) => r.rid);
-		selectedRoles = Object.fromEntries(roleIds.map((rid) => [rid, true]));
+
+		initialRoles = Object.fromEntries(roleIds.map((rid) => [rid, true]));
+		selectedRoles = { ...initialRoles };
 	});
 
 	let error = '';
@@ -30,12 +34,18 @@
 		const response = await fetch('/api/userBooking/add', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ id, uid, selectedRoles })
+			body: JSON.stringify({ eid, uid, selectedRoles })
 		});
 
 		if (response.ok) {
 			success = 'Uloženo';
 			error = '';
+
+			initialRoles = {
+				...initialRoles,
+				...Object.fromEntries(Object.entries(selectedRoles).filter(([_, checked]) => checked))
+			};
+
 			alert(`Úspěšně zabookováno`);
 		} else {
 			const data = await response.json();
@@ -51,7 +61,7 @@
 	</h1>
 
 	<form on:submit={handleSubmit}>
-		<label for="eid">ID (readonly)</label>
+		<label for="eid">EID (readonly)</label>
 		<input id="eid" type="number" bind:value={eid} readonly /><br />
 
 		<label for="uid">UID (readonly)</label>
@@ -63,7 +73,7 @@
 					type="checkbox"
 					name={role.id}
 					bind:checked={selectedRoles[role.id]}
-					disabled={selectedRoles[role.id]}
+					disabled={initialRoles[role.id]}
 				/>{role.label}
 			</label><br />
 		{/each}
