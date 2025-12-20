@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 export async function POST({ request }) {
     let connection;
     try {
-        const { id, uid, selectedRoles } = await request.json();
+        const { eid, uid, selectedRoles } = await request.json();
         if (selectedRoles.length < 1) return;
 
         connection = await pool.getConnection();
@@ -17,7 +17,7 @@ export async function POST({ request }) {
             .join(', ');
         const values = entries.flatMap(
             ([roleKey, roleValue]) =>
-                roleValue === true ? [uid, Number(roleKey), id, roleValue] : []
+                roleValue === true ? [uid, Number(roleKey), eid, roleValue] : []
         );
 
         const sql = `

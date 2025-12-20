@@ -1,308 +1,196 @@
 <script>
-	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
-	import StyledSelect from '$lib/form/StyledSelect.svelte';
 	import { User } from '$lib/classes/user.js';
 	import { findInSelect } from '$lib/form/findInSelect.js';
+	import { createEmptyRange, formatForMySQL, toDateInputValue } from '$lib/form/dates.js';
+
+	import DateRanges from '$lib/form/DateRanges.svelte';
+	import EventMetaForm from '$lib/form/EventMetaForm.svelte';
+	import RolesAssignment from '$lib/form/RolesAssignment.svelte';
 
 	export let data = null;
 	const user = User.fromJSON(data.user);
 
-	// MySQL DATETIME → "YYYY-MM-DDTHH:mm"
-	const toDateInputValue = (dateStr) => {
-		if (!dateStr) return '';
-		return dateStr.replace(' ', 'T').slice(0, 16);
-	};
+	/* ---------- init ---------- */
+	function initForm(event, user) {
+		return {
+			id: event?.id ?? '',
+			id_created_by: findInSelect(data.usersAllowedToWrite, event?.id_created_by ?? user.id),
+			id_venue: findInSelect(data.venues, event?.id_venue ?? null),
+			id_genre: findInSelect(data.genres, event?.id_genre ?? null),
+			id_order: event?.id_order ?? '',
+			label: event?.label ?? '',
+			description: event?.description ?? '',
+			text_color: event?.text_color ?? '#ffffff',
+			background_color: event?.background_color ?? '#000000'
+		};
+	}
 
-	// "2025-08-18T14:30" → "2025-08-18 14:30:00"
-	const formatForMySQL = (dateStr) => {
-		if (!dateStr) return null;
-		return dateStr.replace('T', ' ') + ':00';
-	};
+	function initDateRanges(event) {
+		if (!event) return [createEmptyRange()];
+		return [
+			{
+				uid: crypto.randomUUID(),
+				from: toDateInputValue(event.date_from),
+				to: toDateInputValue(event.date_to)
+			}
+		];
+	}
 
-	let id = data.event?.id ?? '';
-	let id_created_by = findInSelect(data.usersAllowedToWrite, data.event?.id_created_by ?? user.id);
-	let id_venue = findInSelect(data.venues, data.event?.id_venue ?? null);
-	let id_genre = findInSelect(data.genres, data.event?.id_genre ?? null);
-	let id_order = data.event?.id_order ?? '';
-	let label = data.event?.label ?? '';
-	let date_from = toDateInputValue(data.event?.date_from);
-	let date_to = toDateInputValue(data.event?.date_to);
-	let description = data.event?.description ?? '';
-	let text_color = data.event?.text_color ?? '#ffffff';
-	let background_color = data.event?.background_color ?? '#000000';
+	let form = initForm(data.event, user);
+	let dateRanges = initDateRanges(data.event);
 
-	const isAllowedToEditFull = !user.isAllowedToEditFull(id_created_by.id);
-	const isAllowedToEditDescription = !user.isAllowedToEditDescription(id_created_by.id);
+	/* ---------- permissions ---------- */
+	$: isAllowedToEditFull = !user.isAllowedToEditFull(form.id_created_by.id);
+	$: isAllowedToEditDescription = !user.isAllowedToEditDescription(form.id_created_by.id);
 
-	// ----- MULTIPLE DATES -----
-	let dateRanges = data.event
-		? [
-				{
-					uid: crypto.randomUUID(),
-					from: toDateInputValue(data.event.date_from),
-					to: toDateInputValue(data.event.date_to)
-				}
-			]
-		: [{ uid: crypto.randomUUID(), from: '', to: '' }];
-	const addDateRange = () => {
-		dateRanges = [...dateRanges, { uid: crypto.randomUUID(), from: '', to: '' }];
-	};
-
-	const removeDateRange = (uid) => {
-		dateRanges = dateRanges.filter((d) => d.uid !== uid);
-	};
-
+	/* ---------- roles ---------- */
 	let selectedUsersByRole = {};
 	for (const role of data.roles) {
-		if (!data.event) break;
+		if (!data.event) {
+			selectedUsersByRole[role.role.id] = [];
+			continue;
+		}
 
 		const assigned =
-			data.event?.assignedRoles
+			data.event.assignedRoles
 				?.filter((r) => r.rid === role.role.id)
 				.map((r) => role.users.find((u) => u.id === r.uid))
-				.filter(Boolean) || [];
+				.filter(Boolean) ?? [];
+
 		selectedUsersByRole[role.role.id] = assigned;
 	}
 
+	function buildRolesPayload(map) {
+		return Object.entries(map).flatMap(
+			([rid, users]) => users?.map((u) => ({ rid: Number(rid), uid: u.id })) ?? []
+		);
+	}
+
+	/* ---------- payload ---------- */
+	function buildPayload(form, dateRanges, roles) {
+		return {
+			...form,
+			id_created_by: form.id_created_by.id,
+			id_venue: form.id_venue.id,
+			id_genre: form.id_genre.id,
+			date_ranges: dateRanges.map((r) => ({
+				date_from: formatForMySQL(r.from),
+				date_to: formatForMySQL(r.to)
+			})),
+			roles: buildRolesPayload(roles)
+		};
+	}
+
+	/* ---------- submit ---------- */
+	let apiPath = data.event ? '/api/events/update' : '/api/events/add';
 	let error = '';
 	let success = '';
-	let apiPath = data.event ? '/api/events/update' : '/api/events/add';
-	async function handleSubmit(event) {
-		event.preventDefault();
-
-		if (new Date(date_to) < new Date(date_from)) {
-			alert('Hodnota Od musí být dřív než hodnota Do');
-			return;
-		}
-
-		const rolesToRet = [];
-		for (const [roleId, selectedUsers] of Object.entries(selectedUsersByRole))
-			if (selectedUsers && selectedUsers.length)
-				for (const user of selectedUsers) rolesToRet.push({ rid: Number(roleId), uid: user.id });
-
-		const toSend = {
-			id,
-			id_created_by: id_created_by.id,
-			id_venue: id_venue.id,
-			id_genre: id_genre.id,
-			id_order,
-			label,
-			date_ranges: dateRanges.map((d) => ({
-				date_from: formatForMySQL(d.from),
-				date_to: formatForMySQL(d.to)
-			})),
-			description,
-			text_color,
-			background_color,
-			roles: rolesToRet
-		};
-
-		const response = await fetch(apiPath, {
+	async function submit(payload) {
+		const res = await fetch(apiPath, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(toSend)
+			body: JSON.stringify(payload)
 		});
 
-		if (response.ok) {
-			success = 'Uloženo';
-
-			if (!data.event) {
-				id_venue = null;
-				id_genre = null;
-				id_order = '';
-				label = '';
-				dateRanges = [{ from: '', to: '' }];
-				description = '';
-				text_color = '#ffffff';
-				background_color = '#000000';
-			}
-
-			error = '';
-			alert(`Event úspěšně ${data.event ? 'upraven' : 'vytvořen'}`);
-		} else {
-			const data = await response.json();
-			error = data.message;
-			alert('error');
+		if (!res.ok) {
+			const { message } = await res.json();
+			throw new Error(message);
 		}
 	}
 
-	async function copyEvent(event) {
-		id = '';
+	async function handleSubmit(e, mode = 'save') {
+		e.preventDefault();
 
-		// Duplicate date ranges (to avoid mutating original)
-		dateRanges = dateRanges.map((d) => ({
-			uid: crypto.randomUUID(),
-			from: d.from,
-			to: d.to
-		}));
+		for (const r of dateRanges) {
+			if (r.from && r.to && new Date(r.to) < new Date(r.from)) {
+				alert('Od musí být dříve než Do');
+				return;
+			}
+		}
 
-		success = '';
-		error = '';
+		try {
+			await submit(buildPayload(form, dateRanges, selectedUsersByRole));
 
+			let message;
+			if (mode === 'copy') message = 'kopírován';
+			else if (data.event) message = 'upraven';
+			else message = 'vytvořen';
+
+			alert(`Event ${message}`);
+
+			success = 'Uloženo';
+			error = '';
+		} catch (err) {
+			error = err.message;
+			success = '';
+		}
+	}
+
+	/* ---------- copy ---------- */
+	async function copyEvent(e) {
+		const oldApiPath = apiPath;
 		apiPath = '/api/events/add';
 
-		await handleSubmit(event);
+		form = { ...form, id: '' };
+		dateRanges = dateRanges.map((r) => ({
+			...r,
+			uid: crypto.randomUUID()
+		}));
+
+		try {
+			await handleSubmit(e, 'copy');
+		} finally {
+			apiPath = oldApiPath;
+		}
 	}
 </script>
 
 <a href="/">zpět</a><br />
 
 <form on:submit={handleSubmit}>
-	<label for="id">ID (readonly)</label>
-	<input id="id" type="number" bind:value={id} readonly /><br />
+	<label>
+		ID (readonly)
+		<input type="number" bind:value={form.id} readonly />
+	</label><br />
 
-	<StyledSelect
-		label="Vytvořil (readonly)"
-		id="id_created_by"
-		bind:value={id_created_by}
-		required={true}
-		options={data.usersAllowedToWrite}
-		readonly={true}
+	<EventMetaForm
+		bind:form
+		readonlyFull={isAllowedToEditFull}
+		readonlyDescription={isAllowedToEditDescription}
+		usersAllowedToWrite={data.usersAllowedToWrite}
+		venues={data.venues}
+		genres={data.genres}
 	/>
 
-	<StyledSelect
-		label="Prostor"
-		id="id_venue"
-		bind:value={id_venue}
-		required={true}
-		options={data.venues}
-		readonly={isAllowedToEditFull}
+	<DateRanges bind:ranges={dateRanges} readonly={isAllowedToEditFull} single={!!data.event} /><br />
+
+	<label>
+		* Barva textu
+		<input type="color" bind:value={form.text_color} disabled={isAllowedToEditFull} />
+	</label><br />
+
+	<label>
+		* Barva pozadí
+		<input type="color" bind:value={form.background_color} disabled={isAllowedToEditFull} />
+	</label><br />
+
+	<RolesAssignment
+		roles={data.roles}
+		bind:value={selectedUsersByRole}
+		createdById={form.id_created_by.id}
+		{user}
 	/>
-
-	<StyledSelect
-		label="Žánr/typ"
-		id="id_genre"
-		bind:value={id_genre}
-		required={true}
-		options={data.genres}
-		readonly={isAllowedToEditFull}
-	/>
-
-	<label for="id_order">ID Objednávky</label>
-	<input
-		id="id_order"
-		type="text"
-		bind:value={id_order}
-		maxlength="16"
-		readonly={isAllowedToEditFull}
-	/><br />
-
-	<label for="label">* Název</label>
-	<input
-		id="label"
-		type="text"
-		bind:value={label}
-		required
-		maxlength="32"
-		readonly={isAllowedToEditFull}
-	/><br />
-
-	{#if !data.event}
-		{#each dateRanges as range (range.uid)}
-			<div>
-				<label for="date_from_{range.uid}">* Od</label>
-				<input
-					id="date_from_{range.uid}"
-					type="datetime-local"
-					bind:value={range.from}
-					required
-					readonly={isAllowedToEditFull}
-				/>
-
-				<label for="date_to_{range.uid}">* Do</label>
-				<input
-					id="date_to_{range.uid}"
-					type="datetime-local"
-					bind:value={range.to}
-					required
-					readonly={isAllowedToEditFull}
-				/>
-
-				{#if dateRanges.length > 1}
-					<button type="button" on:click={() => removeDateRange(range.uid)}>Odstranit termín</button
-					>
-				{/if}
-			</div>
-		{/each}
-		<button type="button" on:click={addDateRange}>Přidat další termín</button><br /><br />
-	{:else}
-		<label for="date_from">* Od</label>
-		<input
-			id="date_from"
-			type="datetime-local"
-			bind:value={dateRanges[0].from}
-			required
-			readonly={isAllowedToEditFull}
-		/>
-
-		<label for="date_to">* Do</label>
-		<input
-			id="date_to"
-			type="datetime-local"
-			bind:value={dateRanges[0].to}
-			required
-			readonly={isAllowedToEditFull}
-		/><br />
-	{/if}
-
-	<label for="description">Popis</label><br />
-	<textarea
-		id="description"
-		rows="10"
-		cols="50"
-		bind:value={description}
-		maxlength="256"
-		readonly={isAllowedToEditDescription}
-	></textarea>
-	<br />
-
-	<label for="text_color">* Barva textu</label>
-	<input
-		id="text_color"
-		type="color"
-		bind:value={text_color}
-		required
-		disabled={isAllowedToEditFull}
-	/><br />
-
-	<label for="background_color">* Barva pozadí</label>
-	<input
-		id="background_color"
-		type="color"
-		bind:value={background_color}
-		required
-		disabled={isAllowedToEditFull}
-	/><br />
-
-	{#each data.roles as role, i}
-		<div style="background-color: {role.role.bgClr}; color: {role.role.txtClr}">
-			{#if role.users.length < 1}
-				<p>Počet uživatelů s rolí "<b>{role.role.label}</b>" je 0</p>
-			{:else}
-				<StyledMultiSelect
-					label={role.role.label}
-					id="id_role_{role.role.id}"
-					bind:value={selectedUsersByRole[role.role.id]}
-					options={role.users}
-					readonly={!user.isRolesManager(id_created_by.id, role.role.id)}
-				/>
-			{/if}
-			<p>{role.role.note}</p>
-		</div>
-	{/each}
 
 	{#if error}
-		<p style="color: red;">{error}</p>
-		<br />
+		<p style="color:red">{error}</p>
 	{/if}
 
 	{#if success}
-		<p style="color: green;">{success}</p>
-		<br />
+		<p style="color:green">{success}</p>
 	{/if}
 
-	<button type="submit">Uložit</button><br />
-	{#if data.event}
-		<button type="button" on:click={copyEvent}>Kopírovat událost</button>
-	{/if}
+	<button type="submit">Uložit</button>
 </form>
+{#if data.event}
+	<button type="button" on:click={copyEvent}> Kopírovat událost </button>
+{/if}
