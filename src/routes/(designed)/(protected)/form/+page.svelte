@@ -73,6 +73,7 @@
 			id_created_by: form.id_created_by.id,
 			id_venue: form.id_venue.id,
 			id_genre: form.id_genre.id,
+			id_order: form.id_order,
 			date_ranges: dateRanges.map((r) => ({
 				date_from: formatForMySQL(r.from),
 				date_to: formatForMySQL(r.to)
@@ -151,6 +152,11 @@
 	<label>
 		ID (readonly)
 		<input type="number" bind:value={form.id} readonly />
+	</label><br />
+
+	<label>
+		ID Objednávky
+		<input type="text" bind:value={form.id_order} maxlength="16" />
 	</label><br />
 
 	<EventMetaForm
