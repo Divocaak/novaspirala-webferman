@@ -67,8 +67,10 @@
 				<td class="cell-max">
 					<LocalisedDateRange from={event.date_from} to={event.date_to} wrap={true} />
 				</td>
-				<td style="white-space: pre-line;">
-					{event.description}
+				<td class="desc-cell">
+					<div class="desc">
+						{event.description}
+					</div>
 				</td>
 				<td>
 					<TooltipUser
@@ -132,7 +134,30 @@
 </table>
 
 <style>
+	table {
+		table-layout: fixed;
+		width: 100%;
+	}
+
 	.cell-max {
 		text-wrap: nowrap;
+	}
+
+	.desc-cell {
+		width: 350px;
+		max-width: 350px;
+		padding: 0;
+	}
+
+	.desc-cell .desc {
+		width: 350px;
+		max-height: 200px;
+		padding: 8px;
+		
+		overflow-y: auto;
+		overflow-x: hidden;
+		box-sizing: border-box;
+
+		white-space: pre-line;
 	}
 </style>

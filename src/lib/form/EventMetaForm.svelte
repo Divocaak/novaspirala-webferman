@@ -33,10 +33,9 @@
 <label>
 	Popis
 	<textarea
-		rows="10"
-		cols="50"
+		rows="20"
+		cols="70"
 		bind:value={form.description}
-		maxlength="256"
 		readonly={readonlyDescription}
 	>
 	</textarea>

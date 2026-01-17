@@ -16,7 +16,9 @@ export const pool = mysql.createPool({
     socketPath: DB_SOCKET || undefined, // Optional socketPath
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    dateStrings: true,
+    timezone: 'Z'
 });
 
 // Test the connection
