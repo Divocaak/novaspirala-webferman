@@ -85,7 +85,7 @@
 			/>
 		</p>
 	{/each}
-	<EventEditButton id={selectedData.event.id} {user} {pastEditable} />
+	<EventEditButton id={selectedData.event.id} {user}/>
 	<EventDeleteButton id={selectedData.event.id} {user} {pastEditable} />
 	<EventBookButton
 		id={selectedData.event.id}
