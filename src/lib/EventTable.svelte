@@ -115,7 +115,7 @@
 					</td>
 				{/each}
 				<td>
-					<EventEditButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+					<EventEditButton id={event.id} {user}/>
 				</td>
 				<td>
 					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />

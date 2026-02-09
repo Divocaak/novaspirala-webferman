@@ -40,27 +40,81 @@ export class User {
     static hasManagingRole(json) { return json.some(r => r.manager); }
     /* static */
 
+    /*
+    # FORM RULES
+    ## CREATE
+    - sysadmin
+        - access to everything
+    - CreateEvents privilege
+        - if doesnt have RolesManager, check people
+    - RolesManager privilege
+        - can fill everything, except Roles where he doesnt have managers privilige 
+    
+    ## EDIT
+    - my event (I am the one, who created it)
+        - edit everything in HEAD
+    - sysadmin
+        - access to everything
+    - CreateEvents privilege
+        - edit only description (if not original author of event)
+    - RolesManager privilege
+        - his Roles assigned people
+        - description
+    */
+
     isSysAdmin() { return this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SYS_ADMIN); }
     // isAllowedToRead = can see events, has privilege to read
     isAllowedToRead() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_READ); }
     // isAllowedToBook = allows users to book their shifts in advance
     isAllowedToBook(pastBookable) { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_BOOKING) && pastBookable; }
-    // isAllowedToCreate = can add and edit events, has privilege to write and edit
-    isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
-    // isAllowedToEdit = created event or is sysadmin or manages at least one role
-    // used when accessing edit form
-    isAllowedToEdit(createdById, pastEditable) { return this.isAllowedToEditFull(createdById) || this.hasManagingRole && pastEditable }
-    // isAllowedToEdit = created event or is sysadmin
-    // used for determining if input field should be readonly or not
-    isAllowedToEditFull(createdById, pastEditable) { return this.isSysAdmin() || this.id == createdById && pastEditable }
-    // isAllowedToEditDescription = sysadmin, any roles manager, created this event
-    // used for all roles managers to be allowed to edit description
-    isAllowedToEditDescription(createdById) { return this.isSysAdmin() || this.hasManagingRole || this.id == createdById }
-    // isRolesManager = can user manage people for this role
-    // used for determining if input field should be readonly or not
-    isRolesManager(createdById, roleId) { return this.isAllowedToEditFull(createdById) || this.#checkForRole(roleId); }
+
     // isAllowedToDelete = created event or is sysadmin
     isAllowedToDelete(createdById, pastEditable) { return this.isSysAdmin() || this.id == createdById && pastEditable }
+
+    // isAllowedToCreate = has privilege add/edit events
+    // allows user to edit information only in the HEAD of the form (both in edit/create state)
+    // used ONLY when accessing form
+    isAllowedToCreate() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE); }
+
+    // isAllowedToEdit = created event or is sysadmin or manages at least one role
+    // used ONLY when accessing form
+    isAllowedToEdit() { return this.isAllowedToCreate() || this.hasManagingRole }
+
+    isAllowedToEditHeadField(isEditing, pastEditable, createdById) {
+        if (this.isSysAdmin()) return true;
+        
+        if (isEditing) {
+            if (pastEditable) return false;
+
+            // original author can edit whole head
+            return (this.id == createdById);
+        }
+
+        // CREATE state
+        return this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE);
+    }
+
+    isAllowedToEditDescriptionField(isEditing, pastEditable, createdById) {
+        if (this.isSysAdmin()) return true;
+
+        if (isEditing) {
+            if (pastEditable) return false;
+
+            // author can edit description
+            if (this.id == createdById) return true;
+
+            // RoleManager can edit description
+            return this.hasManagingRole;
+        }
+
+        // CREATE state
+        if (this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_WRITE)) return true;
+        return this.hasManagingRole;
+    }
+
+    // isRolesManager = can user manage people for this role
+    // used for determining if input field should be readonly or not
+    isRolesManager(roleId) { return this.isSysAdmin() || this.#checkForRole(roleId); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

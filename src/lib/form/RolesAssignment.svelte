@@ -3,7 +3,6 @@
 
 	export let roles = [];
 	export let value = {};
-	export let createdById;
 	export let user;
 </script>
 
@@ -18,7 +17,7 @@
 				label={role.role.label}
 				options={role.users}
 				bind:value={value[role.role.id]}
-				readonly={!user.isRolesManager(createdById, role.role.id)}
+				readonly={!user.isRolesManager(role.role.id)}
 			/>
 		{/if}
 		<p>{role.role.note}</p>

@@ -2,8 +2,8 @@
 	import StyledSelect from '$lib/form/StyledSelect.svelte';
 
 	export let form;
-	export let readonlyFull = false;
-	export let readonlyDescription = false;
+	export let readonlyHeadField = false;
+	export let readonlyDescriptionField = false;
 	export let usersAllowedToWrite = [];
 	export let venues = [];
 	export let genres = [];
@@ -16,18 +16,18 @@
 	readonly
 />
 
-<StyledSelect label="Prostor" bind:value={form.id_venue} options={venues} readonly={readonlyFull} />
+<StyledSelect label="Prostor" bind:value={form.id_venue} options={venues} readonly={readonlyHeadField} />
 
 <StyledSelect
 	label="Žánr/typ"
 	bind:value={form.id_genre}
 	options={genres}
-	readonly={readonlyFull}
+	readonly={readonlyHeadField}
 />
 
 <label>
 	* Název
-	<input type="text" bind:value={form.label} required maxlength="32" readonly={readonlyFull} />
+	<input type="text" bind:value={form.label} required maxlength="32" readonly={readonlyHeadField} />
 </label><br />
 
 <label>
@@ -36,7 +36,7 @@
 		rows="20"
 		cols="70"
 		bind:value={form.description}
-		readonly={readonlyDescription}
+		readonly={readonlyDescriptionField}
 	>
 	</textarea>
 </label><br />

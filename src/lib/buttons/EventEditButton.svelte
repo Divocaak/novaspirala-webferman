@@ -3,11 +3,10 @@
 
 	export let id;
 	export let user;
-	export let pastEditable;
 
 	const userObject = User.fromJSON(user);
 </script>
 
-{#if userObject.isAllowedToEdit(event.createdById, pastEditable)}
+{#if userObject.isAllowedToEdit()}
 	<a href="/form?id={id}">Upravit</a>
 {/if}

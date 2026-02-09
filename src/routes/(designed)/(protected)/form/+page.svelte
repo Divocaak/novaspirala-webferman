@@ -40,8 +40,18 @@
 	let dateRanges = initDateRanges(data.event);
 
 	/* ---------- permissions ---------- */
-	$: isAllowedToEditFull = !user.isAllowedToEditFull(form.id_created_by.id);
-	$: isAllowedToEditDescription = !user.isAllowedToEditDescription(form.id_created_by.id);
+	// TODO
+	const pastEditable = false; //form.id_created_by.id ? true : false;
+	$: isAllowedToEditHeadField = !user.isAllowedToEditHeadField(
+		data.event,
+		pastEditable,
+		form.id_created_by.id
+	);
+	$: isAllowedToEditDescriptionField = !user.isAllowedToEditDescriptionField(
+		data.event,
+		pastEditable,
+		form.id_created_by.id
+	);
 
 	/* ---------- roles ---------- */
 	let selectedUsersByRole = {};
@@ -149,6 +159,7 @@
 <a href="/">zpět</a><br />
 
 <form on:submit={handleSubmit}>
+	<!-- NOTE FORM HEAD -->
 	<label>
 		ID (readonly)
 		<input type="number" bind:value={form.id} readonly />
@@ -156,36 +167,43 @@
 
 	<label>
 		ID Objednávky
-		<input type="text" bind:value={form.id_order} maxlength="16" />
+		<input
+			type="text"
+			bind:value={form.id_order}
+			readonly={isAllowedToEditHeadField}
+			maxlength="16"
+		/>
 	</label><br />
 
 	<EventMetaForm
 		bind:form
-		readonlyFull={isAllowedToEditFull}
-		readonlyDescription={isAllowedToEditDescription}
+		readonlyHeadField={isAllowedToEditHeadField}
+		readonlyDescriptionField={isAllowedToEditDescriptionField}
 		usersAllowedToWrite={data.usersAllowedToWrite}
 		venues={data.venues}
 		genres={data.genres}
 	/>
 
-	<DateRanges bind:ranges={dateRanges} readonly={isAllowedToEditFull} single={!!data.event} /><br />
+	<DateRanges
+		bind:ranges={dateRanges}
+		readonly={isAllowedToEditHeadField}
+		single={!!data.event}
+	/><br />
 
 	<label>
 		* Barva textu
-		<input type="color" bind:value={form.text_color} disabled={isAllowedToEditFull} />
+		<input type="color" bind:value={form.text_color} disabled={isAllowedToEditHeadField} />
 	</label><br />
 
 	<label>
 		* Barva pozadí
-		<input type="color" bind:value={form.background_color} disabled={isAllowedToEditFull} />
+		<input type="color" bind:value={form.background_color} disabled={isAllowedToEditHeadField} />
 	</label><br />
+	<!-- END FORM HEAD -->
 
-	<RolesAssignment
-		roles={data.roles}
-		bind:value={selectedUsersByRole}
-		createdById={form.id_created_by.id}
-		{user}
-	/>
+	<!-- NOTE FORM ROLES -->
+	<RolesAssignment roles={data.roles} bind:value={selectedUsersByRole} {user} />
+	<!-- END FORM ROLES -->
 
 	{#if error}
 		<p style="color:red">{error}</p>
