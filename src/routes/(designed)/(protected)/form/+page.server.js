@@ -1,24 +1,27 @@
 export const load = async ({ url, fetch }) => {
-  const [usersAllowedRes, venuesRes, genresRes, rolesRes] = await Promise.all([
+
+  const eid = url.searchParams.get('id');
+
+  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes] = await Promise.all([
     fetch("/api/users/getAllAllowedToWrite"),
     fetch("/api/venues/getAllForForm"),
     fetch("/api/genres/getAllForForm"),
-    fetch("/api/roles/getAll")
+    fetch("/api/roles/getAll"),
+    fetch(`/api/comments/getAllInEvent?eid=${eid}`)
   ]);
 
-  const [usersAllowedData, venuesData, genresData, rolesData] = await Promise.all([
+  const [usersAllowedData, venuesData, genresData, rolesData, commentsData] = await Promise.all([
     usersAllowedRes.json(),
     venuesRes.json(),
     genresRes.json(),
-    rolesRes.json()
+    rolesRes.json(),
+    commentsRes.json()
   ]);
 
   const usersAllowedToWrite = usersAllowedData.map(user => ({
     id: user.id,
     label: `${user.l_name} ${user.f_name} (${user.login})`
   }));
-
-  const eid = url.searchParams.get('id');
 
   const bookedUsersRes = await fetch(`/api/userBooking/getAll?eid=${eid}`);
   const bookedUsers = await bookedUsersRes.json()
@@ -36,7 +39,8 @@ export const load = async ({ url, fetch }) => {
           booked: bookedUsers.some(
             b => b.rid === role.id && b.uid === user.id
           )
-        }))
+        })),
+        comments: commentsData?.[role.id] ?? []
       };
     })
   );

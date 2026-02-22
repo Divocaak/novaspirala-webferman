@@ -159,7 +159,7 @@
 <a href="/">zpět</a><br />
 
 <form on:submit={handleSubmit}>
-	<!-- NOTE FORM HEAD -->
+	<!-- FORM HEAD -->
 	<label>
 		ID (readonly)
 		<input type="number" bind:value={form.id} readonly />
@@ -201,8 +201,8 @@
 	</label><br />
 	<!-- END FORM HEAD -->
 
-	<!-- NOTE FORM ROLES -->
-	<RolesAssignment roles={data.roles} bind:value={selectedUsersByRole} {user} />
+	<!-- FORM ROLES -->
+	<RolesAssignment roles={data.roles} bind:value={selectedUsersByRole} {user} eid={data.event.id}/>
 	<!-- END FORM ROLES -->
 
 	{#if error}
