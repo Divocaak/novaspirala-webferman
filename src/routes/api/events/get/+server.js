@@ -1,7 +1,7 @@
 import { pool } from "$lib/db/mysql.js";
 
 export async function GET({ request, params, url }) {
-
+    
     const eid = url.searchParams.get("id");
 
     let result;

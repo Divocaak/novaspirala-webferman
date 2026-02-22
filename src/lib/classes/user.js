@@ -1,6 +1,6 @@
 import { Privilege } from "$lib/classes/privilege";
 import { Role } from "$lib/classes/role";
-import { PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_READ, PUBLIC_PRIVILEGE_ID_WRITE, PUBLIC_PRIVILEGE_ID_BOOKING } from "$env/static/public";
+import { PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_READ, PUBLIC_PRIVILEGE_ID_WRITE, PUBLIC_PRIVILEGE_ID_BOOKING, PUBLIC_PRIVILEGE_ID_COMMENTS } from "$env/static/public";
 
 export class User {
 
@@ -82,7 +82,7 @@ export class User {
 
     isAllowedToEditHeadField(isEditing, pastEditable, createdById) {
         if (this.isSysAdmin()) return true;
-        
+
         if (isEditing) {
             if (pastEditable) return false;
 
@@ -115,6 +115,9 @@ export class User {
     // isRolesManager = can user manage people for this role
     // used for determining if input field should be readonly or not
     isRolesManager(roleId) { return this.isSysAdmin() || this.#checkForRole(roleId); }
+
+    //isAllowedToComment = enable/disable comments to sections in event form
+    isAllowedToComment() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_COMMENTS); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {
