@@ -202,7 +202,7 @@
 	<!-- END FORM HEAD -->
 
 	<!-- FORM ROLES -->
-	<RolesAssignment roles={data.roles} bind:value={selectedUsersByRole} {user} eid={data.event.id}/>
+	<RolesAssignment roles={data.roles} bind:value={selectedUsersByRole} {user} eid={data.event?.id}/>
 	<!-- END FORM ROLES -->
 
 	{#if error}
