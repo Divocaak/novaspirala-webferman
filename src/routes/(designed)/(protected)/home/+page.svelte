@@ -74,7 +74,10 @@
 			type="date"
 			bind:value={date_from}
 			required
-			on:change={() => filterForm.requestSubmit()}
+			on:change={() => {
+				date_to = date_from;
+				filterForm.requestSubmit();
+			}}
 		/>
 		<br />
 		<label for="date_to">* Do</label>
