@@ -115,7 +115,7 @@
 					</td>
 				{/each}
 				<td>
-					<EventEditButton id={event.id} {user}/>
+					<EventEditButton id={event.id} {user} />
 				</td>
 				<td>
 					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
@@ -136,7 +136,7 @@
 <style>
 	table {
 		table-layout: fixed;
-		width: 100%;
+		width: fit-content;
 	}
 
 	.cell-max {
@@ -153,11 +153,15 @@
 		width: 350px;
 		max-height: 200px;
 		padding: 8px;
-		
+
 		overflow-y: auto;
 		overflow-x: hidden;
 		box-sizing: border-box;
 
 		white-space: pre-line;
+	}
+
+	:global(body) {
+		overflow: auto;
 	}
 </style>
