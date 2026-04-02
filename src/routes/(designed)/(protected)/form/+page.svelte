@@ -68,12 +68,21 @@
 				.map((r) => role.users.find((u) => u.id === r.uid))
 				.filter(Boolean) ?? [];
 
-		selectedUsersByRole[role.role.id] = assigned;
+		selectedUsersByRole[role.role.id] = assigned.map((u) => ({
+			...u,
+			note: ''
+		}));
 	}
 
 	function buildRolesPayload(map) {
+		console.log(map);
 		return Object.entries(map).flatMap(
-			([rid, users]) => users?.map((u) => ({ rid: Number(rid), uid: u.id })) ?? []
+			([rid, users]) =>
+				users?.map((u) => ({
+					rid: Number(rid),
+					uid: u.id,
+					note: u.note ?? ''
+				})) ?? []
 		);
 	}
 
@@ -121,7 +130,8 @@
 		}
 
 		try {
-			await submit(buildPayload(form, dateRanges, selectedUsersByRole));
+			//await submit(buildPayload(form, dateRanges, selectedUsersByRole));
+			console.log(buildPayload(form, dateRanges, selectedUsersByRole));
 
 			let message;
 			if (mode === 'copy') message = 'kopírován';
@@ -133,8 +143,9 @@
 			success = 'Uloženo';
 			error = '';
 
-			await goto('/home');
+			// await goto('/home');
 		} catch (err) {
+			console.log(err);
 			error = err.message;
 			success = '';
 		}

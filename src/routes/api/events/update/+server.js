@@ -16,6 +16,7 @@ export async function POST({ request }) {
             [id_venue, id_genre, id_order, label, date_ranges[0].date_from, date_ranges[0].date_to, description, text_color, background_color, id]
         );
 
+        /* BUG co to tady dela?? */
         await connection.query(
             `UPDATE user_event SET active = 0 WHERE id_event = ?`,
             [id]

@@ -5,9 +5,19 @@
 	export let roles = [];
 	export let value = {};
 	export let user;
-
 	export let eid;
 
+	/* ---------- ensure value structure ---------- */
+	function normalizeRoleValue(arr = []) {
+		return arr.map((u) => (u.note !== undefined ? u : { ...u, note: '' }));
+	}
+
+	$: {
+		for (const role of roles)
+			value[role.role.id] = !value[role.role.id] ? [] : normalizeRoleValue(value[role.role.id]);
+	}
+
+	/* ---------- comments ---------- */
 	async function askForComment(rid) {
 		const comment = prompt('Komentář');
 		if (!comment) return;
@@ -45,8 +55,6 @@
 			comments: data[role.role.id] ?? []
 		}));
 	}
-
-	console.log(user.isAllowedToComment());
 </script>
 
 {#each roles as role}
@@ -61,9 +69,28 @@
 				options={role.users}
 				bind:value={value[role.role.id]}
 				readonly={!user.isRolesManager(role.role.id)}
+				withNote={true}
 			/>
 		{/if}
+
+		<!-- ---------- ROLE NOTE (existing) ---------- -->
 		<p>{role.role.note}</p>
+
+		<!-- ---------- USER NOTES PREVIEW (optional UX) ---------- -->
+		{#if value[role.role.id]?.length}
+			<div class="user-notes">
+				{#each value[role.role.id] as u (u.id)}
+					{#if u.note}
+						<div class="user-note">
+							<b>{u.label}:</b>
+							{u.note}
+						</div>
+					{/if}
+				{/each}
+			</div>
+		{/if}
+
+		<!-- ---------- COMMENTS ---------- -->
 		{#if eid && user.isAllowedToComment()}
 			<button type="button" on:click={() => askForComment(role.role.id)}>Přidat komentář</button>
 		{/if}

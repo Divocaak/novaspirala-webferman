@@ -6,27 +6,39 @@
 	export let required = false;
 	export let readonly = false;
 	export let options = [];
-	export let value = []; // Array of selected option objects
+	export let value = []; // [{ id, label, note? }]
+	export let withNote = false;
 
 	const dispatch = createEventDispatcher();
 
 	function toggleOption(option) {
 		if (readonly) return;
 
+		// add : remove option
 		const index = value.findIndex((v) => v.id === option.id);
-		if (index === -1) {
-			// add option
-			value = [...value, option];
-		} else {
-			// remove option
-			value = [...value.slice(0, index), ...value.slice(index + 1)];
-		}
+		value =
+			index === -1
+				? [...value, withNote ? { ...option, note: '' } : option]
+				: [...value.slice(0, index), ...value.slice(index + 1)];
+
+		dispatch('input', value);
+		dispatch('change', { value });
+	}
+
+	function updateNote(optionId, note) {
+		const index = value.findIndex((v) => v.id === optionId);
+		if (index === -1) return;
+
+		value[index] = { ...value[index], note };
+		value = [...value]; // trigger reactivity
+
 		dispatch('input', value);
 		dispatch('change', { value });
 	}
 
 	// helper to check if option is selected
 	const isSelected = (option) => value.some((v) => v.id === option.id);
+	const getNote = (option) => value.find((v) => v.id === option.id)?.note ?? '';
 </script>
 
 <b>
@@ -44,8 +56,18 @@
 				on:change={() => toggleOption(option)}
 				disabled={readonly}
 			/>
-			{option.label}</label
-		>
+			{option.label}
+			{#if withNote}
+				<input
+					type="text"
+					name="note-{id}"
+					placeholder="Poznámka (např. příchod 18:30)"
+					value={getNote(option)}
+					on:input={(e) => updateNote(option.id, e.target.value)}
+					disabled={readonly}
+				/>
+			{/if}
+		</label>
 	{/each}
 </div>
 
@@ -78,8 +100,8 @@
 		cursor: not-allowed;
 	}
 
-	.booked{
-		background-color: #80EF80;
+	.booked {
+		background-color: #80ef80;
 		border-radius: 0.5rem;
 	}
 </style>
