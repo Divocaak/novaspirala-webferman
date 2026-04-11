@@ -5,7 +5,8 @@ export async function GET({ request, params, url }) {
         FROM user_role ur
         INNER JOIN user u ON ur.id_user=u.id
         WHERE ur.id_role = ?
-        AND ur.active IS TRUE;`,
+        AND ur.active IS TRUE
+        AND u.deleted IS FALSE;`,
         url.searchParams.get("rid"));
 
     return new Response(JSON.stringify(rows));
