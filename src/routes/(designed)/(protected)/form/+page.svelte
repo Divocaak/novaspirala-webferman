@@ -65,17 +65,17 @@
 		const assigned =
 			data.event.assignedRoles
 				?.filter((r) => r.rid === role.role.id)
-				.map((r) => role.users.find((u) => u.id === r.uid))
+				.map((r) => {
+					const user = role.users.find((u) => u.id === r.uid);
+					if (!user) return null;
+					return { ...user, comment: r.note };
+				})
 				.filter(Boolean) ?? [];
 
-		selectedUsersByRole[role.role.id] = assigned.map((u) => ({
-			...u,
-			note: ''
-		}));
+		selectedUsersByRole[role.role.id] = assigned.map((u) => ({ ...u, note: '' }));
 	}
 
 	function buildRolesPayload(map) {
-		console.log(map);
 		return Object.entries(map).flatMap(
 			([rid, users]) =>
 				users?.map((u) => ({
@@ -130,8 +130,7 @@
 		}
 
 		try {
-			//await submit(buildPayload(form, dateRanges, selectedUsersByRole));
-			console.log(buildPayload(form, dateRanges, selectedUsersByRole));
+			await submit(buildPayload(form, dateRanges, selectedUsersByRole));
 
 			let message;
 			if (mode === 'copy') message = 'kopírován';
@@ -143,7 +142,7 @@
 			success = 'Uloženo';
 			error = '';
 
-			// await goto('/home');
+			await goto('/home');
 		} catch (err) {
 			console.log(err);
 			error = err.message;

@@ -20,7 +20,7 @@ export async function GET({ request, params, url }) {
 
     // Fetch assigned users by role
     const [assignedRoles] = await pool.query(`
-        SELECT ur.id_user AS uid, ur.id_role AS rid
+        SELECT ur.id_user AS uid, ur.id_role AS rid, comment AS note
         FROM user_event ur
         INNER JOIN user u ON ur.id_user = u.id
         INNER JOIN role r ON ur.id_role = r.id

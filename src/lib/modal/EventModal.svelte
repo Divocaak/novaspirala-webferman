@@ -83,9 +83,12 @@
 				email={user.email}
 				phone={user.phone}
 			/>
+			{#if user.note}
+				({user.note})
+			{/if}
 		</p>
 	{/each}
-	<EventEditButton id={selectedData.event.id} {user}/>
+	<EventEditButton id={selectedData.event.id} {user} />
 	<EventDeleteButton id={selectedData.event.id} {user} {pastEditable} />
 	<EventBookButton
 		id={selectedData.event.id}

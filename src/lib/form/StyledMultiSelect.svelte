@@ -38,7 +38,7 @@
 
 	// helper to check if option is selected
 	const isSelected = (option) => value.some((v) => v.id === option.id);
-	const getNote = (option) => value.find((v) => v.id === option.id)?.note ?? '';
+	const getNote = (option) => value.find((v) => v.id === option.id)?.comment ?? '';
 </script>
 
 <b>

@@ -104,13 +104,16 @@
 				{#each roles as role}
 					<td>
 						{#each event.users.filter((user) => user.id_role === role.id) as user}
-							<TooltipUser
-								l_name={user.l_name}
-								f_name={user.f_name}
-								login={user.login}
-								email={user.email}
-								phone={user.phone}
-							/>
+							<p>
+								<TooltipUser
+									l_name={user.l_name}
+									f_name={user.f_name}
+									login={user.login}
+									email={user.email}
+									phone={user.phone}
+								/>
+								{#if user.note}({user.note}){/if}
+							</p>
 						{/each}
 					</td>
 				{/each}
