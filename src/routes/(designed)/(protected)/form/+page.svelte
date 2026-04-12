@@ -41,7 +41,7 @@
 	let dateRanges = initDateRanges(data.event);
 
 	/* ---------- permissions ---------- */
-	// TODO
+	// TODO pastEditable
 	const pastEditable = false; //form.id_created_by.id ? true : false;
 	$: isAllowedToEditHeadField = !user.isAllowedToEditHeadField(
 		data.event,

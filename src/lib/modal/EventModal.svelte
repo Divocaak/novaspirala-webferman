@@ -3,6 +3,7 @@
 	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
 	import EventDeleteButton from '$lib/buttons/EventDeleteButton.svelte';
 	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
+	import EventFilesButton from '$lib/buttons/EventFilesButton.svelte';
 	import ExportToCalendarsButton from '$lib/buttons/ExportToCalendarsButton.svelte';
 	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
@@ -96,5 +97,6 @@
 		{pastBookable}
 		openModalFunction={() => openBookingModalFunction(selectedData.event)}
 	/>
+	<EventFilesButton id={selectedData.event.id}/>
 	<ExportToCalendarsButton event={selectedData.event} />
 </Modal>

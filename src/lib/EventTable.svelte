@@ -9,6 +9,7 @@
 	import ExportToExcelButton from '$lib/buttons/ExportToExcelButton.svelte';
 	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
 	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
+	import EventFilesButton from './buttons/EventFilesButton.svelte';
 
 	export let events;
 	export let roles;
@@ -47,6 +48,7 @@
 					</Tooltip>
 				</th>
 			{/each}
+			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
@@ -130,6 +132,9 @@
 						pastBookable={event.date_from_ts >= startOfDay}
 						openModalFunction={() => openBookingModalFunction(event)}
 					/>
+				</td>
+				<td>
+					<EventFilesButton id={event.id}/>
 				</td>
 			</tr>
 		{/each}
