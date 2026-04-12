@@ -2,6 +2,7 @@
 	import { User } from '$lib/classes/user.js';
 	import { findInSelect } from '$lib/form/findInSelect.js';
 	import { createEmptyRange, formatForMySQL, toDateInputValue } from '$lib/form/dates.js';
+	import { goto } from '$app/navigation';
 
 	import DateRanges from '$lib/form/DateRanges.svelte';
 	import EventMetaForm from '$lib/form/EventMetaForm.svelte';
@@ -40,7 +41,7 @@
 	let dateRanges = initDateRanges(data.event);
 
 	/* ---------- permissions ---------- */
-	// TODO
+	// TODO pastEditable
 	const pastEditable = false; //form.id_created_by.id ? true : false;
 	$: isAllowedToEditHeadField = !user.isAllowedToEditHeadField(
 		data.event,
@@ -64,15 +65,24 @@
 		const assigned =
 			data.event.assignedRoles
 				?.filter((r) => r.rid === role.role.id)
-				.map((r) => role.users.find((u) => u.id === r.uid))
+				.map((r) => {
+					const user = role.users.find((u) => u.id === r.uid);
+					if (!user) return null;
+					return { ...user, comment: r.note };
+				})
 				.filter(Boolean) ?? [];
 
-		selectedUsersByRole[role.role.id] = assigned;
+		selectedUsersByRole[role.role.id] = assigned.map((u) => ({ ...u, note: '' }));
 	}
 
 	function buildRolesPayload(map) {
 		return Object.entries(map).flatMap(
-			([rid, users]) => users?.map((u) => ({ rid: Number(rid), uid: u.id })) ?? []
+			([rid, users]) =>
+				users?.map((u) => ({
+					rid: Number(rid),
+					uid: u.id,
+					note: u.note ?? ''
+				})) ?? []
 		);
 	}
 
@@ -131,7 +141,10 @@
 
 			success = 'Uloženo';
 			error = '';
+
+			await goto('/home');
 		} catch (err) {
+			console.log(err);
 			error = err.message;
 			success = '';
 		}
@@ -202,7 +215,12 @@
 	<!-- END FORM HEAD -->
 
 	<!-- FORM ROLES -->
-	<RolesAssignment roles={data.roles} bind:value={selectedUsersByRole} {user} eid={data.event?.id}/>
+	<RolesAssignment
+		roles={data.roles}
+		bind:value={selectedUsersByRole}
+		{user}
+		eid={data.event?.id}
+	/>
 	<!-- END FORM ROLES -->
 
 	{#if error}

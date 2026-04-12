@@ -16,6 +16,9 @@
 
 	const formatDate = (date) => date.toISOString().split('T')[0];
 
+	let filterByDay = false;
+	let month_year;
+
 	let filterForm;
 	let date_from;
 	let date_to;
@@ -28,8 +31,12 @@
 		const nextMonth = new Date();
 		nextMonth.setMonth(today.getMonth() + 1);
 
+		filterByDay = searchParams.get('filterByDay') === 'true';
+
 		date_from = searchParams.get('date_from') ?? formatDate(today);
 		date_to = searchParams.get('date_to') ?? formatDate(nextMonth);
+		month_year = date_from.slice(0, 7);
+
 		id_venue = findInSelect(data.venues, searchParams.get('id_venue'));
 		id_genre = findInSelect(data.genres, searchParams.get('id_genre'));
 	}
@@ -40,8 +47,20 @@
 		e.preventDefault();
 		const params = new URLSearchParams();
 
-		if (date_from) params.set('date_from', date_from);
-		if (date_to) params.set('date_to', date_to);
+		params.set('filterByDay', filterByDay);
+		if (filterByDay) {
+			if (date_from) params.set('date_from', date_from);
+			if (date_to) params.set('date_to', date_to);
+		} else {
+			if (!month_year) return;
+
+			const from = new Date(`${month_year}-01`);
+			const to = new Date(from);
+			to.setMonth(to.getMonth() + 1);
+			params.set('date_from', formatDate(from));
+			params.set('date_to', formatDate(to));
+		}
+
 		if (id_venue) params.set('id_venue', id_venue.id);
 		if (id_genre) params.set('id_genre', id_genre.id);
 
@@ -68,23 +87,47 @@
 {#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
 {#if user.isAllowedToRead()}
 	<form bind:this={filterForm} on:submit={applyFilters}>
-		<label for="date_from">* Od</label>
-		<input
-			id="date_from"
-			type="date"
-			bind:value={date_from}
-			required
-			on:change={() => filterForm.requestSubmit()}
-		/>
-		<br />
-		<label for="date_to">* Do</label>
-		<input
-			id="date_to"
-			type="date"
-			bind:value={date_to}
-			required
-			on:change={() => filterForm.requestSubmit()}
-		/>
+		<button
+			type="button"
+			on:click={() => {
+				filterByDay = !filterByDay;
+				if (!filterByDay) month_year = date_from.slice(0, 7);
+				filterForm.requestSubmit();
+			}}
+		>
+			Přepnout na filtrování po {filterByDay ? 'měsících' : 'dnech'}
+		</button><br />
+		{#if filterByDay}
+			<label for="date_from">* Od</label>
+			<input
+				id="date_from"
+				type="date"
+				bind:value={date_from}
+				required
+				on:change={() => {
+					date_to = date_from;
+					filterForm.requestSubmit();
+				}}
+			/>
+			<br />
+			<label for="date_to">* Do</label>
+			<input
+				id="date_to"
+				type="date"
+				bind:value={date_to}
+				required
+				on:change={() => filterForm.requestSubmit()}
+			/>
+		{:else}
+			<label for="month_year">* Měsíc</label>
+			<input
+				id="month_year"
+				type="month"
+				bind:value={month_year}
+				required
+				on:change={() => filterForm.requestSubmit()}
+			/>
+		{/if}
 		<br />
 		<StyledSelect
 			label="Prostor"

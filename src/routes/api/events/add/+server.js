@@ -22,9 +22,9 @@ export async function POST({ request }) {
 
             // insert roles for this event
             if (roles.length > 0) {
-                const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
-                const values = roles.flatMap(role => [role.uid, role.rid, insertedId]);
-                const sql = `INSERT INTO user_event (id_user, id_role, id_event, active) VALUES ${placeholders}`;
+                const placeholders = roles.map(() => '(?, ?, ?, ?, 1)').join(', ');
+                const values = roles.flatMap(role => [role.uid, role.rid, insertedId, role.note]);
+                const sql = `INSERT INTO user_event (id_user, id_role, id_event, comment, active) VALUES ${placeholders}`;
                 await connection.query(sql, values);
             }
         }

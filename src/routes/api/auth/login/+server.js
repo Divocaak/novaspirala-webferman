@@ -10,7 +10,7 @@ export async function POST({ request, cookies }) {
     const [rows] = await pool.query(`
         SELECT id, login, email, pass_hash, phone, f_name, l_name
         FROM user
-        WHERE login = ?;`,
+        WHERE login = ? AND deleted IS FALSE;`,
         [login]);
 
     if (rows.length === 0) {

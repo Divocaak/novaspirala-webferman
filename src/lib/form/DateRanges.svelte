@@ -17,7 +17,15 @@
 		<div>
 			<label>
 				* Od
-				<input type="datetime-local" bind:value={range.from} required {readonly} />
+				<input
+					type="datetime-local"
+					bind:value={range.from}
+					required
+					{readonly}
+					on:change={() => {
+						range.to = range.from;
+					}}
+				/>
 			</label>
 
 			<label>
@@ -35,7 +43,15 @@
 {:else}
 	<label>
 		* Od
-		<input type="datetime-local" bind:value={ranges[0].from} required {readonly} />
+		<input
+			type="datetime-local"
+			bind:value={ranges[0].from}
+			required
+			{readonly}
+			on:change={() => {
+				ranges[0].to = ranges[0].from;
+			}}
+		/>
 	</label>
 
 	<label>

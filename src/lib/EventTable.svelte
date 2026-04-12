@@ -9,6 +9,7 @@
 	import ExportToExcelButton from '$lib/buttons/ExportToExcelButton.svelte';
 	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
 	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
+	import EventFilesButton from './buttons/EventFilesButton.svelte';
 
 	export let events;
 	export let roles;
@@ -47,6 +48,7 @@
 					</Tooltip>
 				</th>
 			{/each}
+			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
@@ -104,18 +106,21 @@
 				{#each roles as role}
 					<td>
 						{#each event.users.filter((user) => user.id_role === role.id) as user}
-							<TooltipUser
-								l_name={user.l_name}
-								f_name={user.f_name}
-								login={user.login}
-								email={user.email}
-								phone={user.phone}
-							/>
+							<p>
+								<TooltipUser
+									l_name={user.l_name}
+									f_name={user.f_name}
+									login={user.login}
+									email={user.email}
+									phone={user.phone}
+								/>
+								{#if user.note}({user.note}){/if}
+							</p>
 						{/each}
 					</td>
 				{/each}
 				<td>
-					<EventEditButton id={event.id} {user}/>
+					<EventEditButton id={event.id} {user} />
 				</td>
 				<td>
 					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
@@ -128,6 +133,9 @@
 						openModalFunction={() => openBookingModalFunction(event)}
 					/>
 				</td>
+				<td>
+					<EventFilesButton id={event.id}/>
+				</td>
 			</tr>
 		{/each}
 	</tbody>
@@ -136,7 +144,7 @@
 <style>
 	table {
 		table-layout: fixed;
-		width: 100%;
+		width: fit-content;
 	}
 
 	.cell-max {
@@ -153,11 +161,15 @@
 		width: 350px;
 		max-height: 200px;
 		padding: 8px;
-		
+
 		overflow-y: auto;
 		overflow-x: hidden;
 		box-sizing: border-box;
 
 		white-space: pre-line;
+	}
+
+	:global(body) {
+		overflow: auto;
 	}
 </style>

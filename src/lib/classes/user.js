@@ -1,6 +1,13 @@
 import { Privilege } from "$lib/classes/privilege";
 import { Role } from "$lib/classes/role";
-import { PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_READ, PUBLIC_PRIVILEGE_ID_WRITE, PUBLIC_PRIVILEGE_ID_BOOKING, PUBLIC_PRIVILEGE_ID_COMMENTS } from "$env/static/public";
+import {
+    PUBLIC_PRIVILEGE_ID_SYS_ADMIN,
+    PUBLIC_PRIVILEGE_ID_READ,
+    PUBLIC_PRIVILEGE_ID_WRITE,
+    PUBLIC_PRIVILEGE_ID_BOOKING,
+    PUBLIC_PRIVILEGE_ID_COMMENTS,
+    PUBLIC_PRIVILEGE_ID_UPLOAD_FILES
+} from "$env/static/public";
 
 export class User {
 
@@ -118,6 +125,9 @@ export class User {
 
     //isAllowedToComment = enable/disable comments to sections in event form
     isAllowedToComment() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_COMMENTS); }
+
+    isAllowedToUploadFiles() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_UPLOAD_FILES) }
+    isAllowedToDeleteFile(uploadedById) { return this.isSysAdmin() || uploadedById == this.id; }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

@@ -16,17 +16,18 @@ export async function POST({ request }) {
             [id_venue, id_genre, id_order, label, date_ranges[0].date_from, date_ranges[0].date_to, description, text_color, background_color, id]
         );
 
+        /* NOTE co to tady dela?? */
         await connection.query(
             `UPDATE user_event SET active = 0 WHERE id_event = ?`,
             [id]
         );
 
         if (roles.length > 0) {
-            const placeholders = roles.map(() => '(?, ?, ?, 1)').join(', ');
-            const values = roles.flatMap(role => [role.uid, role.rid, id]);
+            const placeholders = roles.map(() => '(?, ?, ?, ?, 1)').join(', ');
+            const values = roles.flatMap(role => [role.uid, role.rid, id, role.note]);
 
             const sql = `
-                INSERT INTO user_event (id_user, id_role, id_event, active)
+                INSERT INTO user_event (id_user, id_role, id_event, comment, active)
                 VALUES ${placeholders}
                 ON DUPLICATE KEY UPDATE active = VALUES(active)
             `;
