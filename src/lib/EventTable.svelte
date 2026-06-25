@@ -10,6 +10,7 @@
 	import EventEditButton from '$lib/buttons/EventEditButton.svelte';
 	import EventBookButton from '$lib/buttons/EventBookButton.svelte';
 	import EventFilesButton from './buttons/EventFilesButton.svelte';
+	import { onMount } from 'svelte';
 
 	export let events;
 	export let roles;
@@ -23,13 +24,40 @@
 			new Date(eventsAsc ? a.date_from : b.date_from) -
 			new Date(eventsAsc ? b.date_from : a.date_from)
 	);
+
+	let table;
+
+	function updateSticky() {
+		const ths = table.querySelectorAll('thead th');
+		if (ths.length < 4) return;
+
+		const col3Width = ths[2].offsetWidth;
+
+		table.style.setProperty('--col3-width', `${col3Width}px`);
+	}
+
+	onMount(() => {
+		updateSticky();
+
+		const observer = new ResizeObserver(() => {
+			updateSticky();
+		});
+
+		observer.observe(table);
+
+		table.querySelectorAll('thead th').forEach((th) => {
+			observer.observe(th);
+		});
+
+		return () => observer.disconnect();
+	});
 </script>
 
 <p style="padding-top: 50px;">
 	Řadit <button on:click={(eventsAsc = !eventsAsc)}>{eventsAsc ? 'sestupně' : 'vzestupně'}</button>
 </p>
 <ExportToExcelButton events={sortedEvents} {roles} />
-<table>
+<table bind:this={table}>
 	<thead>
 		<tr>
 			<th scope="col">ID</th>
@@ -134,7 +162,7 @@
 					/>
 				</td>
 				<td>
-					<EventFilesButton id={event.id}/>
+					<EventFilesButton id={event.id} />
 				</td>
 			</tr>
 		{/each}
@@ -173,4 +201,23 @@
 	/* :global(body) {
 		overflow: auto;
 	} */
+
+	th:nth-child(3),
+	td:nth-child(3),
+	th:nth-child(4),
+	td:nth-child(4) {
+		position: sticky;
+		background-color: inherit;
+		z-index: 6;
+	}
+
+	th:nth-child(3),
+	td:nth-child(3) {
+		left: 0;
+	}
+
+	th:nth-child(4),
+	td:nth-child(4) {
+		left: var(--col3-width);
+	}
 </style>
