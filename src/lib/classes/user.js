@@ -76,7 +76,13 @@ export class User {
     isAllowedToBook(pastBookable) { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_BOOKING) && pastBookable; }
 
     // isAllowedToDelete = created event or is sysadmin
-    isAllowedToDelete(createdById, pastEditable) { return this.isSysAdmin() || this.id == createdById && pastEditable }
+    isAllowedToDelete(createdById, pastEditable) {
+        console.log(this.isSysAdmin());
+        console.log(this.id);
+        console.log(createdById);
+        console.log(pastEditable);
+        return this.isSysAdmin() || this.id == createdById && pastEditable
+    }
 
     // isAllowedToCreate = has privilege add/edit events
     // allows user to edit information only in the HEAD of the form (both in edit/create state)

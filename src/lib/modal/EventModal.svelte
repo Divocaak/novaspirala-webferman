@@ -90,7 +90,7 @@
 		</p>
 	{/each}
 	<EventEditButton id={selectedData.event.id} {user} />
-	<EventDeleteButton id={selectedData.event.id} {user} {pastEditable} />
+	<EventDeleteButton id={selectedData.event.id} createdById={selectedData.event.createdById} {user} {pastEditable} />
 	<EventBookButton
 		id={selectedData.event.id}
 		{user}

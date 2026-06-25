@@ -151,7 +151,7 @@
 					<EventEditButton id={event.id} {user} />
 				</td>
 				<td>
-					<EventDeleteButton id={event.id} {user} pastEditable={event.date_from_ts >= startOfDay} />
+					<EventDeleteButton id={event.id} createdById={event.createdById} {user} pastEditable={event.date_from_ts >= startOfDay} />
 				</td>
 				<td>
 					<EventBookButton
