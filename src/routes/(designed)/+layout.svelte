@@ -22,6 +22,10 @@
 		padding: 5px;
 	}
 
+	:global(tr:nth-child(odd)) {
+		background-color: white;
+	}
+
 	:global(tr:nth-child(even)) {
 		background-color: #b7b7b7;
 	}

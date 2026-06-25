@@ -25,8 +25,8 @@
 		{privilege.id}: <b>{privilege.label}</b>,&nbsp;
 	{/each})<br />
 	(role: {#each user.roles as role}
-		{role.id}: <b>{role.label}</b>
-		{#if role.manager}(<i>Vedoucí</i>){/if},&nbsp;
+		{role.id}: <b>{role.label}</b>{#if role.manager}
+			(<i>Vedoucí</i>){/if},&nbsp;
 	{/each}
 	)
 </p>

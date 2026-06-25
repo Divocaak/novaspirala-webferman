@@ -2,6 +2,7 @@
 	import { User } from '$lib/classes/user';
 
 	export let id;
+	export let createdById;
 	export let user;
 	export let pastEditable;
 
@@ -23,6 +24,6 @@
 	};
 </script>
 
-{#if userObject.isAllowedToDelete(event.createdById, pastEditable)}
+{#if userObject.isAllowedToDelete(createdById, pastEditable)}
 	<button class="custom-btn" on:click={() => deleteEvent(id)}>Smazat</button>
 {/if}
