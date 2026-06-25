@@ -144,7 +144,8 @@
 <style>
 	table {
 		table-layout: fixed;
-		width: fit-content;
+		width: 100%;
+		/* width: fit-content; */
 	}
 
 	.cell-max {
@@ -169,7 +170,7 @@
 		white-space: pre-line;
 	}
 
-	:global(body) {
+	/* :global(body) {
 		overflow: auto;
-	}
+	} */
 </style>
