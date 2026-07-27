@@ -9,6 +9,7 @@
 	export let user;
 	export let startOfDay;
 	export let openBookingModalFunction;
+	export let showEmptyDays = true;
 
 	function toLocalISO(date) {
 		const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -46,6 +47,19 @@
 		}
 
 		allDays = Array.from(dateVenueMap.keys()).sort((a, b) => new Date(a) - new Date(b));
+
+		if (showEmptyDays) {
+			for (let d = new Date(visibleStart); d < visibleEnd; d = new Date(d.getTime() + 86400000)) {
+				const dayKey = toLocalISO(d);
+
+				if (!dateVenueMap.has(dayKey)) {
+					dateVenueMap.set(dayKey, new Map());
+				}
+			}
+
+			allDays = Array.from(dateVenueMap.keys()).sort((a, b) => new Date(a) - new Date(b));
+		}
+
 		allVenues = [...new Set(events.map((e) => e.vLabel))].sort();
 	}
 
@@ -66,7 +80,13 @@
 </script>
 
 {#if showModal}
-	<EventModal {selectedData} closeModalFunction={closeModal} {user} {startOfDay} {openBookingModalFunction}/>
+	<EventModal
+		{selectedData}
+		closeModalFunction={closeModal}
+		{user}
+		{startOfDay}
+		{openBookingModalFunction}
+	/>
 {/if}
 
 <div class="calendar-grid" style="--venue-count: {allVenues.length}">

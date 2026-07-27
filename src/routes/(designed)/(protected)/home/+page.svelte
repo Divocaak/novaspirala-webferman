@@ -31,6 +31,7 @@
 		id_genre = findInSelect(data.genres, params.get('id_genre'));
 	}
 
+	let showEmptyDays = true;
 	let date_from, date_to, month_year, id_venue, id_genre;
 
 	function updateParams(updates) {
@@ -139,6 +140,10 @@
 		options={data.genres}
 		on:change={(e) => updateParams({ id_genre: e.detail?.value?.id })}
 	/>
+	<label>
+		<input type="checkbox" bind:checked={showEmptyDays} />
+		Zobrazit volné dny
+	</label><br />
 	<button on:click={() => (showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
 		<EventCalendar
@@ -148,6 +153,7 @@
 			{date_to}
 			{user}
 			{startOfDay}
+			{showEmptyDays}
 			openBookingModalFunction={openBookingModal}
 		/>
 	{:else}
@@ -156,6 +162,9 @@
 			roles={data.roles}
 			{user}
 			{startOfDay}
+			{date_from}
+			{date_to}
+			{showEmptyDays}
 			openBookingModalFunction={openBookingModal}
 		/>
 	{/if}
