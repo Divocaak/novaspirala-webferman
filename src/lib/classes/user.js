@@ -8,7 +8,8 @@ import {
     PUBLIC_PRIVILEGE_ID_COMMENTS,
     PUBLIC_PRIVILEGE_ID_UPLOAD_FILES,
     PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS,
-    PUBLIC_PRIVILEGE_ID_SHOW_EMAILS
+    PUBLIC_PRIVILEGE_ID_SHOW_EMAILS,
+    PUBLIC_PRIVILEGE_ID_IT_SUPPORT
 } from "$env/static/public";
 
 export class User {
@@ -128,12 +129,16 @@ export class User {
     //isAllowedToComment = enable/disable comments to sections in event form
     isAllowedToComment() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_COMMENTS); }
 
+    // privileges regarding file uploads
     isAllowedToUploadFiles() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_UPLOAD_FILES) }
     isAllowedToDeleteFile(uploadedById) { return this.isSysAdmin() || uploadedById == this.id; }
 
     // personal information privileges
     isAllowedToSeeTelNumbers() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS); }
     isAllowedToSeeEmails() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SHOW_EMAILS); }
+    
+    // IT support privileges
+    isAllowedToITSupport() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_IT_SUPPORT); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

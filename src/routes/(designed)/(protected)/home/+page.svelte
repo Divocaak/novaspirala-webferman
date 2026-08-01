@@ -80,6 +80,7 @@
 <h2>home</h2>
 <br />
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
+{#if user.isAllowedToITSupport()}<a href="/itsupport">IT podpora</a><br />{/if}
 {#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
 {#if user.isAllowedToRead()}
 	<button on:click={() => setDayFilter(!filterByDay)}>
