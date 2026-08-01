@@ -1,14 +1,17 @@
 <script>
+	import Pill from '$lib/Pill.svelte';
 	import Tooltip from '$lib/tooltip/Tooltip.svelte';
 
-	export let id;
-	export let label;
-	export let note;
+	export let privilege;
 </script>
 
 <Tooltip>
-	{id}:&nbsp;<b>{label}</b>&nbsp;(?),
+	<Pill
+		bgClr={privilege.background_color}
+		txtClr={privilege.text_color}
+		label="{privilege.id}:&nbsp;<b>{privilege.label}</b>&nbsp;(?),"
+	/>
 	<span slot="tooltip">
-		{note}
+		{privilege.note}
 	</span>
 </Tooltip>

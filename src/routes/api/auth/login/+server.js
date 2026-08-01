@@ -31,7 +31,7 @@ export async function POST({ request, cookies }) {
     });
 
     const [prows] = await pool.query(`
-        SELECT p.id, p.label, p.note
+        SELECT p.id, p.label, p.note, p.text_color, p.background_color
         FROM user_privilege up
         INNER JOIN privilege p ON up.id_privilege=p.id
         WHERE up.id_user = ?

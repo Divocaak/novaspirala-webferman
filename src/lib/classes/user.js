@@ -42,7 +42,7 @@ export class User {
     }
 
     setPrivileges(json) { this.privileges = User.createPrivileges(json); }
-    static createPrivileges(json) { return json.map(privilege => new Privilege({ id: privilege.id, label: privilege.label, note: privilege.note })); }
+    static createPrivileges(json) { return json.map(privilege => new Privilege({ id: privilege.id, label: privilege.label, note: privilege.note, text_color: privilege.text_color, background_color: privilege.background_color })); }
 
     setRoles(json) { this.roles = User.createRoles(json); }
     static createRoles(json) { return json.map(role => new Role({ id: role.id, label: role.label, manager: role.manager })); }

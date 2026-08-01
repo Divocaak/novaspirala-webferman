@@ -23,7 +23,7 @@
 	<a href="/logout">Odhlásit se</a>
 	<br />
 	(práva: {#each user.privileges as privilege}
-		<TooltipPrivilege id={privilege.id} label={privilege.label} note={privilege.note} />
+		<TooltipPrivilege {privilege} />
 	{/each})<br />
 	(role: {#each user.roles as role}
 		{role.id}: <b>{role.label}</b>{#if role.manager}
