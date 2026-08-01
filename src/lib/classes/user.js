@@ -6,7 +6,9 @@ import {
     PUBLIC_PRIVILEGE_ID_WRITE,
     PUBLIC_PRIVILEGE_ID_BOOKING,
     PUBLIC_PRIVILEGE_ID_COMMENTS,
-    PUBLIC_PRIVILEGE_ID_UPLOAD_FILES
+    PUBLIC_PRIVILEGE_ID_UPLOAD_FILES,
+    PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS,
+    PUBLIC_PRIVILEGE_ID_SHOW_EMAILS
 } from "$env/static/public";
 
 export class User {
@@ -128,6 +130,10 @@ export class User {
 
     isAllowedToUploadFiles() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_UPLOAD_FILES) }
     isAllowedToDeleteFile(uploadedById) { return this.isSysAdmin() || uploadedById == this.id; }
+
+    // personal information privileges
+    isAllowedToSeeTelNumbers() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS); }
+    isAllowedToSeeEmails() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SHOW_EMAILS); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

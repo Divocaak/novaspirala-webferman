@@ -61,42 +61,47 @@
 		<TooltipUser
 			l_name={selectedData.event.l_name}
 			f_name={selectedData.event.f_name}
-			login={selectedData.event.login}
 			email={selectedData.event.email}
 			phone={selectedData.event.phone}
+			{user}
 		/>
 	</p>
-	{#each selectedData.enrichedUsers as user}
+	{#each selectedData.enrichedUsers as userInEvent}
 		<p>
 			<Tooltip>
 				<Pill
-					bgClr={user.role.bgClr}
-					txtClr={user.role.txtClr}
-					label="{user.role.label}&nbsp;(?)"
+					bgClr={userInEvent.role.bgClr}
+					txtClr={userInEvent.role.txtClr}
+					label="{userInEvent.role.label}&nbsp;(?)"
 				/>
-				<span slot="tooltip">{user.role.note}</span>
+				<span slot="tooltip">{userInEvent.role.note}</span>
 			</Tooltip>
 			&rarr;
 			<TooltipUser
-				l_name={user.l_name}
-				f_name={user.f_name}
-				login={user.login}
-				email={user.email}
-				phone={user.phone}
+				l_name={userInEvent.l_name}
+				f_name={userInEvent.f_name}
+				email={userInEvent.email}
+				phone={userInEvent.phone}
+				{user}
 			/>
-			{#if user.note}
-				({user.note})
+			{#if userInEvent.note}
+				({userInEvent.note})
 			{/if}
 		</p>
 	{/each}
 	<EventEditButton id={selectedData.event.id} {user} />
-	<EventDeleteButton id={selectedData.event.id} createdById={selectedData.event.createdById} {user} {pastEditable} />
+	<EventDeleteButton
+		id={selectedData.event.id}
+		createdById={selectedData.event.createdById}
+		{user}
+		{pastEditable}
+	/>
 	<EventBookButton
 		id={selectedData.event.id}
 		{user}
 		{pastBookable}
 		openModalFunction={() => openBookingModalFunction(selectedData.event)}
 	/>
-	<EventFilesButton id={selectedData.event.id}/>
+	<EventFilesButton id={selectedData.event.id} />
 	<ExportToCalendarsButton event={selectedData.event} />
 </Modal>

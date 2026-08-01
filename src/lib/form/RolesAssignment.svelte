@@ -100,9 +100,9 @@
 				<TooltipUser
 					l_name={comment.user.l_name}
 					f_name={comment.user.f_name}
-					login={comment.user.login}
 					email={comment.user.email}
 					phone={comment.user.phone}
+					{user}
 				/>
 				<p>{comment.comment}</p>
 				{#if comment.user.id === user.id}

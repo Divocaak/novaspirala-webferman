@@ -169,9 +169,9 @@
 						<TooltipUser
 							l_name={event.l_name}
 							f_name={event.f_name}
-							login={event.login}
 							email={event.email}
 							phone={event.phone}
+							{user}
 						/>
 					</td>
 					<td>
@@ -197,16 +197,16 @@
 
 					{#each roles as role}
 						<td>
-							{#each event.users.filter((user) => user.id_role === role.id) as user}
+							{#each event.users.filter((user) => user.id_role === role.id) as userInEvent}
 								<p>
 									<TooltipUser
-										l_name={user.l_name}
-										f_name={user.f_name}
-										login={user.login}
-										email={user.email}
-										phone={user.phone}
+										l_name={userInEvent.l_name}
+										f_name={userInEvent.f_name}
+										email={userInEvent.email}
+										phone={userInEvent.phone}
+										{user}
 									/>
-									{#if user.note}({user.note}){/if}
+									{#if userInEvent.note}({userInEvent.note}){/if}
 								</p>
 							{/each}
 						</td>
