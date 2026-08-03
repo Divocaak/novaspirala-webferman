@@ -9,7 +9,7 @@
 	<Pill
 		bgClr={privilege.background_color}
 		txtClr={privilege.text_color}
-		label="{privilege.id}:&nbsp;<b>{privilege.label}</b>&nbsp;(?),"
+		label="{privilege.id}:&nbsp;<b>{privilege.label}</b>&nbsp;(?)"
 	/>
 	<span slot="tooltip">
 		{privilege.note}
