@@ -16,7 +16,12 @@
 	readonly
 />
 
-<StyledSelect label="Prostor" bind:value={form.id_venue} options={venues} readonly={readonlyHeadField} />
+<StyledSelect
+	label="Prostor"
+	bind:value={form.id_venue}
+	options={venues}
+	readonly={readonlyHeadField}
+/>
 
 <StyledSelect
 	label="Žánr/typ"
@@ -31,12 +36,7 @@
 </label><br />
 
 <label>
-	Popis
-	<textarea
-		rows="20"
-		cols="70"
-		bind:value={form.description}
-		readonly={readonlyDescriptionField}
-	>
+	Popis<br />
+	<textarea rows="20" cols="70" bind:value={form.description} readonly={readonlyDescriptionField}>
 	</textarea>
 </label><br />
