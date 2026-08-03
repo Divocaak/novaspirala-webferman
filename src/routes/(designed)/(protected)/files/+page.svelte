@@ -20,7 +20,7 @@
 
 		if (!res.ok) {
 			alert('Upload failed');
-            console.log(res);
+			console.log(res);
 			return;
 		}
 
@@ -37,7 +37,7 @@
 
 		if (!res.ok) {
 			alert('Delete failed');
-            console.log(res);
+			console.log(res);
 			return;
 		}
 
@@ -52,7 +52,15 @@
 	<input
 		type="file"
 		multiple
-		accept=".jpg,.jpeg,.pdf,.png"
+		accept="
+			.jpg,.jpeg,.pdf,.png
+			.doc,.docx,
+			.xls,.xlsx,
+			application/msword,
+			application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+			application/vnd.ms-excel,
+			application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+		"
 		on:change={(e) => (selectedFiles = [...e.target.files])}
 	/>
 	{#if selectedFiles.length}<p>{selectedFiles.length} souborů připraveno</p>{/if}

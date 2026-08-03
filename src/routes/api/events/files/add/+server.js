@@ -15,7 +15,19 @@ export async function POST({ request, locals }) {
 
     for (const file of files) {
         if (!file || file.size === 0) continue;
-        if (!["image/jpeg", "application/pdf", "image/png"].includes(file.type)) throw new Error("Nepodporovaný typ");
+        if (![
+            "image/jpeg",
+            "image/png",
+            "application/pdf",
+
+            // Word
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+
+            // Excel
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ].includes(file.type)) throw new Error("Nepodporovaný typ");
 
         const buffer = Buffer.from(await file.arrayBuffer());
 
