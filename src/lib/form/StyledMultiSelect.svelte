@@ -39,23 +39,45 @@
 	// helper to check if option is selected
 	const isSelected = (option) => value.some((v) => v.id === option.id);
 	const getNote = (option) => value.find((v) => v.id === option.id)?.comment ?? '';
+
+	function selectAll() {
+		if (readonly) return;
+		value = options.map((option) => (withNote ? { ...option, note: '' } : option));
+		dispatch('input', value);
+		dispatch('change', { value });
+	}
+
+	function resetAll() {
+		if (readonly) return;
+		value = [];
+		dispatch('input', value);
+		dispatch('change', { value });
+	}
 </script>
 
 <b>
 	{#if required}*
 	{/if}{label}
 </b>
+{#if !readonly}
+	<div class="actions">
+		<button type="button" on:click={selectAll}> Vybrat vše </button>
+		<button type="button" on:click={resetAll} disabled={value.length === 0}> Zrušit výběr </button>
+	</div>
+{/if}
 <div class="multi-select-checkbox" aria-multiselectable="true" role="listbox">
 	{#each options as option (option.id)}
 		<label class="option" for={id} aria-selected={isSelected(option)} class:booked={option.booked}>
-			<input
-				type="checkbox"
-				name={id}
-				value={option.id}
-				checked={isSelected(option)}
-				on:change={() => toggleOption(option)}
-				disabled={readonly}
-			/>
+			{#key value}
+				<input
+					type="checkbox"
+					name={id}
+					value={option.id}
+					checked={isSelected(option)}
+					on:change={() => toggleOption(option)}
+					disabled={readonly}
+				/>
+			{/key}
 			{option.label}
 			{#if withNote}
 				<input
@@ -72,6 +94,12 @@
 </div>
 
 <style>
+	.actions {
+		display: flex;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
 	.multi-select-checkbox {
 		border: 1px solid #ccc;
 		padding: 5px;

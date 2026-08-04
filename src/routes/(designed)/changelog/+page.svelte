@@ -4,6 +4,7 @@
 	const source = `
 ### v0.2.0, release dd. mm. yyyy
 #### přidáno
+- tlačítka _Vybrat vše_ a _Odebrat vše_ ve všech formulářích pro výběr uživatelů
 #### upraveno
 #### opraveno
     `;
