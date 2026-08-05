@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 export async function POST({ request }) {
     let connection;
     try {
-        const { id_created_by, id_venue, id_genre, id_order, label, date_ranges, description, text_color, background_color, roles } = await request.json();
+        const { id_created_by, id_venue, id_genre, id_order, label, date_ranges, description, text_color, background_color, roles, notifyUsers } = await request.json();
 
         connection = await pool.getConnection();
         await connection.beginTransaction();
@@ -19,6 +19,22 @@ export async function POST({ request }) {
             );
 
             const insertedId = result.insertId;
+
+            // save notifications
+            if (notifyUsers.length > 0) {
+                const placeholders = notifyUsers.map(() => '(?, ?, ?)').join(', ');
+                const values = notifyUsers.flatMap(user => [
+                    insertedId,
+                    user.id,
+                    "created"
+                ]);
+
+                await connection.query(
+                    `INSERT INTO event_notification (id_event, id_user_recipient, type)
+		            VALUES ${placeholders}`,
+                    values
+                );
+            }
 
             // insert roles for this event
             if (roles.length > 0) {

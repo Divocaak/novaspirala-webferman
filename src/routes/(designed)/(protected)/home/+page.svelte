@@ -7,6 +7,7 @@
 	import { findInSelect } from '$lib/form/findInSelect.js';
 	import StyledSelect from '$lib/form/StyledSelect.svelte';
 	import BookingModal from '$lib/modal/BookingModal.svelte';
+	import NotificationsModal from '$lib/modal/NotificationsModal.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -75,10 +76,20 @@
 		showBookingModal = false;
 		selectedEvent = null;
 	};
+
+	let notificationsModalShown = false;
+	const switchNotificationsModal = () => {
+		notificationsModalShown = !notificationsModalShown;
+	};
 </script>
 
 <h2>home</h2>
 <br />
+{#if data.notifications.length > 0}
+	<button class="custom-btn" on:click={switchNotificationsModal}>
+		✦ <b>{data.notifications.length}</b> nové notifikace
+	</button><br />
+{/if}
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
 {#if user.isAllowedToITSupport()}<a href="/itsupport">IT podpora</a><br />{/if}
 {#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
@@ -171,5 +182,8 @@
 	{/if}
 	{#if showBookingModal}
 		<BookingModal {selectedEvent} closeModalFunction={closeBookingModal} {user} />
+	{/if}
+	{#if notificationsModalShown}
+		<NotificationsModal closeModalFunction={switchNotificationsModal} {user} notifications={data.notifications}/>
 	{/if}
 {/if}
