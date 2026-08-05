@@ -60,7 +60,18 @@
 			allDays = Array.from(dateVenueMap.keys()).sort((a, b) => new Date(a) - new Date(b));
 		}
 
-		allVenues = [...new Set(events.map((e) => e.vLabel))].sort();
+		allVenues = [
+			...new Map(
+				events.map((e) => [
+					e.vLabel,
+					{
+						label: e.vLabel,
+						txtClr: e.vTxtClr,
+						bgClr: e.vBgClr
+					}
+				])
+			).values()
+		].sort((a, b) => a.label.localeCompare(b.label));
 	}
 
 	$: rolesMap = new Map(roles.map((role) => [role.id, role]));
@@ -91,13 +102,18 @@
 
 <div class="calendar-grid" style="--venue-count: {allVenues.length}">
 	<div class="header">Datum</div>
-	{#each allVenues as venue}<div class="header">{venue}</div>{/each}
+	{#each allVenues as venue}<div
+			class="header"
+			style="background-color: {venue.bgClr}; color: {venue.txtClr}"
+		>
+			{venue.label}
+		</div>{/each}
 	{#each allDays as date}
 		<div class="date-cell">{date}</div>
 		{#each allVenues as venue}
-			{#if dateVenueMap.has(date) && dateVenueMap.get(date).has(venue)}
+			{#if dateVenueMap.has(date) && dateVenueMap.get(date).has(venue.label)}
 				<div class="event-cell stacked-cell">
-					{#each dateVenueMap.get(date).get(venue) as ev (ev.id)}
+					{#each dateVenueMap.get(date).get(venue.label) as ev (ev.id)}
 						<EventCell
 							event={ev}
 							roles={rolesMap}
@@ -106,7 +122,7 @@
 					{/each}
 				</div>
 			{:else}
-				<div class="event-cell empty-cell"></div>
+				<div class="event-cell empty-cell" style="background-color: {venue.bgClr};"></div>
 			{/if}
 		{/each}
 	{/each}
@@ -141,7 +157,7 @@
 
 	.empty-cell {
 		background: #f9f9f9;
-		opacity: 0.5;
+		opacity: 0.3;
 		min-height: 1rem;
 	}
 
