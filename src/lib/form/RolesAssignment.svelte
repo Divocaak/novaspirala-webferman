@@ -6,6 +6,8 @@
 	export let value = {};
 	export let user;
 	export let eid;
+	export let vacations = [];
+	export let dateRanges = [];
 
 	/* ---------- ensure value structure ---------- */
 	function normalizeRoleValue(arr = []) {
@@ -70,13 +72,15 @@
 				bind:value={value[role.role.id]}
 				readonly={!user.isRolesManager(role.role.id)}
 				withNote={true}
+				{vacations}
+				{dateRanges}
 			/>
 		{/if}
 
-		<!-- ---------- ROLE NOTE (existing) ---------- -->
+		<!-- ---------- ROLE NOTE ---------- -->
 		<p>{role.role.note}</p>
 
-		<!-- ---------- USER NOTES PREVIEW (optional UX) ---------- -->
+		<!-- ---------- USER NOTES PREVIEW ---------- -->
 		{#if value[role.role.id]?.length}
 			<div class="user-notes">
 				{#each value[role.role.id] as u (u.id)}
@@ -92,11 +96,13 @@
 
 		<!-- ---------- COMMENTS ---------- -->
 		{#if eid && user.isAllowedToComment()}
-			<button type="button" on:click={() => askForComment(role.role.id)}>Přidat komentář</button>
+			<button type="button" on:click={() => askForComment(role.role.id)}> Přidat komentář </button>
 		{/if}
+
 		{#each role.comments as comment}
 			<div class="comment">
 				<p>{comment.created}</p>
+
 				<TooltipUser
 					l_name={comment.user.l_name}
 					f_name={comment.user.f_name}
@@ -104,7 +110,9 @@
 					phone={comment.user.phone}
 					{user}
 				/>
+
 				<p>{comment.comment}</p>
+
 				{#if comment.user.id === user.id}
 					<button type="button" on:click={() => deleteComment(comment.id)}> Odstranit </button>
 				{/if}

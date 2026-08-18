@@ -42,8 +42,7 @@
 
 <a href="/">zpět</a><br />
 <h2>IT podpora</h2>
-
-{#if user.isAllowedToITSupport()}<a href="/itsupport/form">Přidat požadavek</a><br />{/if}
+<a href="/itsupport/form">Přidat požadavek</a><br />
 
 <table>
 	<thead>

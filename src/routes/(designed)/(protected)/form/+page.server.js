@@ -1,6 +1,9 @@
 import { PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS, PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_WRITE } from '$env/static/public';
+import { User } from '$lib/classes/user.js';
 
-export const load = async ({ url, fetch }) => {
+export const load = async ({ url, fetch, locals }) => {
+
+  const user = User.fromJSON(locals.user);
 
   const eid = url.searchParams.get('id');
 
@@ -60,12 +63,19 @@ export const load = async ({ url, fetch }) => {
     label: `${user.l_name} ${user.f_name} (${user.login})`
   }));
 
+  let vacations = [];
+  if (user.isAllowedToWriteVacation()) {
+    const vacationsRes = await fetch('/api/vacation/getAll');
+    vacations = await vacationsRes.json();
+  }
+
   return {
     event,
     usersAllowedToWrite,
     venues: venuesData,
     genres: genresData,
     roles,
-    usersAllowedToReceiveNotifications
+    usersAllowedToReceiveNotifications,
+    vacations
   };
 };

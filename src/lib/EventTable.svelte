@@ -15,6 +15,7 @@
 
 	export let events;
 	export let roles;
+	export let vacations = [];
 	export let user;
 	export let startOfDay;
 	export let date_from;
@@ -35,6 +36,26 @@
 			new Date(eventsAsc ? b.date_from : a.date_from)
 	);
 
+	$: vacationMap = new Map();
+	$: {
+		vacationMap.clear();
+
+		for (const vacation of vacations) {
+			const start = new Date(vacation.date_from);
+			const end = new Date(vacation.date_to);
+
+			for (let d = new Date(start); d <= end; d = new Date(d.getTime() + 86400000)) {
+				const day = toLocalISO(d);
+
+				if (!vacationMap.has(day)) {
+					vacationMap.set(day, []);
+				}
+
+				vacationMap.get(day).push(vacation);
+			}
+		}
+	}
+
 	$: tableRows = (() => {
 		const rows = sortedEvents.map((event) => ({
 			type: 'event',
@@ -42,6 +63,7 @@
 			event
 		}));
 
+		// empty days
 		if (showEmptyDays && date_from && date_to) {
 			const eventDays = new Set();
 
@@ -72,14 +94,11 @@
 		return rows.sort((a, b) => {
 			const dateComparison = new Date(a.date) - new Date(b.date);
 
-			if (dateComparison !== 0) {
-				return eventsAsc ? dateComparison : -dateComparison;
-			}
+			if (dateComparison !== 0) return eventsAsc ? dateComparison : -dateComparison;
 
-			// If an empty day and an event have the same date,
-			// put the event first.
-			if (a.type === 'event' && b.type === 'empty') return -1;
-			if (a.type === 'empty' && b.type === 'event') return 1;
+			// If an empty day and an event have the same date, put the event first.
+			if (a.type === 'event' && b.type !== 'event') return -1;
+			if (a.type !== 'event' && b.type === 'event') return 1;
 
 			return 0;
 		});
@@ -146,6 +165,7 @@
 		{#each tableRows as row}
 			{#if row.type === 'event'}
 				{@const event = row.event}
+				{@const day = toLocalISO(new Date(event.date_from))}
 
 				<tr>
 					<td>
@@ -159,6 +179,20 @@
 					</td>
 					<td class="cell-max">
 						<LocalisedDateRange from={event.date_from} to={event.date_to} wrap={true} />
+
+						{#if vacationMap.has(day)}
+							<div class="vacations">
+								{#each vacationMap.get(day) as vacation (vacation.id)}
+									<TooltipUser
+										l_name={vacation.l_name}
+										f_name={vacation.f_name}
+										email={vacation.email}
+										phone={vacation.phone}
+										{user}
+									/>
+								{/each}
+							</div>
+						{/if}
 					</td>
 					<td class="desc-cell">
 						<div class="desc">
@@ -242,6 +276,20 @@
 					<td>Žádná událost</td>
 					<td>
 						{getLocalisedDate(row.date, false)}
+
+						{#if vacationMap.has(row.date)}
+							<div class="vacations">
+								{#each vacationMap.get(row.date) as vacation (vacation.id)}
+									<TooltipUser
+										l_name={vacation.l_name}
+										f_name={vacation.f_name}
+										email={vacation.email}
+										phone={vacation.phone}
+										{user}
+									/>
+								{/each}
+							</div>
+						{/if}
 					</td>
 					<td colspan={8 + roles.length}>x</td>
 				</tr>
@@ -311,5 +359,22 @@
 
 	.empty-day-row td:last-child {
 		text-align: left;
+	}
+
+	.vacations {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: 0.2rem;
+
+		font-weight: normal;
+		font-size: 0.8rem;
+		background: #ff6961;
+		color: #fff;
+		padding: 2px 4px;
+		border-radius: 3px;
+
+		width: fit-content;
+		font-style: normal;
 	}
 </style>

@@ -1,5 +1,5 @@
 <script>
-    import MarkdownIt from 'markdown-it';
+	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
 ### v0.2.0, release dd. mm. yyyy
@@ -9,6 +9,7 @@
 #### opraveno
     `;
 
+	/* TODO dopsat starý verze bez změn */
 	$: html = md.render(source);
 </script>
 

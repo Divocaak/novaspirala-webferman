@@ -10,12 +10,13 @@ export const load = async ({ locals, url, params, fetch }) => {
     const id_venue = url.searchParams.get('id_venue');
     const id_genre = url.searchParams.get('id_genre');
 
-    const [rolesRes, eventsRes, venuesRes, genresRes, eventNotificationRes] = await Promise.all([
+    const [rolesRes, eventsRes, venuesRes, genresRes, eventNotificationRes, vacationsRes] = await Promise.all([
         fetch("/api/roles/getAll"),
         fetch(`/api/events/getAll?${new URLSearchParams({ date_from, date_to, id_venue, id_genre })}`),
         fetch("/api/venues/getAllForForm"),
         fetch("/api/genres/getAllForForm"),
-        fetch(`/api/users/getAllEventNotifications?${new URLSearchParams({ uid: user.id })}`)
+        fetch(`/api/users/getAllEventNotifications?${new URLSearchParams({ uid: user.id })}`),
+        user.isAllowedToWriteVacation() ? fetch(`/api/vacation/getAll?${new URLSearchParams({ date_from, date_to })}`) : Promise.resolve(null)
     ]);
 
     const [rolesData, eventsData, venuesData, genresData, eventNotificationData] = await Promise.all([
@@ -25,6 +26,7 @@ export const load = async ({ locals, url, params, fetch }) => {
         genresRes.json(),
         eventNotificationRes.json()
     ]);
+    const vacationsData = vacationsRes ? await vacationsRes.json() : [];
 
     let enrichedEvents = [];
     if (eventsData) {
@@ -48,6 +50,7 @@ export const load = async ({ locals, url, params, fetch }) => {
         events: enrichedEvents,
         venues: venuesData,
         genres: genresData,
-        notifications: eventNotificationData
+        notifications: eventNotificationData,
+        vacations: vacationsData
     }
 }

@@ -1,9 +1,11 @@
 <script>
 	import EventCell from '$lib/calendar/EventCell.svelte';
 	import EventModal from '$lib/modal/EventModal.svelte';
+	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
 
 	export let events = null;
 	export let roles = null;
+	export let vacations = [];
 	export let date_from;
 	export let date_to;
 	export let user;
@@ -19,11 +21,15 @@
 	let allDays = [];
 	let allVenues = [];
 	const dateVenueMap = new Map();
+	const vacationMap = new Map();
 	$: if (events) {
 		dateVenueMap.clear();
+		vacationMap.clear();
 
 		const visibleStart = new Date(date_from); // From search param
 		const visibleEnd = new Date(date_to); // To search param
+
+		// events
 		for (const event of events) {
 			const start = new Date(event.date_from);
 			const end = new Date(event.date_to);
@@ -46,20 +52,39 @@
 			}
 		}
 
-		allDays = Array.from(dateVenueMap.keys()).sort((a, b) => new Date(a) - new Date(b));
+		// VACATIONS
+		for (const vacation of vacations) {
+			const start = new Date(vacation.date_from);
+			const end = new Date(vacation.date_to);
 
+			const effectiveStart = new Date(Math.max(start, visibleStart));
+			const effectiveEnd = new Date(Math.min(end, visibleEnd));
+
+			for (
+				let d = new Date(effectiveStart);
+				d <= effectiveEnd;
+				d = new Date(d.getTime() + 86400000)
+			) {
+				const dayKey = toLocalISO(d);
+				if (!vacationMap.has(dayKey)) vacationMap.set(dayKey, []);
+
+				vacationMap.get(dayKey).push(vacation);
+			}
+		}
+
+		// EMPTY DAYS
 		if (showEmptyDays) {
 			for (let d = new Date(visibleStart); d < visibleEnd; d = new Date(d.getTime() + 86400000)) {
 				const dayKey = toLocalISO(d);
-
-				if (!dateVenueMap.has(dayKey)) {
-					dateVenueMap.set(dayKey, new Map());
-				}
+				if (!dateVenueMap.has(dayKey)) dateVenueMap.set(dayKey, new Map());
 			}
-
-			allDays = Array.from(dateVenueMap.keys()).sort((a, b) => new Date(a) - new Date(b));
 		}
 
+		// Include vacation-only days
+		for (const dayKey of vacationMap.keys())
+			if (!dateVenueMap.has(dayKey)) dateVenueMap.set(dayKey, new Map());
+
+		allDays = Array.from(dateVenueMap.keys()).sort((a, b) => new Date(a) - new Date(b));
 		allVenues = [
 			...new Map(
 				events.map((e) => [
@@ -109,7 +134,22 @@
 			{venue.label}
 		</div>{/each}
 	{#each allDays as date}
-		<div class="date-cell">{date}</div>
+		<div class="date-cell">
+			<div>{date}</div>
+			{#if vacationMap.has(date)}
+				<div class="vacations">
+					{#each vacationMap.get(date) as vacation (vacation.id)}
+						<TooltipUser
+							l_name={vacation.l_name}
+							f_name={vacation.f_name}
+							email={vacation.email}
+							phone={vacation.phone}
+							{user}
+						/>
+					{/each}
+				</div>
+			{/if}
+		</div>
 		{#each allVenues as venue}
 			{#if dateVenueMap.has(date) && dateVenueMap.get(date).has(venue.label)}
 				<div class="event-cell stacked-cell">
@@ -153,6 +193,22 @@
 		padding: 0.5rem;
 
 		background: #f0f0f0;
+	}
+
+	.vacations {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: .2rem;
+
+		font-weight: normal;
+		font-size: 0.8rem;
+		background: #ff6961;
+		color: #fff;
+		padding: 2px 4px;
+		border-radius: 3px;
+
+		width: fit-content;
 	}
 
 	.empty-cell {

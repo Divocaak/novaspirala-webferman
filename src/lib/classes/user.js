@@ -10,7 +10,8 @@ import {
     PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS,
     PUBLIC_PRIVILEGE_ID_SHOW_EMAILS,
     PUBLIC_PRIVILEGE_ID_IT_SUPPORT,
-    PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS
+    PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS,
+    PUBLIC_PRIVILEGE_ID_VACATION
 } from "$env/static/public";
 
 export class User {
@@ -143,6 +144,9 @@ export class User {
 
     // notifications
     isAllowedToReceiveNotifications() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS); }
+    
+    // vacation
+    isAllowedToWriteVacation() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_VACATION); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

@@ -224,6 +224,8 @@
 		bind:value={selectedUsersByRole}
 		{user}
 		eid={data.event?.id}
+		vacations={data.vacations}
+		{dateRanges}
 	/>
 	<!-- END FORM ROLES -->
 

@@ -90,9 +90,10 @@
 		✦ <b>{data.notifications.length}</b> nové notifikace
 	</button><br />
 {/if}
-{#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
+{#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br /><br />{/if}
 {#if user.isAllowedToITSupport()}<a href="/itsupport">IT podpora</a><br />{/if}
-{#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
+{#if user.isAllowedToWriteVacation()}<a href="/vacation">Dovolená</a><br />{/if}
+{#if user.isAllowedToCreate()}<a href="/form"><br />Přidat event</a><br />{/if}
 {#if user.isAllowedToRead()}
 	<button on:click={() => setDayFilter(!filterByDay)}>
 		Přepnout na filtrování po {filterByDay ? 'měsících' : 'dnech'}
@@ -161,6 +162,7 @@
 		<EventCalendar
 			events={data.events}
 			roles={data.roles}
+			vacations={data.vacations}
 			{date_from}
 			{date_to}
 			{user}
@@ -172,6 +174,7 @@
 		<EventTable
 			events={data.events}
 			roles={data.roles}
+			vacations={data.vacations}
 			{user}
 			{startOfDay}
 			{date_from}
