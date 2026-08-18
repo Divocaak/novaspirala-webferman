@@ -7,6 +7,7 @@
 	import DateRanges from '$lib/form/DateRanges.svelte';
 	import EventMetaForm from '$lib/form/EventMetaForm.svelte';
 	import RolesAssignment from '$lib/form/RolesAssignment.svelte';
+	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
 
 	export let data = null;
 	const user = User.fromJSON(data.user);
@@ -22,7 +23,8 @@
 			label: event?.label ?? '',
 			description: event?.description ?? '',
 			text_color: event?.text_color ?? '#ffffff',
-			background_color: event?.background_color ?? '#000000'
+			background_color: event?.background_color ?? '#000000',
+			notifyUsers: []
 		};
 	}
 
@@ -41,7 +43,7 @@
 	let dateRanges = initDateRanges(data.event);
 
 	/* ---------- permissions ---------- */
-	// TODO pastEditable
+	// NOTE KNOWN ISSUE pastEditable
 	const pastEditable = false; //form.id_created_by.id ? true : false;
 	$: isAllowedToEditHeadField = !user.isAllowedToEditHeadField(
 		data.event,
@@ -98,7 +100,8 @@
 				date_from: formatForMySQL(r.from),
 				date_to: formatForMySQL(r.to)
 			})),
-			roles: buildRolesPayload(roles)
+			roles: buildRolesPayload(roles),
+			notifyUsers: form.notifyUsers
 		};
 	}
 
@@ -107,6 +110,7 @@
 	let error = '';
 	let success = '';
 	async function submit(payload) {
+		console.log(JSON.stringify(payload));
 		const res = await fetch(apiPath, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -220,18 +224,35 @@
 		bind:value={selectedUsersByRole}
 		{user}
 		eid={data.event?.id}
+		vacations={data.vacations}
+		{dateRanges}
 	/>
 	<!-- END FORM ROLES -->
 
+	<button type="submit">Uložit</button><br />
+
 	{#if error}
 		<p style="color:red">{error}</p>
+		<br />
 	{/if}
 
 	{#if success}
 		<p style="color:green">{success}</p>
+		<br />
 	{/if}
 
-	<button type="submit">Uložit</button>
+	<!-- NOTIFY USERS -->
+	{#if data.usersAllowedToReceiveNotifications.length < 1}
+		<p>Zatím nemůže nikdo přijímat notifikace</p>
+	{:else}
+		<StyledMultiSelect
+			id="notifyUsersMultiSelect"
+			label={'Rozeslat notifikace'}
+			options={data.usersAllowedToReceiveNotifications}
+			bind:value={form.notifyUsers}
+		/>
+	{/if}
+	<!-- NOTIFY USERS END -->
 </form>
 {#if data.event}
 	<button type="button" on:click={copyEvent}> Kopírovat událost </button>

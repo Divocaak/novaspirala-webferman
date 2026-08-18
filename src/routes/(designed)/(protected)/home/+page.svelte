@@ -7,6 +7,7 @@
 	import { findInSelect } from '$lib/form/findInSelect.js';
 	import StyledSelect from '$lib/form/StyledSelect.svelte';
 	import BookingModal from '$lib/modal/BookingModal.svelte';
+	import NotificationsModal from '$lib/modal/NotificationsModal.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -31,6 +32,7 @@
 		id_genre = findInSelect(data.genres, params.get('id_genre'));
 	}
 
+	let showEmptyDays = true;
 	let date_from, date_to, month_year, id_venue, id_genre;
 
 	function updateParams(updates) {
@@ -74,12 +76,24 @@
 		showBookingModal = false;
 		selectedEvent = null;
 	};
+
+	let notificationsModalShown = false;
+	const switchNotificationsModal = () => {
+		notificationsModalShown = !notificationsModalShown;
+	};
 </script>
 
 <h2>home</h2>
 <br />
-{#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br />{/if}
-{#if user.isAllowedToCreate()}<a href="/form">Přidat event</a><br />{/if}
+{#if data.notifications.length > 0}
+	<button class="custom-btn" on:click={switchNotificationsModal}>
+		✦ <b>{data.notifications.length}</b> nové notifikace
+	</button><br />
+{/if}
+{#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br /><br />{/if}
+{#if user.isAllowedToITSupport()}<a href="/itsupport">IT podpora</a><br />{/if}
+{#if user.isAllowedToWriteVacation()}<a href="/vacation">Dovolená</a><br />{/if}
+{#if user.isAllowedToCreate()}<a href="/form"><br />Přidat event</a><br />{/if}
 {#if user.isAllowedToRead()}
 	<button on:click={() => setDayFilter(!filterByDay)}>
 		Přepnout na filtrování po {filterByDay ? 'měsících' : 'dnech'}
@@ -139,27 +153,40 @@
 		options={data.genres}
 		on:change={(e) => updateParams({ id_genre: e.detail?.value?.id })}
 	/>
+	<label>
+		<input type="checkbox" bind:checked={showEmptyDays} />
+		Zobrazit volné dny
+	</label><br />
 	<button on:click={() => (showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
 		<EventCalendar
 			events={data.events}
 			roles={data.roles}
+			vacations={data.vacations}
 			{date_from}
 			{date_to}
 			{user}
 			{startOfDay}
+			{showEmptyDays}
 			openBookingModalFunction={openBookingModal}
 		/>
 	{:else}
 		<EventTable
 			events={data.events}
 			roles={data.roles}
+			vacations={data.vacations}
 			{user}
 			{startOfDay}
+			{date_from}
+			{date_to}
+			{showEmptyDays}
 			openBookingModalFunction={openBookingModal}
 		/>
 	{/if}
 	{#if showBookingModal}
 		<BookingModal {selectedEvent} closeModalFunction={closeBookingModal} {user} />
+	{/if}
+	{#if notificationsModalShown}
+		<NotificationsModal closeModalFunction={switchNotificationsModal} {user} notifications={data.notifications}/>
 	{/if}
 {/if}

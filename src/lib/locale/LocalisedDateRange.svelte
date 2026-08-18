@@ -4,6 +4,7 @@
 	export let from;
 	export let to;
 	export let wrap = false;
+	export let hours = true;
 </script>
 
-<p>{getLocalisedDate(from)}{@html wrap ? '<br />' : '&nbsp;-&nbsp;'}{getLocalisedDate(to)}</p>
+<p>{getLocalisedDate(from, hours)}{@html wrap ? '<br />' : '&nbsp;-&nbsp;'}{getLocalisedDate(to, hours)}</p>

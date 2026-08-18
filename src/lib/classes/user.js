@@ -6,7 +6,12 @@ import {
     PUBLIC_PRIVILEGE_ID_WRITE,
     PUBLIC_PRIVILEGE_ID_BOOKING,
     PUBLIC_PRIVILEGE_ID_COMMENTS,
-    PUBLIC_PRIVILEGE_ID_UPLOAD_FILES
+    PUBLIC_PRIVILEGE_ID_UPLOAD_FILES,
+    PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS,
+    PUBLIC_PRIVILEGE_ID_SHOW_EMAILS,
+    PUBLIC_PRIVILEGE_ID_IT_SUPPORT,
+    PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS,
+    PUBLIC_PRIVILEGE_ID_VACATION
 } from "$env/static/public";
 
 export class User {
@@ -40,7 +45,7 @@ export class User {
     }
 
     setPrivileges(json) { this.privileges = User.createPrivileges(json); }
-    static createPrivileges(json) { return json.map(privilege => new Privilege({ id: privilege.id, label: privilege.label })); }
+    static createPrivileges(json) { return json.map(privilege => new Privilege({ id: privilege.id, label: privilege.label, note: privilege.note, text_color: privilege.text_color, background_color: privilege.background_color })); }
 
     setRoles(json) { this.roles = User.createRoles(json); }
     static createRoles(json) { return json.map(role => new Role({ id: role.id, label: role.label, manager: role.manager })); }
@@ -126,8 +131,22 @@ export class User {
     //isAllowedToComment = enable/disable comments to sections in event form
     isAllowedToComment() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_COMMENTS); }
 
+    // privileges regarding file uploads
     isAllowedToUploadFiles() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_UPLOAD_FILES) }
     isAllowedToDeleteFile(uploadedById) { return this.isSysAdmin() || uploadedById == this.id; }
+
+    // personal information privileges
+    isAllowedToSeeTelNumbers() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SHOW_TEL_NUMBERS); }
+    isAllowedToSeeEmails() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_SHOW_EMAILS); }
+
+    // IT support privileges
+    isAllowedToITSupport() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_IT_SUPPORT); }
+
+    // notifications
+    isAllowedToReceiveNotifications() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS); }
+    
+    // vacation
+    isAllowedToWriteVacation() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_VACATION); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) {

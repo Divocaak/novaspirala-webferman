@@ -7,6 +7,13 @@ const options = {
     minute: '2-digit'
 };
 
-export function getLocalisedDate(date) {
-    return new Date(date).toLocaleDateString('cs-CZ', options);
+const optionsWithoutHours = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+};
+
+export function getLocalisedDate(date, hours = true) {
+    return new Date(date).toLocaleDateString('cs-CZ', hours ? options : optionsWithoutHours);
 }

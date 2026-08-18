@@ -1,5 +1,6 @@
 <script>
 	import { User } from '$lib/classes/user.js';
+	import TooltipPrivilege from '$lib/tooltip/TooltipPrivilege.svelte';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -22,7 +23,7 @@
 	<a href="/logout">Odhlásit se</a>
 	<br />
 	(práva: {#each user.privileges as privilege}
-		{privilege.id}: <b>{privilege.label}</b>,&nbsp;
+		<TooltipPrivilege {privilege} />
 	{/each})<br />
 	(role: {#each user.roles as role}
 		{role.id}: <b>{role.label}</b>{#if role.manager}
