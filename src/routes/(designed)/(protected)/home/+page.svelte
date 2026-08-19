@@ -93,7 +93,7 @@
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br /><br />{/if}
 {#if user.isAllowedToITSupport()}<a href="/itsupport">IT podpora</a><br />{/if}
 {#if user.isAllowedToWriteVacation()}<a href="/vacation">Dovolená</a><br />{/if}
-{#if user.isRolesManager()}<a href="/booking">Booking</a><br />{/if}
+{#if user.hasManagingRole}<a href="/booking">Booking</a><br />{/if}
 {#if user.isAllowedToCreate()}<a href="/form"><br />Přidat event</a><br />{/if}
 {#if user.isAllowedToRead()}
 	<button on:click={() => setDayFilter(!filterByDay)}>
