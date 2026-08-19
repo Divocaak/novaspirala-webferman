@@ -42,13 +42,15 @@ export const load = async ({ url, fetch, locals }) => {
 
       return {
         role,
-        users: users.map(user => ({
-          id: user.id,
-          label: `${user.l_name} ${user.f_name} (${user.login})`,
-          booked: bookedUsers.some(
-            b => b.rid === role.id && b.uid === user.id
-          )
-        })),
+        users: users.map(user => {
+          const booking = bookedUsers.find(b => b.rid === role.id && b.uid === user.id);
+
+          return {
+            id: user.id,
+            label: `${user.l_name} ${user.f_name} (${user.login})`,
+            booked: booking?.booked ?? null
+          };
+        }),
         comments: commentsData?.[role.id] ?? []
       };
     })

@@ -1,4 +1,5 @@
 <script>
+	import Badge from '$lib/Badge.svelte';
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 	import { createEventDispatcher } from 'svelte';
 
@@ -104,7 +105,6 @@
 			class="option"
 			for={id}
 			aria-selected={isSelected(option)}
-			class:booked={option.booked}
 			class:on-vacation={userVacations.length > 0}
 		>
 			{#key value}
@@ -124,13 +124,18 @@
 				</span>
 
 				{#each userVacations as vacation (vacation.id)}
-					<span class="vacation-badge">
-						DOVOLENÁ
-						{getLocalisedDate(vacation.date_from, false)}
-						-
-						{getLocalisedDate(vacation.date_to, false)}
-					</span>
+					<Badge
+						content="DOVOLENÁ {getLocalisedDate(vacation.date_from, false)} - {getLocalisedDate(
+							vacation.date_to,
+							false
+						)}"
+						type="vacation"
+					/>
 				{/each}
+
+				{#if option.booked != null}
+					<Badge content="ZABOOKOVÁNO {getLocalisedDate(option.booked)}" type="booking" />
+				{/if}
 			</span>
 
 			{#if withNote}
@@ -182,11 +187,6 @@
 		cursor: not-allowed;
 	}
 
-	.booked {
-		background-color: #80ef80;
-		border-radius: 0.5rem;
-	}
-
 	.user-info {
 		display: flex;
 		align-items: center;
@@ -196,17 +196,6 @@
 	}
 
 	.user-name {
-		white-space: nowrap;
-	}
-
-	.vacation-badge {
-		display: inline-block;
-		padding: 2px 5px;
-		border-radius: 3px;
-		background: #ff6961;
-		color: white;
-		font-size: 0.7rem;
-		font-weight: bold;
 		white-space: nowrap;
 	}
 </style>

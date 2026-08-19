@@ -3,6 +3,8 @@
 	import { User } from '$lib/classes/user';
 	import Modal from '$lib/modal/Modal.svelte';
 	import Pill from '$lib/Pill.svelte';
+	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
+	import Badge from '$lib/Badge.svelte';
 
 	export let selectedEvent;
 	export let closeModalFunction;
@@ -15,10 +17,12 @@
 
 	let selectedRoles = {};
 	let initialRoles = {};
+	let bookedRoles = {};
 	onMount(async () => {
 		const res = await fetch(`/api/userBooking/get?eid=${eid}&uid=${uid}`);
 		const selectedRolesData = await res.json();
 
+		bookedRoles = Object.fromEntries(selectedRolesData.map((r) => [r.rid, r.booked]));
 		const roleIds = selectedRolesData.map((r) => r.rid);
 
 		initialRoles = Object.fromEntries(roleIds.map((rid) => [rid, true]));
@@ -75,6 +79,9 @@
 					bind:checked={selectedRoles[role.id]}
 					disabled={initialRoles[role.id]}
 				/>{role.label}
+				{#if bookedRoles[role.id]}
+					<Badge content="ZABOOKOVÁNO {getLocalisedDate(bookedRoles[role.id])}" type="booking" />
+				{/if}
 			</label><br />
 		{/each}
 

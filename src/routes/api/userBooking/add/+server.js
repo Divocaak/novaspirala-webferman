@@ -17,13 +17,13 @@ export async function POST({ request }) {
             .join(', ');
         const values = entries.flatMap(
             ([roleKey, roleValue]) =>
-                roleValue === true ? [uid, Number(roleKey), eid, roleValue] : []
+                roleValue === true ? [uid, Number(roleKey), eid, new Date()] : []
         );
 
         const sql = `
                 INSERT INTO user_event (id_user, id_role, id_event, booked)
                 VALUES ${placeholders}
-                ON DUPLICATE KEY UPDATE booked = VALUES(booked)
+                ON DUPLICATE KEY UPDATE booked = booked
             `;
         await connection.query(sql, values);
 
