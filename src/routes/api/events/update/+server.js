@@ -26,10 +26,12 @@ export async function POST({ request }) {
             const placeholders = roles.map(() => '(?, ?, ?, ?, 1)').join(', ');
             const values = roles.flatMap(role => [role.uid, role.rid, id, role.note]);
 
+            console.log(values);
+
             const sql = `
                 INSERT INTO user_event (id_user, id_role, id_event, comment, active)
                 VALUES ${placeholders}
-                ON DUPLICATE KEY UPDATE active = VALUES(active)
+                ON DUPLICATE KEY UPDATE active = VALUES(active), comment = VALUES(comment);
             `;
 
             await connection.query(sql, values);

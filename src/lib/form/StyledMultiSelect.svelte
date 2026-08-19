@@ -127,7 +127,7 @@
 					<span class="vacation-badge">
 						DOVOLENÁ
 						{getLocalisedDate(vacation.date_from, false)}
-						–
+						-
 						{getLocalisedDate(vacation.date_to, false)}
 					</span>
 				{/each}
