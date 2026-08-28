@@ -22,7 +22,7 @@ export async function GET({ url }) {
         v.label AS vLabel, v.addr_label, v.addr_street, v.addr_town, v.addr_postal, v.addr_country_code, v.text_color AS vTxtClr, v.background_color AS vBgClr
         FROM event e
         INNER JOIN venue v ON e.id_venue = v.id
-        ${conditions}`,
+        ${conditions} ORDER BY e.date_from`,
         params);
 
     const events = rows.map(event => ({
