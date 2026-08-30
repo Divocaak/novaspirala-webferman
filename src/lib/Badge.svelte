@@ -3,7 +3,7 @@
 	export let type;
 </script>
 
-<span class="info-badge {type}">{content}</span>
+<span class="info-badge {type}">{@html content}</span>
 
 <style>
 	.info-badge {

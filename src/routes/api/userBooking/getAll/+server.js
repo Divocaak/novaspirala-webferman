@@ -5,7 +5,7 @@ export async function GET({ request, params, url }) {
     const eid = url.searchParams.get("eid");
     
     const [bookedUsers] = await pool.query(`
-        SELECT ur.id_user AS uid, ur.id_role AS rid, booked
+        SELECT ur.id_user AS uid, ur.id_role AS rid, ur.booked
         FROM user_event ur 
         WHERE ur.id_event = ? AND ur.booked IS NOT NULL
         `, eid);
