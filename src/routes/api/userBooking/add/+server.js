@@ -24,7 +24,9 @@ export async function POST({ request }) {
 
         await connection.beginTransaction();
 
-        const bookedAt = new Date();
+        const bookedAt = new Date().toLocaleString('sv-SE', {
+            timeZone: 'Europe/Prague'
+        })
 
         const placeholders = rolesToBook
             .map(() => '(?, ?, ?, ?)')
