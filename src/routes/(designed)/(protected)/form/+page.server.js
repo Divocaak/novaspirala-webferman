@@ -7,7 +7,7 @@ export const load = async ({ url, fetch, locals }) => {
 
   const eid = url.searchParams.get('id');
 
-  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes, usersAllowedToReceiveNotificationsRes] = await Promise.all([
+  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes, usersAllowedToReceiveNotificationsRes, allUsersRes] = await Promise.all([
     // get all users allowed to write
     fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_WRITE].join(",")}`),
     fetch("/api/venues/getAllForForm"),
@@ -15,10 +15,10 @@ export const load = async ({ url, fetch, locals }) => {
     fetch("/api/roles/getAll"),
     fetch(`/api/comments/getAllInEvent?eid=${eid}`),
     // get all users allowed to receive notifications
-    fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS].join(",")}`),
+    fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS].join(",")}`)
   ]);
 
-  const [usersAllowedData, venuesData, genresData, rolesData, commentsData, usersAllowedToReceiveNotificationsData] = await Promise.all([
+  const [usersAllowedData, venuesData, genresData, rolesData, commentsData, usersAllowedToReceiveNotificationsData, allUsersData] = await Promise.all([
     usersAllowedRes.json(),
     venuesRes.json(),
     genresRes.json(),

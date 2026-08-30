@@ -137,7 +137,6 @@
 	let error = '';
 	let success = '';
 	async function submit(payload) {
-		console.log(JSON.stringify(payload));
 		const res = await fetch(apiPath, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -221,6 +220,7 @@
 
 	<EventMetaForm
 		bind:form
+		{user}
 		readonlyHeadField={isAllowedToEditHeadField}
 		readonlyDescriptionField={isAllowedToEditDescriptionField}
 		usersAllowedToWrite={data.usersAllowedToWrite}

@@ -16,7 +16,8 @@ export async function POST({ request }) {
             text_color,
             background_color,
             roles,
-            notifyUsers
+            notifyUsers,
+            id_created_by
         } = await request.json();
 
         connection = await pool.getConnection();
@@ -43,7 +44,8 @@ export async function POST({ request }) {
 				date_to = ?,
 				description = ?,
 				text_color = ?,
-				background_color = ?
+				background_color = ?,
+                id_created_by = ?
 			 WHERE id = ?`,
             [
                 id_venue,
@@ -55,6 +57,7 @@ export async function POST({ request }) {
                 description,
                 text_color,
                 background_color,
+                id_created_by,
                 id
             ]
         );
