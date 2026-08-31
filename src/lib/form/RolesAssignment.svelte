@@ -1,5 +1,6 @@
 <script>
 	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
+	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
 
 	export let roles = [];
@@ -8,22 +9,12 @@
 	export let eid;
 	export let vacations = [];
 	export let dateRanges = [];
-
-	/* ---------- ensure value structure ---------- */
-	function normalizeRoleValue(arr = []) {
-		return arr.map((u) => (u.note !== undefined ? u : { ...u, note: '' }));
-	}
-
-	$: {
-		for (const role of roles)
-			value[role.role.id] = !value[role.role.id] ? [] : normalizeRoleValue(value[role.role.id]);
-	}
+	export let roleLimits = {};
 
 	/* ---------- comments ---------- */
 	async function askForComment(rid) {
 		const comment = prompt('Komentář');
 		if (!comment) return;
-
 		const res = await fetch('/api/comments/add', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -35,23 +26,28 @@
 			})
 		});
 
-		if (!res.ok) alert('Chyba při ukládání komentáře');
+		if (!res.ok) {
+			alert('Chyba při ukládání komentáře');
+			return;
+		}
+
 		await reloadComments();
 	}
 
 	async function deleteComment(cid) {
 		if (!confirm('Opravdu?')) return;
 		const res = await fetch(`/api/comments/delete?cid=${cid}`);
-		if (!res.ok) alert('Chyba při ukládání komentáře');
+		if (!res.ok) {
+			alert('Chyba při ukládání komentáře');
+			return;
+		}
 		await reloadComments();
 	}
 
 	async function reloadComments() {
 		const res = await fetch(`/api/comments/getAllInEvent?eid=${eid}`);
 		if (!res.ok) return;
-
 		const data = await res.json();
-
 		roles = roles.map((role) => ({
 			...role,
 			comments: data[role.role.id] ?? []
@@ -61,6 +57,18 @@
 
 {#each roles as role}
 	<div class="section" style="background:{role.role.bgClr}; color:{role.role.txtClr};">
+		<!-- ---------- ROLE LIMIT ---------- -->
+		<div class="role-limit">
+			<label>
+				Limit uživatelů: <input
+					type="number"
+					min="0"
+					bind:value={roleLimits[role.role.id]}
+					readonly={!user.isRolesManager(role.role.id)}
+				/>
+			</label>
+		</div>
+
 		{#if role.users.length < 1}
 			<p>
 				Počet uživatelů s rolí "<b>{role.role.label}</b>" je 0
@@ -78,18 +86,20 @@
 		{/if}
 
 		<!-- ---------- ROLE NOTE ---------- -->
-		<p>{role.role.note}</p>
+		<p>Vedoucí sekce: {role.role.note}</p>
 
 		<!-- ---------- USER NOTES PREVIEW ---------- -->
 		{#if value[role.role.id]?.length}
 			<div class="user-notes">
 				{#each value[role.role.id] as u (u.id)}
-					{#if u.note}
-						<div class="user-note">
-							<b>{u.label}:</b>
-							{u.note}
-						</div>
-					{/if}
+					{#each Object.entries(u.dates ?? {}) as [date, dateData]}
+						{#if dateData.selected && dateData.note}
+							<div class="user-note">
+								<b>{u.label} — {getLocalisedDate(date, false)}:</b>
+								{dateData.note}
+							</div>
+						{/if}
+					{/each}
 				{/each}
 			</div>
 		{/if}
@@ -135,5 +145,23 @@
 
 	.comment button {
 		height: 100%;
+	}
+
+	.role-limit {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 1rem 0;
+	}
+
+	.role-limit label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.role-limit input {
+		width: 5rem;
+		margin: 0;
 	}
 </style>

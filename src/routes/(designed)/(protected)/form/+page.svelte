@@ -4,10 +4,10 @@
 	import { createEmptyRange, formatForMySQL, toDateInputValue } from '$lib/form/dates.js';
 	import { goto } from '$app/navigation';
 
-	import DateRanges from '$lib/form/DateRanges.svelte';
 	import EventMetaForm from '$lib/form/EventMetaForm.svelte';
 	import RolesAssignment from '$lib/form/RolesAssignment.svelte';
 	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
+	import EventDateRanges from '$lib/form/dateRanges/EventDateRanges.svelte';
 
 	export let data = null;
 	const user = User.fromJSON(data.user);
@@ -57,34 +57,65 @@
 	);
 
 	/* ---------- roles ---------- */
-	let selectedUsersByRole = {};
-	for (const role of data.roles) {
-		if (!data.event) {
-			selectedUsersByRole[role.role.id] = [];
-			continue;
+	function initSelectedUsersByRole(event, roles) {
+		const result = {};
+
+		for (const role of roles) {
+			const users = {};
+
+			for (const assignment of event?.assignedRoles ?? []) {
+				if (Number(assignment.rid) !== Number(role.role.id)) continue;
+
+				const user = role.users.find((u) => Number(u.id) === Number(assignment.uid));
+
+				if (!user) continue;
+
+				if (!users[assignment.uid]) {
+					users[assignment.uid] = {
+						...user,
+						dates: {}
+					};
+				}
+
+				const eventDate = normalizeDate(event.date_from);
+
+				users[assignment.uid].dates[eventDate] = {
+					selected: true,
+					note: assignment.note ?? ''
+				};
+			}
+
+			result[role.role.id] = Object.values(users);
 		}
 
-		const assigned =
-			data.event.assignedRoles
-				?.filter((r) => r.rid === role.role.id)
-				.map((r) => {
-					const user = role.users.find((u) => u.id === r.uid);
-					if (!user) return null;
-					return { ...user, comment: r.note };
-				})
-				.filter(Boolean) ?? [];
+		return result;
+	}
+	let selectedUsersByRole = initSelectedUsersByRole(data.event, data.roles);
 
-		selectedUsersByRole[role.role.id] = assigned.map((u) => ({ ...u, note: '' }));
+	function normalizeDate(date) {
+		if (!date) return null;
+		if (typeof date === 'string') return date.slice(0, 10);
+		return [
+			date.getFullYear(),
+			String(date.getMonth() + 1).padStart(2, '0'),
+			String(date.getDate()).padStart(2, '0')
+		].join('-');
 	}
 
-	function buildRolesPayload(map) {
-		return Object.entries(map).flatMap(
-			([rid, users]) =>
-				users?.map((u) => ({
-					rid: Number(rid),
-					uid: u.id,
-					note: u.note ?? ''
-				})) ?? []
+	let roleLimits = Object.fromEntries(data.roles.map((role) => [role.role.id, role.limit]));
+
+	function buildRolesPayload(usersByRole) {
+		return Object.entries(usersByRole).flatMap(([rid, users]) =>
+			(users ?? []).flatMap((user) =>
+				Object.entries(user.dates ?? {})
+					.filter(([, dateData]) => dateData.selected)
+					.map(([date, dateData]) => ({
+						uid: user.id,
+						rid: Number(rid),
+						date,
+						note: dateData.note ?? ''
+					}))
+			)
 		);
 	}
 
@@ -95,13 +126,12 @@
 			id_created_by: form.id_created_by.id,
 			id_venue: form.id_venue.id,
 			id_genre: form.id_genre.id,
-			id_order: form.id_order,
-			date_ranges: dateRanges.map((r) => ({
-				date_from: formatForMySQL(r.from),
-				date_to: formatForMySQL(r.to)
+			date_ranges: dateRanges.map((range) => ({
+				date_from: formatForMySQL(range.from),
+				date_to: formatForMySQL(range.to)
 			})),
 			roles: buildRolesPayload(roles),
-			notifyUsers: form.notifyUsers
+			role_limits: roleLimits
 		};
 	}
 
@@ -110,7 +140,6 @@
 	let error = '';
 	let success = '';
 	async function submit(payload) {
-		console.log(JSON.stringify(payload));
 		const res = await fetch(apiPath, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -134,7 +163,7 @@
 		}
 
 		try {
-			await submit(buildPayload(form, dateRanges, selectedUsersByRole));
+			await submit(buildPayload(form, dateRanges, selectedUsersByRole, roleLimits));
 
 			let message;
 			if (mode === 'copy') message = 'kopírován';
@@ -194,6 +223,7 @@
 
 	<EventMetaForm
 		bind:form
+		{user}
 		readonlyHeadField={isAllowedToEditHeadField}
 		readonlyDescriptionField={isAllowedToEditDescriptionField}
 		usersAllowedToWrite={data.usersAllowedToWrite}
@@ -201,7 +231,7 @@
 		genres={data.genres}
 	/>
 
-	<DateRanges
+	<EventDateRanges
 		bind:ranges={dateRanges}
 		readonly={isAllowedToEditHeadField}
 		single={!!data.event}
@@ -222,6 +252,7 @@
 	<RolesAssignment
 		roles={data.roles}
 		bind:value={selectedUsersByRole}
+		bind:roleLimits
 		{user}
 		eid={data.event?.id}
 		vacations={data.vacations}
@@ -250,6 +281,7 @@
 			label={'Rozeslat notifikace'}
 			options={data.usersAllowedToReceiveNotifications}
 			bind:value={form.notifyUsers}
+			{dateRanges}
 		/>
 	{/if}
 	<!-- NOTIFY USERS END -->

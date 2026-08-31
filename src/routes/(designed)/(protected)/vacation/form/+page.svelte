@@ -1,12 +1,12 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { User } from '$lib/classes/user';
-	import DateRanges from '$lib/form/DateRanges.svelte';
+	import DateRange from '$lib/form/dateRanges/DateRange.svelte';
 	import { createEmptyRange, formatForMySQL } from '$lib/form/dates.js';
 
 	export let data;
 	const user = User.fromJSON(data.user);
-	let dateRange = [createEmptyRange()];
+	let dateRange = createEmptyRange();
 
 	let error = '';
 	let success = '';
@@ -14,21 +14,18 @@
 		e.preventDefault();
 
 		try {
-			if (
-				dateRange[0].from &&
-				dateRange[0].to &&
-				new Date(dateRange[0].to) < new Date(dateRange[0].from)
-			) {
+			if (dateRange.from && dateRange.to && new Date(dateRange.to) < new Date(dateRange.from)) {
 				alert('Od musí být dříve než Do');
 				return;
 			}
+
 			const res = await fetch('/api/vacation/add', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					uid: user.id,
-					from: formatForMySQL(dateRange[0].from),
-					to: formatForMySQL(dateRange[0].to)
+					from: formatForMySQL(dateRange.from),
+					to: formatForMySQL(dateRange.to)
 				})
 			});
 
@@ -54,7 +51,7 @@
 <a href="/vacation">zpět</a><br />
 
 <form on:submit={handleSubmit}>
-	<DateRanges bind:ranges={dateRange} single={true} /><br />
+	<DateRange bind:range={dateRange} /><br />
 
 	{#if error}
 		<p style="color:red">{error}</p>

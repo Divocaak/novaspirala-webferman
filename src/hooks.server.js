@@ -22,6 +22,9 @@ export async function handle({ event, resolve }) {
         // Restrict access to /sysadmin for non-sysadmins
         if (pathname.includes('/sysadmin') && !user.isSysAdmin()) throw redirect(302, '/403'); // Redirect to Forbidden page
         if (pathname.includes('/form') && !(user.isAllowedToCreate() || user.hasManagingRole)) throw redirect(302, '/403'); // Redirect to Forbidden page
+        if (pathname.includes('/itsupport') && !(user.isAllowedToITSupport() || user.isSysAdmin())) throw redirect(302, '/403'); // Redirect to Forbidden page
+        if (pathname.includes('/vacation') && !(user.isAllowedToWriteVacation() || user.isSysAdmin())) throw redirect(302, '/403'); // Redirect to Forbidden page
+        if (pathname.includes('/booking') && !user.hasManagingRole) throw redirect(302, '/403'); // Redirect to Forbidden page
     }
 
     return resolve(event);

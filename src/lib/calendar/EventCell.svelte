@@ -12,7 +12,7 @@
 	const dispatch = createEventDispatcher();
 
 	function handleClick() {
-		dispatch('select', {event, enrichedUsers});
+		dispatch('select', { event, enrichedUsers });
 	}
 </script>
 
@@ -21,6 +21,7 @@
 	on:click={handleClick}
 >
 	{event.label}
+	{#if event.id_order}<br /><i>{event.id_order}</i>{/if}
 	<Pill label={event.gLabel} bgClr={event.gBgClr} txtClr={event.gTxtClr} />
 	<div class="users-wrapper">
 		{#each enrichedUsers as user}
@@ -76,7 +77,7 @@
 	.users-wrapper {
 		position: relative;
 		padding: 0.5rem;
-		
+
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;

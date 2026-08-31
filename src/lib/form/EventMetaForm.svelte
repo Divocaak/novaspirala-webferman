@@ -1,5 +1,9 @@
 <script>
+	import { User } from '$lib/classes/user';
 	import StyledSelect from '$lib/form/StyledSelect.svelte';
+
+	export let user;
+	const userData = User.fromJSON(user);
 
 	export let form;
 	export let readonlyHeadField = false;
@@ -13,7 +17,7 @@
 	label="Vytvořil (readonly)"
 	bind:value={form.id_created_by}
 	options={usersAllowedToWrite}
-	readonly
+	readonly={!userData.isSysAdmin()}
 />
 
 <StyledSelect

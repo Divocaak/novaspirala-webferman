@@ -8,6 +8,7 @@
 	import StyledSelect from '$lib/form/StyledSelect.svelte';
 	import BookingModal from '$lib/modal/BookingModal.svelte';
 	import NotificationsModal from '$lib/modal/NotificationsModal.svelte';
+	import ExportAttendanceButton from '$lib/buttons/ExportAttendanceButton.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -93,6 +94,8 @@
 {#if user.isSysAdmin()}<a href="/sysadmin">sysadmin</a><br /><br />{/if}
 {#if user.isAllowedToITSupport()}<a href="/itsupport">IT podpora</a><br />{/if}
 {#if user.isAllowedToWriteVacation()}<a href="/vacation">Dovolená</a><br />{/if}
+{#if user.hasManagingRole}<a href="/booking">Booking</a><br />{/if}
+{#if user.hasManagingRole}<ExportAttendanceButton {user} />{/if}
 {#if user.isAllowedToCreate()}<a href="/form"><br />Přidat event</a><br />{/if}
 {#if user.isAllowedToRead()}
 	<button on:click={() => setDayFilter(!filterByDay)}>
