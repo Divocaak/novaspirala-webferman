@@ -9,6 +9,7 @@
 	export let eid;
 	export let vacations = [];
 	export let dateRanges = [];
+	export let roleLimits = {};
 
 	/* ---------- comments ---------- */
 	async function askForComment(rid) {
@@ -56,6 +57,18 @@
 
 {#each roles as role}
 	<div class="section" style="background:{role.role.bgClr}; color:{role.role.txtClr};">
+		<!-- ---------- ROLE LIMIT ---------- -->
+		<div class="role-limit">
+			<label>
+				Limit uživatelů: <input
+					type="number"
+					min="0"
+					bind:value={roleLimits[role.role.id]}
+					readonly={!user.isRolesManager(role.role.id)}
+				/>
+			</label>
+		</div>
+
 		{#if role.users.length < 1}
 			<p>
 				Počet uživatelů s rolí "<b>{role.role.label}</b>" je 0
@@ -132,5 +145,23 @@
 
 	.comment button {
 		height: 100%;
+	}
+
+	.role-limit {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 1rem 0;
+	}
+
+	.role-limit label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.role-limit input {
+		width: 5rem;
+		margin: 0;
 	}
 </style>

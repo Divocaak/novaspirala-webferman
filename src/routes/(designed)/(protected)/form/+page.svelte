@@ -102,6 +102,8 @@
 		].join('-');
 	}
 
+	let roleLimits = Object.fromEntries(data.roles.map((role) => [role.role.id, role.limit]));
+
 	function buildRolesPayload(usersByRole) {
 		return Object.entries(usersByRole).flatMap(([rid, users]) =>
 			(users ?? []).flatMap((user) =>
@@ -128,7 +130,8 @@
 				date_from: formatForMySQL(range.from),
 				date_to: formatForMySQL(range.to)
 			})),
-			roles: buildRolesPayload(roles)
+			roles: buildRolesPayload(roles),
+			role_limits: roleLimits
 		};
 	}
 
@@ -160,7 +163,7 @@
 		}
 
 		try {
-			await submit(buildPayload(form, dateRanges, selectedUsersByRole));
+			await submit(buildPayload(form, dateRanges, selectedUsersByRole, roleLimits));
 
 			let message;
 			if (mode === 'copy') message = 'kopírován';
@@ -249,6 +252,7 @@
 	<RolesAssignment
 		roles={data.roles}
 		bind:value={selectedUsersByRole}
+		bind:roleLimits
 		{user}
 		eid={data.event?.id}
 		vacations={data.vacations}

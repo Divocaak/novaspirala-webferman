@@ -45,6 +45,19 @@
 			.sort((a, b) => new Date(a.booked) - new Date(b.booked));
 	}
 
+	function getRoleLimit(eventId, roleId) {
+		return (
+			data.roleLimits.find(
+				(limit) =>
+					Number(limit.id_event) === Number(eventId) && Number(limit.id_role) === Number(roleId)
+			)?.limit ?? null
+		);
+	}
+
+	function getSelectedCount(eventId, roleId) {
+		return getBookings(eventId, roleId).filter((booking) => booking.active == 1).length;
+	}
+
 	function isSelected(booking) {
 		return booking.active == 1;
 	}
@@ -172,8 +185,16 @@
 
 				{#each data.userRoles as role}
 					{@const bookings = getBookings(event.id, role.id)}
+					{@const limit = getRoleLimit(event.id, role.id)}
+					{@const selectedCount = getSelectedCount(event.id, role.id)}
 
 					<td class="cell-max">
+						{#if limit !== null}
+							<div class="role-limit">
+								Obsazeno: <b>{selectedCount} / {limit}</b>
+							</div>
+						{/if}
+
 						{#if bookings.length > 0}
 							<div class="booking-actions">
 								<button type="button" on:click={() => selectAll(event.id, role.id)}>
@@ -262,5 +283,9 @@
 	.booking-user.selected {
 		background-color: #def;
 		color: #013;
+	}
+
+	.role-limit {
+		margin-bottom: 0.5rem;
 	}
 </style>

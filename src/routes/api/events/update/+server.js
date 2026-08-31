@@ -16,6 +16,7 @@ export async function POST({ request }) {
             text_color,
             background_color,
             roles,
+            role_limits,
             notifyUsers,
             id_created_by
         } = await request.json();
@@ -61,6 +62,28 @@ export async function POST({ request }) {
                 id
             ]
         );
+
+        // --------------------------------------------------
+        // Save role limits
+        // --------------------------------------------------
+
+        if (role_limits) {
+            const limits = Object.entries(role_limits).map(([rid, limit]) => [id, Number(rid), limit === '' || limit === undefined ? null : Number(limit)]);
+
+            if (limits.length > 0) {
+                const placeholders = limits.map(() => '(?, ?, ?)').join(', ');
+                const values = limits.flat();
+
+                await connection.query(
+                    `INSERT INTO event_role_limit
+				        (id_event, id_role, \`limit\`)
+			            VALUES ${placeholders}
+			            ON DUPLICATE KEY UPDATE
+				        \`limit\` = VALUES(\`limit\`)`,
+                    values
+                );
+            }
+        }
 
         // --------------------------------------------------
         // Deactivate existing user assignments

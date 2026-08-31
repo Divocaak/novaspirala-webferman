@@ -7,7 +7,7 @@ export const load = async ({ url, fetch, locals }) => {
 
   const eid = url.searchParams.get('id');
 
-  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes, usersAllowedToReceiveNotificationsRes, allUsersRes] = await Promise.all([
+  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes, usersAllowedToReceiveNotificationsRes, roleLimitsRes] = await Promise.all([
     // get all users allowed to write
     fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_WRITE].join(",")}`),
     fetch("/api/venues/getAllForForm"),
@@ -15,16 +15,18 @@ export const load = async ({ url, fetch, locals }) => {
     fetch("/api/roles/getAll"),
     fetch(`/api/comments/getAllInEvent?eid=${eid}`),
     // get all users allowed to receive notifications
-    fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS].join(",")}`)
+    fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS].join(",")}`),
+    fetch(`/api/roleLimits/getAllInEvent?eid=${eid}`),
   ]);
 
-  const [usersAllowedData, venuesData, genresData, rolesData, commentsData, usersAllowedToReceiveNotificationsData, allUsersData] = await Promise.all([
+  const [usersAllowedData, venuesData, genresData, rolesData, commentsData, usersAllowedToReceiveNotificationsData, roleLimitsData] = await Promise.all([
     usersAllowedRes.json(),
     venuesRes.json(),
     genresRes.json(),
     rolesRes.json(),
     commentsRes.json(),
-    usersAllowedToReceiveNotificationsRes.json()
+    usersAllowedToReceiveNotificationsRes.json(),
+    roleLimitsRes.json()
   ]);
 
   const usersAllowedToWrite = usersAllowedData.map(user => ({
@@ -39,9 +41,11 @@ export const load = async ({ url, fetch, locals }) => {
     rolesData.map(async role => {
       const res = await fetch(`/api/users/getAllWithRole?rid=${role.id}`);
       const users = await res.json();
+      const roleLimit = roleLimitsData.find((limit) => Number(limit.rid) === Number(role.id));
 
       return {
         role,
+        limit: roleLimit?.limit ?? null,
         users: users.map(user => {
           const booking = bookedUsers.find(b => b.rid === role.id && b.uid === user.id);
 

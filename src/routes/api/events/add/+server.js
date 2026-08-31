@@ -16,6 +16,7 @@ export async function POST({ request }) {
             text_color,
             background_color,
             roles,
+            role_limits,
             notifyUsers
         } = await request.json();
 
@@ -59,6 +60,27 @@ export async function POST({ request }) {
             );
 
             const insertedId = result.insertId;
+
+            // --------------------------------------------------
+            // 2. Save role limits
+            // --------------------------------------------------
+
+            if (role_limits) {
+                const limits = Object.entries(role_limits)
+                    .filter(([, limit]) => limit !== null && limit !== '' && limit !== undefined)
+                    .map(([rid, limit]) => [insertedId, Number(rid), Number(limit)]);
+
+                if (limits.length > 0) {
+                    const placeholders = limits.map(() => '(?, ?, ?)').join(', ');
+                    const values = limits.flat();
+                    await connection.query(
+                        `INSERT INTO event_role_limit
+			            (id_event, id_role, \`limit\`)
+			            VALUES ${placeholders}`,
+                        values
+                    );
+                }
+            }
 
             // --------------------------------------------------
             // 2. Get the date of this event
