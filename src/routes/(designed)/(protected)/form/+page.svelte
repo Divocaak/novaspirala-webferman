@@ -236,16 +236,7 @@
 		readonly={isAllowedToEditHeadField}
 		single={!!data.event}
 	/><br />
-
-	<label>
-		* Barva textu
-		<input type="color" bind:value={form.text_color} disabled={isAllowedToEditHeadField} />
-	</label><br />
-
-	<label>
-		* Barva pozadí
-		<input type="color" bind:value={form.background_color} disabled={isAllowedToEditHeadField} />
-	</label><br />
+	<br />
 	<!-- END FORM HEAD -->
 
 	<!-- FORM ROLES -->
