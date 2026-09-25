@@ -9,6 +9,8 @@
 	import BookingModal from '$lib/modal/BookingModal.svelte';
 	import NotificationsModal from '$lib/modal/NotificationsModal.svelte';
 	import ExportAttendanceButton from '$lib/buttons/ExportAttendanceButton.svelte';
+	import SveltyPicker from 'svelty-picker';
+	import MonthPicker from '$lib/form/MonthPicker.svelte';
 
 	export let data;
 	const user = User.fromJSON(data.user);
@@ -104,37 +106,36 @@
 	{#if filterByDay}
 		<label>
 			* Od
-			<input
-				type="date"
+			<SveltyPicker
 				value={date_from}
-				on:input={(e) => {
-					const v = e.target.value;
-					updateParams({ date_from: v, date_to: v });
+				mode="date"
+				format="yyyy-mm-dd"
+				onChange={(e) => {
+					updateParams({ date_from: e, date_to: e });
 				}}
 			/>
 		</label>
+
 		<label>
 			* Do
-			<input
-				type="date"
+			<SveltyPicker
 				value={date_to}
-				on:input={(e) => {
-					updateParams({ date_to: e.target.value });
+				mode="date"
+				format="yyyy-mm-dd"
+				onChange={(e) => {
+					updateParams({ date_to: e });
 				}}
 			/>
 		</label>
 	{:else}
 		<label>
 			* Měsíc
-			<input
-				type="month"
+			<MonthPicker
 				value={month_year}
-				on:input={(e) => {
-					const m = e.target.value;
+				onChange={(m) => {
 					const from = new Date(`${m}-01`);
 					const to = new Date(from);
 					to.setMonth(to.getMonth() + 1);
-
 					updateParams({
 						date_from: formatDate(from),
 						date_to: formatDate(to)
@@ -190,6 +191,10 @@
 		<BookingModal {selectedEvent} closeModalFunction={closeBookingModal} {user} />
 	{/if}
 	{#if notificationsModalShown}
-		<NotificationsModal closeModalFunction={switchNotificationsModal} {user} notifications={data.notifications}/>
+		<NotificationsModal
+			closeModalFunction={switchNotificationsModal}
+			{user}
+			notifications={data.notifications}
+		/>
 	{/if}
 {/if}

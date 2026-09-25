@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { User } from '$lib/classes/user.js';
+	import MonthPicker from '$lib/form/MonthPicker.svelte';
 	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText.js';
 	import Pill from '$lib/Pill.svelte';
@@ -125,15 +126,16 @@
 
 <label>
 	* Měsíc
-	<input
-		type="month"
+	<MonthPicker
 		value={month_year}
-		on:input={(e) => {
-			const m = e.target.value;
+		onChange={(m) => {
 			const from = new Date(`${m}-01`);
 			const to = new Date(from);
 			to.setMonth(to.getMonth() + 1);
-			updateParams({ date_from: formatDate(from), date_to: formatDate(to) });
+			updateParams({
+				date_from: formatDate(from),
+				date_to: formatDate(to)
+			});
 		}}
 	/>
 </label>
