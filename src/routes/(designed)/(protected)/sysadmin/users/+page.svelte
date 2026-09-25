@@ -1,4 +1,6 @@
 <script>
+	import { getLocalisedDate } from "$lib/locale/localisedDateRangeText";
+
 	export let data;
 
 	async function deleteUser(id) {
@@ -34,6 +36,7 @@
 			<th scope="col">Celé jméno</th>
 			<th scope="col">E-mail</th>
 			<th scope="col">Telefon</th>
+			<th scope="col">Naposledy</th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
@@ -59,6 +62,10 @@
 				</td>
 				<td>
 					<a href="tel:{user.phone}">{user.phone}</a>
+				</td>
+				<td>
+					{#if user.last_login}{getLocalisedDate(user.last_login)}
+					{/if}
 				</td>
 				<td>
 					<a href="/sysadmin/users/form?id={user.id}">Upravit</a>
