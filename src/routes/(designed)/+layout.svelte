@@ -82,4 +82,10 @@
 		text-align: end;
 		font-size: xx-small;
 	}
+
+	@media (max-width: 600px) {
+		:global(body) {
+		margin: 20px !important;
+	}
+	}
 </style>

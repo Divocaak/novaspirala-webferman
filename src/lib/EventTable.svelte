@@ -107,11 +107,14 @@
 	let table;
 
 	function updateSticky() {
+		if (window.innerWidth <= 767) {
+			table.style.removeProperty('--col3-width');
+			return;
+		}
+
 		const ths = table.querySelectorAll('thead th');
 		if (ths.length < 4) return;
-
 		const col3Width = ths[2].offsetWidth;
-
 		table.style.setProperty('--col3-width', `${col3Width}px`);
 	}
 
@@ -348,6 +351,17 @@
 	th:nth-child(4),
 	td:nth-child(4) {
 		left: var(--col3-width);
+	}
+
+	@media (max-width: 767px) {
+		th:nth-child(3),
+		td:nth-child(3),
+		th:nth-child(4),
+		td:nth-child(4) {
+			position: static;
+			left: auto;
+			z-index: auto;
+		}
 	}
 
 	.empty-day-row td {
