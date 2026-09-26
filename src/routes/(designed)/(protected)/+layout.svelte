@@ -16,6 +16,26 @@
 			document.body.style.backgroundSize = 'cover';
 		}
 	});
+
+	async function sendFeedback() {
+		const feedback = prompt('Mám prosbu, stížnost, hlásím chybu, něco mi nefunguje apod.');
+		if (!feedback) return;
+		const res = await fetch('/api/feedback/add', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				id_created_by: user.id,
+				feedback
+			})
+		});
+
+		if (!res.ok) {
+			alert('Chyba při ukládání zpětné vazby');
+			return;
+		}
+
+		alert("Uloženo!");
+	}
 </script>
 
 <p>
@@ -31,5 +51,20 @@
 	{/each}
 	)
 </p>
+<button onclick={sendFeedback}>Zpětná vazba</button>
 
 <slot />
+
+<style>
+	button {
+		background: none !important;
+		border: none;
+		padding: 0 !important;
+		color: #807fe2;
+		cursor: pointer;
+	}
+
+	button:hover {
+		text-decoration: underline;
+	}
+</style>

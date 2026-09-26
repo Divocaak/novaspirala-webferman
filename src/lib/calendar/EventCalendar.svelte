@@ -1,5 +1,6 @@
 <script>
 	import EventCell from '$lib/calendar/EventCell.svelte';
+	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 	import EventModal from '$lib/modal/EventModal.svelte';
 	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
 
@@ -135,7 +136,7 @@
 		</div>{/each}
 	{#each allDays as date}
 		<div class="date-cell">
-			<div>{date}</div>
+			<div>{getLocalisedDate(date, false)}</div>
 			{#if vacationMap.has(date)}
 				<div class="vacations">
 					{#each vacationMap.get(date) as vacation (vacation.id)}

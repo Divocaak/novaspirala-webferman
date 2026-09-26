@@ -11,6 +11,17 @@
 	export let usersAllowedToWrite = [];
 	export let venues = [];
 	export let genres = [];
+
+	let lastVenueId = null;
+
+	$: {
+		const venue = form.id_venue;
+		if (venue && venue.id !== lastVenueId) {
+			form.background_color = venue.bgClr;
+			form.text_color = venue.txtClr;
+			lastVenueId = venue.id;
+		}
+	}
 </script>
 
 <StyledSelect
@@ -43,4 +54,14 @@
 	Popis<br />
 	<textarea rows="20" cols="70" bind:value={form.description} readonly={readonlyDescriptionField}>
 	</textarea>
+</label><br />
+
+<label>
+	* Barva textu
+	<input type="color" bind:value={form.text_color} disabled={readonlyHeadField} />
+</label><br />
+
+<label>
+	* Barva pozadí
+	<input type="color" bind:value={form.background_color} disabled={readonlyHeadField} />
 </label><br />

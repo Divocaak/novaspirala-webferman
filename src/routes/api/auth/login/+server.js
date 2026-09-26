@@ -13,13 +13,24 @@ export async function POST({ request, cookies }) {
         WHERE login = ? AND deleted IS FALSE;`,
         [login]);
 
-    if (rows.length === 0) {
-        return json({ message: 'Uživatel neexistuje' }, { status: 401 });
-    }
+    if (rows.length === 0) return json({ message: 'Uživatel neexistuje' }, { status: 401 });
+    if (!validatePassword(password, rows[0].pass_hash)) return json({ message: 'Špatné přihlašovací údaje' }, { status: 401 });
 
-    if (!validatePassword(password, rows[0].pass_hash)) {
-        return json({ message: 'Špatné přihlašovací údaje' }, { status: 401 });
-    }
+    const now = new Date();
+    const localTimestamp = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Europe/Prague',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    }).format(now);
+
+    await pool.query(
+        `UPDATE user SET last_login = ? WHERE id = ?`,
+        [localTimestamp, rows[0].id]
+    );
 
     const user = new User({
         id: rows[0].id,

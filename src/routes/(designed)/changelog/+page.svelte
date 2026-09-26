@@ -2,6 +2,26 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+### build 0.2.0, release 26. 9. 2026
+#### 1) přidáno
+- ukládání datumu a času posledního přihlášení
+- _sysadmin_ vidí na stránce \`/booking\` všechny role
+- možnost odeslat zpětnou vazbu
+	- čte pouze vývojový tým, nikde jinde se nezobrazuje
+	- možnost ohlásit prosby, chyby, stížnosti atp.
+
+#### 2) upraveno
+- odebrání nepoužívaných rolí
+- v klandáři se zobrazuje název dne
+- při tvorbě eventu event nově přebírá defaultní barvu podle vybraného prostoru
+- pole pro výběr datumu/času/měsíce
+
+#### 3) opraveno
+- zobrazování tabulek na telefonech
+- podpora polí pro výběr datumu/času/měsíce skrz všechny prohlížeče
+- error při exportu docházky, dokud uživatel nevybral datum, nyní přejímá defaultně
+
+
 ### build 0.2.0, release 31. 8. 2026
 #### 1) přidáno
 - podstránka \`/changelog\`

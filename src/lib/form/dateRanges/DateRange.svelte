@@ -1,4 +1,5 @@
 <script>
+	import SveltyPicker from 'svelty-picker';
 	import { createEventDispatcher } from 'svelte';
 
 	export let range = {
@@ -25,25 +26,7 @@
 			return;
 		}
 
-		// When "to" is time-only, keep its time but
-		// update the date to match "from".
-		if (toOnlyTime) {
-			const time = range.to.split('T')[1];
-			updateRange({ from: value, to: time ? `${value.split('T')[0]}T${time}` : value });
-			return;
-		}
-
 		updateRange({ from: value });
-	}
-
-	function updateTo(value) {
-		if (toOnlyTime) {
-			const date = range.from?.split('T')[0];
-			updateRange({ to: date ? `${date}T${value}` : value });
-			return;
-		}
-
-		updateRange({ to: value });
 	}
 
 	function getTime(value) {
@@ -54,22 +37,44 @@
 
 <label>
 	* Od
-	<input
-		type="datetime-local"
+	<SveltyPicker
 		value={range.from}
+		mode="datetime"
+		format="yyyy-mm-dd hh:ii"
+		manualInput={!readonly}
+		disabled={readonly}
 		required
-		{readonly}
-		on:input={(e) => updateFrom(e.currentTarget.value)}
+		onInput={(e) => {
+			updateFrom(e);
+		}}
 	/>
 </label>
 
 <label>
 	* Do
-	<input
-		type={toOnlyTime ? 'time' : 'datetime-local'}
-		value={toOnlyTime ? getTime(range.to) : range.to}
-		required
-		{readonly}
-		on:input={(e) => updateTo(e.currentTarget.value)}
-	/>
+	{#if toOnlyTime}
+		<SveltyPicker
+			value={range.to}
+			mode="time"
+			format="hh:ii"
+			manualInput={!readonly}
+			disabled={readonly}
+			required
+			onInput={(e) => {
+				updateRange({ to: e });
+			}}
+		/>
+	{:else}
+		<SveltyPicker
+			value={range.to}
+			mode="datetime"
+			format="yyyy-mm-dd hh:ii"
+			manualInput={!readonly}
+			disabled={readonly}
+			required
+			onInput={(e) => {
+				updateRange({ to: e });
+			}}
+		/>
+	{/if}
 </label>
