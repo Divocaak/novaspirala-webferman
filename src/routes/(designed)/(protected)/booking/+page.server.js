@@ -10,7 +10,7 @@ export const load = async ({ url, fetch, locals }) => {
   const eventsData = await eventsRes.json();
   const eventIds = eventsData.map((event) => event.id);
 
-  const userRolesResult = await fetch(`/api/userRoles/getManagingRoles?uid=${user.id}`);
+  const userRolesResult = await fetch(user.isSysAdmin() ? "/api/roles/getAll" : `/api/userRoles/getManagingRoles?uid=${user.id}`);
   const userRolesData = await userRolesResult.json();
   const roleIds = userRolesData.map((role) => role.id);
 
