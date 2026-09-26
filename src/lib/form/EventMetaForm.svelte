@@ -12,14 +12,13 @@
 	export let venues = [];
 	export let genres = [];
 
-	let lastVenueId = null;
-
+	let lastGenreId = null;
 	$: {
-		const venue = form.id_venue;
-		if (venue && venue.id !== lastVenueId) {
-			form.background_color = venue.bgClr;
-			form.text_color = venue.txtClr;
-			lastVenueId = venue.id;
+		const genre = form.id_genre;
+		if (genre && genre.id !== lastGenreId) {
+			form.background_color = genre.bgClr;
+			form.text_color = genre.txtClr;
+			lastGenreId = genre.id;
 		}
 	}
 </script>
