@@ -2,7 +2,11 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
-### build 0.2.0, release 26. 9. 2026
+### build 0.2.2, release 26. 9. 2026
+#### 1) upraveno
+- výchozí barva eventu se přejímá podle vybraného žánru, ne podle prostoru
+
+### build 0.2.1, release 26. 9. 2026
 #### 1) přidáno
 - ukládání datumu a času posledního přihlášení
 - _sysadmin_ vidí na stránce \`/booking\` všechny role
