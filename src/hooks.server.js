@@ -25,6 +25,7 @@ export async function handle({ event, resolve }) {
         if (pathname.includes('/itsupport') && !(user.isAllowedToITSupport() || user.isSysAdmin())) throw redirect(302, '/403'); // Redirect to Forbidden page
         if (pathname.includes('/vacation') && !(user.isAllowedToWriteVacation() || user.isSysAdmin())) throw redirect(302, '/403'); // Redirect to Forbidden page
         if (pathname.includes('/booking') && !(user.hasManagingRole || user.isSysAdmin())) throw redirect(302, '/403'); // Redirect to Forbidden page
+        if (pathname.includes("/subtitles/management") && !(user.isSubtitlesRoleManager || user.isSysAdmin())) throw redirect(302, '/403'); // Redirect to Forbidden page
     }
 
     return resolve(event);

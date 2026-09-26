@@ -11,7 +11,8 @@ import {
     PUBLIC_PRIVILEGE_ID_SHOW_EMAILS,
     PUBLIC_PRIVILEGE_ID_IT_SUPPORT,
     PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS,
-    PUBLIC_PRIVILEGE_ID_VACATION
+    PUBLIC_PRIVILEGE_ID_VACATION,
+    PUBLIC_ROLE_MANAGER_SUBTITLES_ID
 } from "$env/static/public";
 
 export class User {
@@ -127,6 +128,7 @@ export class User {
     // isRolesManager = can user manage people for this role
     // used for determining if input field should be readonly or not
     isRolesManager(roleId) { return this.isSysAdmin() || this.#checkForRole(roleId); }
+    isSubtitlesRoleManager() { return this.isSysAdmin() || this.isRolesManager(PUBLIC_ROLE_MANAGER_SUBTITLES_ID); }
 
     //isAllowedToComment = enable/disable comments to sections in event form
     isAllowedToComment() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_COMMENTS); }
@@ -144,7 +146,7 @@ export class User {
 
     // notifications
     isAllowedToReceiveNotifications() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS); }
-    
+
     // vacation
     isAllowedToWriteVacation() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_VACATION); }
 
