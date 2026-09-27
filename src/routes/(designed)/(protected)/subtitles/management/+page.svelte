@@ -2,16 +2,16 @@
 	export let data;
 </script>
 
-<a href="/">zpět</a><br />
+<a href="/subtitles">zpět</a><br />
 <h2>Správa titulků</h2>
 <a href="/subtitles/management/form">Přidat titulky</a><br />
 
 <table>
 	<thead>
 		<tr>
-			<th>Název</th>
-			<th>Jazyky</th>
-			<th></th>
+			<th scope="col">Název</th>
+			<th scope="col">Jazyky</th>
+			<th scope="col"></th>
 		</tr>
 	</thead>
 

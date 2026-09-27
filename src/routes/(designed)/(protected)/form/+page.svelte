@@ -8,6 +8,7 @@
 	import RolesAssignment from '$lib/form/RolesAssignment.svelte';
 	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
 	import EventDateRanges from '$lib/form/dateRanges/EventDateRanges.svelte';
+	import StyledSelect from '$lib/form/StyledSelect.svelte';
 
 	export let data = null;
 	const user = User.fromJSON(data.user);
@@ -22,6 +23,7 @@
 			id_order: event?.id_order ?? '',
 			label: event?.label ?? '',
 			description: event?.description ?? '',
+			subtitlesName: findInSelect(data.availableSubtitles, event?.subtitles_name ?? null, true),
 			text_color: event?.text_color ?? '#ffffff',
 			background_color: event?.background_color ?? '#000000',
 			notifyUsers: []
@@ -131,7 +133,8 @@
 				date_to: formatForMySQL(range.to)
 			})),
 			roles: buildRolesPayload(roles),
-			role_limits: roleLimits
+			role_limits: roleLimits,
+			subtitles_name: form.subtitlesName?.id ?? null
 		};
 	}
 
@@ -238,6 +241,15 @@
 	/><br />
 	<br />
 	<!-- END FORM HEAD -->
+
+	<!-- SUBTITLES -->
+	<StyledSelect
+		label="Titulky"
+		bind:value={form.subtitlesName}
+		options={data.availableSubtitles}
+		readonly={!user.isSubtitlesRoleManager()}
+	/>
+	<!-- END SUBTITLES -->
 
 	<!-- FORM ROLES -->
 	<RolesAssignment

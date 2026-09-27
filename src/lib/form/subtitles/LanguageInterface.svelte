@@ -3,6 +3,7 @@
 
 	export let selectedLanguages = [];
 
+	let showLanguagePicker = false;
 	const languages = [
 		{ code: 'cs', name: 'Čeština' },
 		{ code: 'en', name: 'English' },
@@ -13,7 +14,11 @@
 		{ code: 'es', name: 'Español' }
 	];
 
-	let showLanguagePicker = false;
+	function updateLanguage(code, text) {
+		selectedLanguages = selectedLanguages.map((language) =>
+			language.code === code ? { ...language, text } : language
+		);
+	}
 
 	function addLanguage(language) {
 		if (selectedLanguages.some((lang) => lang.code === language.code)) return;
@@ -79,6 +84,7 @@
 			}}
 			{removeLanguage}
 			{syncScroll}
+			{updateLanguage}
 		/>
 	{/each}
 </div>

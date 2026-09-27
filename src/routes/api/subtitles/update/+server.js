@@ -8,8 +8,6 @@ const subtitlesRoot = path.resolve(SUBTITLES_ROOT);
 export async function POST({ request }) {
     try {
         const { fileName, languages } = await request.json();
-        console.log(languages);
-
         if (!fileName || !Array.isArray(languages)) return json({ message: 'Neplatná data.' }, { status: 400 });
         if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(fileName)) return json({ message: 'Neplatný název titulků.' }, { status: 400 });
         if (!languages.length) return json({ message: 'Musíte mít alespoň jeden jazyk.' }, { status: 400 });

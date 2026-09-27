@@ -6,7 +6,7 @@ export async function GET({ request, params, url }) {
 
     let result;
     await pool.query(`
-		SELECT e.id, e.id_order, e.label, e.date_from, e.date_to, e.description, e.text_color, e.background_color,
+		SELECT e.id, e.id_order, e.label, e.date_from, e.date_to, e.description, e.text_color, e.background_color, e.subtitles_name,
 		u.id AS id_created_by,
 		v.id AS id_venue,
 		g.id AS id_genre

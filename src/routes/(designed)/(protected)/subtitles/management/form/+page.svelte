@@ -22,7 +22,6 @@
 		e.preventDefault();
 
 		try {
-            console.log(selectedLanguages);
 			const res = await fetch(data.subtitle ? '/api/subtitles/update' : '/api/subtitles/add', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

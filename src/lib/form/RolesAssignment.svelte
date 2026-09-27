@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_ROLE_SUBTITLES_ID } from '$env/static/public';
 	import StyledMultiSelect from '$lib/form/StyledMultiSelect.svelte';
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 	import TooltipUser from '$lib/tooltip/TooltipUser.svelte';
@@ -74,6 +75,9 @@
 				Počet uživatelů s rolí "<b>{role.role.label}</b>" je 0
 			</p>
 		{:else}
+			{#if role.role.id == PUBLIC_ROLE_SUBTITLES_ID}
+				<b>Odbavovač titulků může být pouze jeden!</b><br/>
+			{/if}
 			<StyledMultiSelect
 				label={role.role.label}
 				options={role.users}

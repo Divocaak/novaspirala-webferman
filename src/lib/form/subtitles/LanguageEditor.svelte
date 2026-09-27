@@ -2,6 +2,7 @@
 	export let language;
 	export let removeLanguage;
 	export let syncScroll;
+	export let updateLanguage;
 
 	function getLineNumbers(text) {
 		const lines = Math.max(1, text.split('\n').length);
@@ -36,7 +37,11 @@
 				{/each}
 			</div>
 
-			<textarea bind:value={language.text} onscroll={syncScroll}></textarea>
+			<textarea
+				bind:value={language.text}
+				oninput={(event) => updateLanguage(language.code, event.currentTarget.value)}
+				onscroll={syncScroll}
+			></textarea>
 		</div>
 	</label>
 </div>
