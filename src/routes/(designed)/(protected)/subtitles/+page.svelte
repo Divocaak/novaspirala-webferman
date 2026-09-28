@@ -51,7 +51,7 @@
 				</td>
 				<td>
 					{#if event.operatorId === user.id}
-						<a href={`/subtitles/operate?sid=${event.subtitles_name}`}>Odbavovat</a>
+						<a href={`/subtitles/operate?eid=${event.id}&sid=${event.subtitles_name}`}>Odbavovat</a>
 					{/if}
 				</td>
 			</tr>

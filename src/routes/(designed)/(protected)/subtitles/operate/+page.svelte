@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import LanguageStream from '$lib/LanguageStream.svelte';
+	import { onMount } from 'svelte';
 
 	export let data;
 	let activeLine = 0;
@@ -9,6 +10,13 @@
 	$: lineCount = data.subtitle.languages.length
 		? Math.max(...data.subtitle.languages.map((language) => language.text.split('\n').length))
 		: 0;
+
+	onMount(() => {
+		connectWebSocket(data.eid);
+		return () => {
+			socket?.close();
+		};
+	});
 
 	function handleKeydown(event) {
 		if (lineInputActive) {
@@ -28,19 +36,14 @@
 				event.preventDefault();
 
 				const line = Number(lineInput);
-
-				if (line >= 1 && line <= lineCount) {
-					selectedLine = line - 1;
-				}
+				if (line >= 1 && line <= lineCount) selectedLine = line - 1;
 
 				lineInput = '';
 				lineInputActive = false;
 				return;
 			}
 
-			if (event.key === 'Shift') {
-				return;
-			}
+			if (event.key === 'Shift') return;
 
 			lineInput = '';
 			lineInputActive = false;
@@ -56,22 +59,20 @@
 
 		if (event.key === 'ArrowUp') {
 			event.preventDefault();
-
 			selectedLine = Math.max(0, selectedLine - 1);
 			return;
 		}
 
 		if (event.key === 'ArrowDown') {
 			event.preventDefault();
-
 			selectedLine = Math.min(lineCount - 1, selectedLine + 1);
 			return;
 		}
 
 		if (event.code === 'Space') {
 			event.preventDefault();
-
 			activeLine = selectedLine;
+			socket?.send(JSON.stringify({ type: 'activate', line: activeLine }));
 			selectedLine = Math.min(lineCount - 1, activeLine + 1);
 		}
 	}
@@ -83,7 +84,28 @@
 	let lineInput = '';
 	let lineInputActive = false;
 
+	let socket;
+	function connectWebSocket(eventId) {
+		socket = new WebSocket(
+			`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws/subtitles`
+		);
+
+		socket.onopen = () => {
+			console.log('Subtitle WebSocket connected');
+			socket.send(JSON.stringify({ type: 'operator', eventId }));
+		};
+
+		socket.onclose = () => {
+			console.log('Subtitle WebSocket disconnected');
+		};
+
+		socket.onerror = (error) => {
+			console.error('Subtitle WebSocket error:', error);
+		};
+	}
+
 	function quit() {
+		socket?.close();
 		goto('/subtitles');
 	}
 </script>
@@ -101,6 +123,7 @@
 {#if lineInputActive}
 	<div class="line-jump">
 		<span>Řádek</span>
+		<!-- svelte-ignore a11y_autofocus -->
 		<input value={lineInput} readonly autofocus />
 	</div>
 {/if}

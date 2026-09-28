@@ -5,8 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"dev:ws": "node --env-file=.env dev-websocket.js",
 		"build": "vite build",
-		"start": "HOST=127.0.0.1 PORT=3014 BODY_SIZE_LIMIT=Infinity node build",
+		"start": "HOST=127.0.0.1 PORT=3014 BODY_SIZE_LIMIT=Infinity node server.js",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write .",
@@ -29,13 +30,15 @@
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"svelte": "^5.0.0",
-		"vite": "^6.2.6"
+		"vite": "^6.2.6",
+		"wscat": "^6.1.0"
 	},
 	"dependencies": {
 		"@json-editor/json-editor": "^2.15.2",
 		"markdown-it": "^15.0.0",
 		"mysql2": "^3.14.1",
 		"svelty-picker": "^6.1.6",
+		"ws": "^8.22.0",
 		"xlsx": "^0.18.5"
 	}
 }
