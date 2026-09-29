@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { createServer } from 'node:http';
 import { handler } from './build/handler.js';
 import { createSubtitleWebSocketServer } from './src/lib/server/subtitleWebSocket.js';

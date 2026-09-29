@@ -1,13 +1,13 @@
 {
 	"name": "novaspirala-webferman",
 	"private": true,
-	"version": "0.2.2",
+	"version": "0.2.4",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
 		"dev:ws": "node --env-file=.env dev-websocket.js",
 		"build": "vite build",
-		"start": "HOST=127.0.0.1 PORT=3014 BODY_SIZE_LIMIT=Infinity node --env-file=.env server.js",
+		"start": "HOST=127.0.0.1 PORT=3014 BODY_SIZE_LIMIT=Infinity node server.js",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write .",
@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@json-editor/json-editor": "^2.15.2",
+		"dotenv": "^18.0.4",
 		"markdown-it": "^15.0.0",
 		"mysql2": "^3.14.1",
 		"svelty-picker": "^6.1.6",

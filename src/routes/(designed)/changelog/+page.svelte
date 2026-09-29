@@ -2,8 +2,24 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+### build 0.2.4, release 29. 9. 2026
+#### přidáno
+- nová role Titulky
+	- člonové sekce nová stránka /subtitles
+		- vedoucí sekce podstránka /subtitles/management pro správu existujícíh titulků
+			- formulář pro vytvoření nových titulek
+				- povinný název, pod kolonkou se zobrazuje reálný název (bez diakritiky, mezer, .. => název souboru)
+				- možnost přidat nové okno z předdefinovaných jazyků
+				- do okna lze vložit formátovaný text (nový řádek při každé .,?!)
+		- zobrazuje eventy, u kterých jsou přiřazené titulky
+		- pokud jsem u konkrétního eventu vybraný, mohu odbavovat
+		- ovládání odbavovací podstránky je popsáno na příslušné stránce :)
+- ve formuláři pro přidání/úpravu eventu nová kolonka pro výběr titulek k eventu
+	- vybraná hodnota se zobrazuje v tabulce i v modalu kalendářového zobrazení
+
+
 ### build 0.2.2, release 26. 9. 2026
-#### 1) upraveno
+#### upraveno
 - výchozí barva eventu se přejímá podle vybraného žánru, ne podle prostoru
 
 ### build 0.2.1, release 26. 9. 2026
