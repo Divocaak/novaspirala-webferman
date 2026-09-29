@@ -11,7 +11,8 @@ import {
     PUBLIC_PRIVILEGE_ID_SHOW_EMAILS,
     PUBLIC_PRIVILEGE_ID_IT_SUPPORT,
     PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS,
-    PUBLIC_PRIVILEGE_ID_VACATION
+    PUBLIC_PRIVILEGE_ID_VACATION,
+    PUBLIC_ROLE_SUBTITLES_ID
 } from "$env/static/public";
 
 export class User {
@@ -126,7 +127,10 @@ export class User {
 
     // isRolesManager = can user manage people for this role
     // used for determining if input field should be readonly or not
-    isRolesManager(roleId) { return this.isSysAdmin() || this.#checkForRole(roleId); }
+    isRolesManager(roleId) { return this.isSysAdmin() || this.#checkForRoleManagement(roleId); }
+
+    hasSubtitlesRole() { return this.isSysAdmin() || this.#checkForRole(PUBLIC_ROLE_SUBTITLES_ID); }
+    isSubtitlesRoleManager() { return this.isSysAdmin() || this.isRolesManager(PUBLIC_ROLE_SUBTITLES_ID); }
 
     //isAllowedToComment = enable/disable comments to sections in event form
     isAllowedToComment() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_COMMENTS); }
@@ -144,12 +148,13 @@ export class User {
 
     // notifications
     isAllowedToReceiveNotifications() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS); }
-    
+
     // vacation
     isAllowedToWriteVacation() { return this.isSysAdmin() || this.#checkForPrivilege(PUBLIC_PRIVILEGE_ID_VACATION); }
 
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
-    #checkForRole(roleId) {
+    #checkForRole(roleId) { return this.roles.find(r => r.id === parseInt(roleId)); }
+    #checkForRoleManagement(roleId) {
         const role = this.roles.find(r => r.id === roleId);
         return role ? role.manager === 1 : false;
     }

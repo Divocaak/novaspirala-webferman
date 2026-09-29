@@ -66,6 +66,9 @@
 			{user}
 		/>
 	</p>
+	{#if selectedData.event.subtitles_name}
+		<p>Titulky:&nbsp;<i>{selectedData.event.subtitles_name}</i></p>
+	{/if}
 	{#each selectedData.enrichedUsers as userInEvent}
 		<p>
 			<Tooltip>

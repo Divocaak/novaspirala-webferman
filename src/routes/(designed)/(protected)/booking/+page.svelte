@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { User } from '$lib/classes/user.js';
+	import DateFilter from '$lib/DateFilter.svelte';
 	import MonthPicker from '$lib/form/MonthPicker.svelte';
 	import LocalisedDateRange from '$lib/locale/LocalisedDateRange.svelte';
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText.js';
@@ -13,20 +14,7 @@
 	export let data;
 	const user = User.fromJSON(data.user);
 
-	const formatDate = (date) => date.toISOString().split('T')[0];
-	let date_from, date_to, month_year;
-
 	$: params = $page.url.searchParams;
-	$: {
-		const today = new Date();
-		const nextMonth = new Date();
-		nextMonth.setMonth(today.getMonth() + 1);
-
-		date_from = params.get('date_from') ?? formatDate(today);
-		date_to = params.get('date_to') ?? formatDate(nextMonth);
-		month_year = date_from.slice(0, 7);
-	}
-
 	function updateParams(updates) {
 		const next = new URLSearchParams(params);
 
@@ -124,21 +112,7 @@
 <a href="/">zpět</a><br />
 <h2>Booking</h2>
 
-<label>
-	* Měsíc
-	<MonthPicker
-		value={month_year}
-		onChange={(m) => {
-			const from = new Date(`${m}-01`);
-			const to = new Date(from);
-			to.setMonth(to.getMonth() + 1);
-			updateParams({
-				date_from: formatDate(from),
-				date_to: formatDate(to)
-			});
-		}}
-	/>
-</label>
+<DateFilter {params} onChange={updateParams} />
 
 <table>
 	<thead>

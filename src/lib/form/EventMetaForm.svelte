@@ -28,6 +28,7 @@
 	bind:value={form.id_created_by}
 	options={usersAllowedToWrite}
 	readonly={!userData.isSysAdmin()}
+	required={true}
 />
 
 <StyledSelect
@@ -35,6 +36,7 @@
 	bind:value={form.id_venue}
 	options={venues}
 	readonly={readonlyHeadField}
+	required={true}
 />
 
 <StyledSelect
@@ -42,6 +44,7 @@
 	bind:value={form.id_genre}
 	options={genres}
 	readonly={readonlyHeadField}
+	required={true}
 />
 
 <label>

@@ -150,6 +150,7 @@
 			<th scope="col">Vytvořil</th>
 			<th scope="col">Prostor</th>
 			<th scope="col">Žánr/typ</th>
+			<th scope="col">Titulky</th>
 			{#each roles as role}
 				<th scope="col">
 					<Tooltip>
@@ -230,6 +231,9 @@
 							label={event.gLabel}
 							note={event.note}
 						/>
+					</td>
+					<td class="cell-max">
+						<i>{event.subtitles_name}</i>
 					</td>
 
 					{#each roles as role}

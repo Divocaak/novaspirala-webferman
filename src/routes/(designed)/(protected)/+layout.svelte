@@ -51,7 +51,7 @@
 	{/each}
 	)
 </p>
-<button onclick={sendFeedback}>Zpětná vazba</button>
+<button onclick={sendFeedback}>Zpětná vazba</button><br/>
 
 <slot />
 

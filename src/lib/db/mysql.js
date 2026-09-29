@@ -1,11 +1,6 @@
 import { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SOCKET } from "$env/static/private";
 import mysql from 'mysql2/promise';
 
-// Validate environment variables
-/* if (!DB_HOST || !DB_PORT || !DB_USER || !DB_PASSWORD || !DB_NAME) {
-    throw new Error('Database environment variables are not properly configured');
-} */
-
 // Create a connection pool
 export const pool = mysql.createPool({
     host: DB_HOST,
@@ -38,5 +33,5 @@ if (process.env.NODE_ENV === 'development') {
     setInterval(async () => {
         const [rows] = await pool.query('SHOW STATUS LIKE "Threads_connected"');
         console.log('Active connections:', rows[0]?.Value || 0);
-    }, 10000); // Log every 10 seconds
+    }, 10000);
 }

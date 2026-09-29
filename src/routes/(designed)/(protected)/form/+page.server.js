@@ -7,7 +7,7 @@ export const load = async ({ url, fetch, locals }) => {
 
   const eid = url.searchParams.get('id');
 
-  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes, usersAllowedToReceiveNotificationsRes, roleLimitsRes] = await Promise.all([
+  const [usersAllowedRes, venuesRes, genresRes, rolesRes, commentsRes, usersAllowedToReceiveNotificationsRes, roleLimitsRes, subtitlesRes] = await Promise.all([
     // get all users allowed to write
     fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_WRITE].join(",")}`),
     fetch("/api/venues/getAllForForm"),
@@ -17,16 +17,18 @@ export const load = async ({ url, fetch, locals }) => {
     // get all users allowed to receive notifications
     fetch(`/api/users/getAllWithPrivilege?privilegeIds=${[PUBLIC_PRIVILEGE_ID_SYS_ADMIN, PUBLIC_PRIVILEGE_ID_RECEIVE_NOTIFICATIONS].join(",")}`),
     fetch(`/api/roleLimits/getAllInEvent?eid=${eid}`),
+    fetch("/api/subtitles/getAll")
   ]);
 
-  const [usersAllowedData, venuesData, genresData, rolesData, commentsData, usersAllowedToReceiveNotificationsData, roleLimitsData] = await Promise.all([
+  const [usersAllowedData, venuesData, genresData, rolesData, commentsData, usersAllowedToReceiveNotificationsData, roleLimitsData, subtitlesData] = await Promise.all([
     usersAllowedRes.json(),
     venuesRes.json(),
     genresRes.json(),
     rolesRes.json(),
     commentsRes.json(),
     usersAllowedToReceiveNotificationsRes.json(),
-    roleLimitsRes.json()
+    roleLimitsRes.json(),
+    subtitlesRes.json()
   ]);
 
   const usersAllowedToWrite = usersAllowedData.map(user => ({
@@ -75,6 +77,11 @@ export const load = async ({ url, fetch, locals }) => {
     vacations = await vacationsRes.json();
   }
 
+  let availableSubtitles = subtitlesData.map(subtitle => ({
+    id: subtitle.fileName,
+    label: `${subtitle.fileName} (${subtitle.languages.join(', ')})`,
+  }));
+
   return {
     event,
     usersAllowedToWrite,
@@ -82,6 +89,7 @@ export const load = async ({ url, fetch, locals }) => {
     genres: genresData,
     roles,
     usersAllowedToReceiveNotifications,
-    vacations
+    vacations,
+    availableSubtitles
   };
 };

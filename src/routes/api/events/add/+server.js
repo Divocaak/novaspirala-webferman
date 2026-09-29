@@ -17,7 +17,8 @@ export async function POST({ request }) {
             background_color,
             roles,
             role_limits,
-            notifyUsers
+            notifyUsers,
+            subtitles_name
         } = await request.json();
 
         connection = await pool.getConnection();
@@ -42,9 +43,10 @@ export async function POST({ request }) {
                     description,
                     text_color,
                     background_color,
+                    subtitles_name,
                     active
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
                 [
                     id_created_by,
                     id_venue,
@@ -55,7 +57,8 @@ export async function POST({ request }) {
                     range.date_to,
                     description,
                     text_color,
-                    background_color
+                    background_color,
+                    subtitles_name
                 ]
             );
 
