@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { handler } from './build/handler.js';
 import { createSubtitleWebSocketServer } from './src/lib/server/subtitleWebSocket.js';
-import { pool } from './src/lib/db/mysql.js';
+import { pool } from './src/lib/db/mysqlNode.js';
 
 const server = createServer(handler);
 

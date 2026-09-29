@@ -7,7 +7,7 @@
 		"dev": "vite dev",
 		"dev:ws": "node --env-file=.env dev-websocket.js",
 		"build": "vite build",
-		"start": "HOST=127.0.0.1 PORT=3014 BODY_SIZE_LIMIT=Infinity node server.js",
+		"start": "HOST=127.0.0.1 PORT=3014 BODY_SIZE_LIMIT=Infinity node --env-file=.env server.js",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write .",

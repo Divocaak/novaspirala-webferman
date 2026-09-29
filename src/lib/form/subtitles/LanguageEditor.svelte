@@ -15,7 +15,7 @@
 		const formatted = text
 			.replace(/\s+/g, ' ')
 			.replace(/,\s*/g, ',\n')
-			.replace(/\.\s+/g, '.\n')
+			.replace(/[.!?]\s+/g, '$&\n')
 			.trim();
 
 		language.text = formatted;
