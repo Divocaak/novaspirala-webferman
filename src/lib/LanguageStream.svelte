@@ -33,6 +33,7 @@
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="line"
+					data-index={index}
 					class:active={index === activeLine}
 					class:selected={index === selectedLine}
 					onclick={() => onSelectLine(index)}
@@ -59,14 +60,12 @@
 
 	.stream {
 		display: flex;
-		height: 400px;
-		overflow: hidden;
 	}
 
 	.line-numbers {
 		flex: 0 0 2.5rem;
 		width: 2.5rem;
-		overflow: hidden;
+		overflow: visible;
 		background: #eee;
 		text-align: right;
 		font-family: monospace;
@@ -84,7 +83,7 @@
 
 	.lines {
 		flex: 1;
-		overflow: hidden;
+		overflow: visible;
 		font-family: monospace;
 		font-size: 0.7rem;
 		line-height: 1.2rem;
