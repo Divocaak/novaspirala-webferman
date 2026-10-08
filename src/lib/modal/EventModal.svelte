@@ -19,7 +19,7 @@
 	export let startOfDay;
 	export let openBookingModalFunction;
 
-	const pastEditable = selectedData.event.date_from_ts >= startOfDay;
+	const pastEditable = selectedData.event.date_from_timestamp >= startOfDay;
 	const pastBookable = pastEditable;
 </script>
 

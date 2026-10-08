@@ -21,7 +21,7 @@ export async function GET({ url }) {
     }
 
     const [rows, fields] = await pool.query(`
-        SELECT e.id, e.id_order, e.label, e.date_from, e.date_to, e.description, e.text_color AS txtClr, e.background_color AS bgClr, e.subtitles_name,
+        SELECT e.id, e.id_order, e.label, e.date_from, e.date_to, UNIX_TIMESTAMP(e.date_from) * 1000 AS date_from_timestamp, e.description, e.text_color AS txtClr, e.background_color AS bgClr, e.subtitles_name,
         u.id AS createdById, u.login, u.email, u.phone, u.f_name, u.l_name,
         v.label AS vLabel, v.addr_label, v.addr_street, v.addr_town, v.addr_postal, v.addr_country_code, v.text_color AS vTxtClr, v.background_color AS vBgClr,
         g.label AS gLabel, g.note, g.text_color AS gTxtClr, g.background_color AS gBgClr
