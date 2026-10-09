@@ -2,6 +2,16 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+### build 0.2.5, release 8. 10. 2026
+#### opraveno
+- uživatel nemohl mazat ani ty eventy, které sám vytvořil
+- po vybrání času, do kterého akce trvá, nešlo k eventu přidávat lidi
+- scrollování v titulkách během odbavování
+
+#### upraveno
+- funkcionalita levého tlačítka myši při odbavování titulků
+
+
 ### build 0.2.4, release 29. 9. 2026
 #### přidáno
 - nová role Titulky

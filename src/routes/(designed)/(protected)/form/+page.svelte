@@ -69,22 +69,12 @@
 				if (Number(assignment.rid) !== Number(role.role.id)) continue;
 
 				const user = role.users.find((u) => Number(u.id) === Number(assignment.uid));
-
 				if (!user) continue;
 
-				if (!users[assignment.uid]) {
-					users[assignment.uid] = {
-						...user,
-						dates: {}
-					};
-				}
+				if (!users[assignment.uid]) users[assignment.uid] = { ...user, dates: {} };
 
 				const eventDate = normalizeDate(event.date_from);
-
-				users[assignment.uid].dates[eventDate] = {
-					selected: true,
-					note: assignment.note ?? ''
-				};
+				users[assignment.uid].dates[eventDate] = { selected: true, note: assignment.note ?? '' };
 			}
 
 			result[role.role.id] = Object.values(users);

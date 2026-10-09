@@ -261,14 +261,14 @@
 							id={event.id}
 							createdById={event.createdById}
 							{user}
-							pastEditable={event.date_from_ts >= startOfDay}
+							pastEditable={event.date_from_timestamp >= startOfDay}
 						/>
 					</td>
 					<td>
 						<EventBookButton
 							id={event.id}
 							{user}
-							pastBookable={event.date_from_ts >= startOfDay}
+							pastBookable={event.date_from_timestamp >= startOfDay}
 							openModalFunction={() => openBookingModalFunction(event)}
 						/>
 					</td>

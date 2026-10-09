@@ -24,25 +24,9 @@
 		const dates = new Set();
 
 		for (const range of ranges) {
-			if (!range.from || !range.to) continue;
-
-			const from = String(range.from).slice(0, 10);
-			const to = String(range.to).slice(0, 10);
-
-			const current = new Date(`${from}T12:00:00`);
-			const end = new Date(`${to}T12:00:00`);
-
-			while (current <= end) {
-				dates.add(
-					[
-						current.getFullYear(),
-						String(current.getMonth() + 1).padStart(2, '0'),
-						String(current.getDate()).padStart(2, '0')
-					].join('-')
-				);
-
-				current.setDate(current.getDate() + 1);
-			}
+			if (!range.from) continue;
+			const date = String(range.from).slice(0, 10);
+			dates.add(date);
 		}
 
 		return [...dates].sort();
@@ -168,10 +152,9 @@
 			const vacationEnd = new Date(vacation.date_to);
 
 			return dateRanges.some((range) => {
-				if (!range.from || !range.to) return false;
-				const eventStart = new Date(range.from);
-				const eventEnd = new Date(range.to);
-				return eventStart <= vacationEnd && eventEnd >= vacationStart;
+				if (!range.from) return false;
+				const eventDate = new Date(`${String(range.from).slice(0, 10)}T12:00:00`);
+				return eventDate >= vacationStart && eventDate <= vacationEnd;
 			});
 		});
 	}
@@ -344,10 +327,10 @@
 		flex-direction: column;
 	}
 
-	.user-info .badges{
+	.user-info .badges {
 		display: flex;
 		flex-direction: row;
-		gap: .2rem;
+		gap: 0.2rem;
 	}
 
 	.user-name {

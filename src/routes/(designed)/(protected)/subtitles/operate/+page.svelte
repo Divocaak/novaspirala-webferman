@@ -1,11 +1,13 @@
 <script>
 	import { goto } from '$app/navigation';
 	import LanguageStream from '$lib/LanguageStream.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	export let data;
 	let activeLine = 0;
 	let selectedLine = 1;
+
+	let languageStreams = [];
 
 	$: lineCount = data.subtitle.languages.length
 		? Math.max(...data.subtitle.languages.map((language) => language.text.split('\n').length))
@@ -79,6 +81,27 @@
 
 	function selectLine(line) {
 		selectedLine = line;
+		activeLine = line;
+		socket?.send(JSON.stringify({ type: 'activate', line }));
+	}
+
+	let languagesElement;
+	async function scrollToSelectedLine() {
+		await tick();
+		if (!languagesElement) return;
+
+		const line = languagesElement.querySelector(`.line[data-index="${selectedLine}"]`);
+		if (!line) return;
+
+		const containerRect = languagesElement.getBoundingClientRect();
+		const lineRect = line.getBoundingClientRect();
+		const containerCenter = containerRect.top + containerRect.height / 2;
+		const lineCenter = lineRect.top + lineRect.height / 2;
+		languagesElement.scrollTop += lineCenter - containerCenter;
+	}
+
+	$: if (selectedLine !== undefined) {
+		scrollToSelectedLine();
 	}
 
 	let lineInput = '';
@@ -128,9 +151,11 @@
 	</div>
 {/if}
 
-<div class="languages">
-	{#each data.subtitle.languages as language}
-		<LanguageStream {language} {activeLine} {selectedLine} onSelectLine={selectLine} />
+<div class="languages" bind:this={languagesElement}>
+	{#each data.subtitle.languages as language, index}
+		<div class="language-wrapper" bind:this={languageStreams[index]}>
+			<LanguageStream {language} {activeLine} {selectedLine} onSelectLine={selectLine} />
+		</div>
 	{/each}
 </div>
 <h4>Ovládání</h4>
@@ -139,11 +164,7 @@
 	<b>vybraný řádek</b> je ohraničen černým rámečkem<br />
 	<b>mezerník</b> udělá z <i>vybraného</i> řádku <i>aktivní</i><br />
 	<b>šipkami nahoru a dolů</b> lze změnit <i>vybraný</i> řádek<br />
-	<b>
-		MARTINE S TĚMAHLE DALŠÍMA DVĚMA POTŘEBUJU JENOM RADU, CHCEME, AŤ TO VYBÍRÁ, NEBO ROVNOU PÁLÍ?
-		DÍK, DIVJAK<br /><br />
-	</b>
-	<b>levým tlačítkem myši</b> na jakýkoliv řádek jej <i>vyberu</i><br />
+	<b>levým tlačítkem myši</b> na jakýkoliv řádek jej <i>vyberu</i> a rovnou i <i>aktivuji</i><br />
 	<b>klávesa L</b> zobrazí malé okno, které umožňuje zadat číslo řádku. po stisknutní klávesy
 	<b>enter</b>
 	program <i>vybere</i> požadovaný řádek. jakákoliv jiná klávesa operaci zruší
@@ -155,7 +176,8 @@
 		display: flex;
 		gap: 0.1rem;
 		align-items: flex-start;
-		overflow-x: auto;
+		height: 400px;
+		overflow: auto;
 		padding-bottom: 0.5rem;
 	}
 
@@ -190,5 +212,9 @@
 		font: inherit;
 		font-weight: bold;
 		text-align: center;
+	}
+
+	.language-wrapper {
+		flex: 0 0 auto;
 	}
 </style>
