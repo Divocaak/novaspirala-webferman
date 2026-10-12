@@ -10,10 +10,11 @@ export const load = async ({ locals, url, params, fetch }) => {
     const date_to = url.searchParams.get('date_to');
     const id_venue = url.searchParams.get('id_venue');
     const id_genre = url.searchParams.get('id_genre');
+    const only_uid = url.searchParams.get('only_uid');
 
     const [rolesRes, eventsRes, venuesRes, genresRes, eventNotificationRes, vacationsRes] = await Promise.all([
         fetch("/api/roles/getAll"),
-        fetch(`/api/events/getAll?${new URLSearchParams({ date_from, date_to, id_venue, id_genre })}`),
+        fetch(`/api/events/getAll?${new URLSearchParams({ date_from, date_to, id_venue, id_genre, only_uid })}`),
         fetch("/api/venues/getAllForForm"),
         fetch("/api/genres/getAllForForm"),
         fetch(`/api/users/getAllEventNotifications?${new URLSearchParams({ uid: user.id })}`),
