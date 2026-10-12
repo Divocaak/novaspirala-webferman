@@ -118,10 +118,15 @@
 			id_created_by: form.id_created_by.id,
 			id_venue: form.id_venue.id,
 			id_genre: form.id_genre.id,
-			date_ranges: dateRanges.map((range) => ({
-				date_from: formatForMySQL(range.from),
-				date_to: formatForMySQL(range.to)
-			})),
+			date_ranges: dateRanges.map((range) => {
+				const dateFrom = formatForMySQL(range.from);
+				const timeTo = formatForMySQL(range.to).split(' ').pop();
+
+				return {
+					date_from: dateFrom,
+					date_to: `${dateFrom.split(' ')[0]} ${timeTo}`
+				};
+			}),
 			roles: buildRolesPayload(roles),
 			role_limits: roleLimits,
 			subtitles_name: form.subtitlesName?.id ?? null

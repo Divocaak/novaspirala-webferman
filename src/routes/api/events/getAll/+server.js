@@ -6,6 +6,7 @@ export async function GET({ url }) {
     const date_to = url.searchParams.get('date_to');
     const id_venue = url.searchParams.get('id_venue');
     const id_genre = url.searchParams.get('id_genre');
+    const only_uid = url.searchParams.get('only_uid');
 
     let conditions = `WHERE e.active IS TRUE AND e.date_to >= ? AND e.date_from <= ?`;
     let params = [date_from, date_to];
@@ -18,6 +19,19 @@ export async function GET({ url }) {
     if (id_genre && id_genre !== 'null') {
         conditions += ` AND e.id_genre = ?`;
         params.push(id_genre);
+    }
+
+    if (only_uid && only_uid !== 'null') {
+        conditions += `
+        AND EXISTS (
+            SELECT 1
+            FROM user_event ue
+            WHERE ue.id_event = e.id
+              AND ue.id_user = ?
+              AND ue.active IS TRUE
+        )
+    `;
+        params.push(only_uid);
     }
 
     const [rows, fields] = await pool.query(`

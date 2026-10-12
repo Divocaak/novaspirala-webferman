@@ -2,6 +2,14 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+### build 0.2.6, release 12. 10. 2026
+#### opraveno
+- při vytváření událostí se ukládal chybný datum, což vedlo k jejich nezobrazování ve fermanu
+
+#### přidáno
+- možnost filtrovat jen eventy, u kterých jsem přiřazený (_Filtr já_)
+
+
 ### build 0.2.5, release 8. 10. 2026
 #### opraveno
 - uživatel nemohl mazat ani ty eventy, které sám vytvořil

@@ -23,6 +23,7 @@
 	$: id_genre = findInSelect(data.genres, params.get('id_genre'));
 	$: date_from = params.get('date_from');
 	$: date_to = params.get('date_to');
+	$: onlyWhereAssigned = params.get('only_uid') === String(user.id);
 
 	let showEmptyDays = true;
 
@@ -56,6 +57,12 @@
 	const switchNotificationsModal = () => {
 		notificationsModalShown = !notificationsModalShown;
 	};
+
+	function toggleOnlyWhereAssigned(checked) {
+		updateParams({
+			only_uid: checked ? user.id : null
+		});
+	}
 </script>
 
 <h2>home</h2>
@@ -90,6 +97,10 @@
 	<label>
 		<input type="checkbox" bind:checked={showEmptyDays} />
 		Zobrazit volné dny
+	</label><br />
+	<label>
+		<input type="checkbox" on:change={(e) => toggleOnlyWhereAssigned(e.currentTarget.checked)} />
+		Filtr já
 	</label><br />
 	<button on:click={() => (showTable = !showTable)}>{showTable ? 'Kalendář' : 'Tabulka'}</button>
 	{#if !showTable}
