@@ -155,7 +155,7 @@ export class User {
     #checkForPrivilege(privilegeId) { return this.privileges.some((privilege) => privilege.id === parseInt(privilegeId)); }
     #checkForRole(roleId) { return this.roles.find(r => r.id === parseInt(roleId)); }
     #checkForRoleManagement(roleId) {
-        const role = this.roles.find(r => r.id === roleId);
+        const role = this.roles.find(r => parseInt(r.id) === parseInt(roleId));
         return role ? role.manager === 1 : false;
     }
 

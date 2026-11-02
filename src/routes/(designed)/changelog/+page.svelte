@@ -2,6 +2,11 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+### build 0.2.7, release 2. 11. 2026
+#### opraveno
+- vedoucí sekce Titulky se nejevil jako vedoucí sekce
+
+
 ### build 0.2.6, release 12. 10. 2026
 #### opraveno
 - při vytváření událostí se ukládal chybný datum, což vedlo k jejich nezobrazování ve fermanu
