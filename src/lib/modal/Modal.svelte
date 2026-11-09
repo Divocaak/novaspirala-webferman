@@ -50,8 +50,8 @@
 	@media (max-width: 600px) {
 		.modal {
 			padding: 1rem;
-			max-width: 95vw;
-			max-height: 90vh;
+			max-width: 85vw;
+			max-height: 85vh;
 		}
 	}
 </style>
