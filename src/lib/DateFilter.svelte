@@ -1,10 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
-	import SveltyPicker from 'svelty-picker';
+	import SveltyPicker, { config } from 'svelty-picker';
+	import { cz } from 'svelty-picker/i18n';
 	import MonthPicker from '$lib/form/MonthPicker.svelte';
 
 	export let params;
 	export let onChange = () => {};
+
+	config.i18n = cz;
 
 	$: filterByDay = params.get('filterByDay') === 'true';
 	$: date_from = params.get('date_from') ?? getCurrentMonthStart();
