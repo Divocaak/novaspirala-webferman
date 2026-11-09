@@ -1,5 +1,6 @@
 <script>
-	import SveltyPicker from 'svelty-picker';
+	import SveltyPicker, { config } from 'svelty-picker';
+	import { cz } from 'svelty-picker/i18n';
 	import { createEventDispatcher } from 'svelte';
 
 	export let range = {
@@ -10,6 +11,8 @@
 
 	export let readonly = false;
 	export let toOnlyTime = false;
+
+	config.i18n = cz;
 
 	const dispatch = createEventDispatcher();
 
