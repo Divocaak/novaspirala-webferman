@@ -82,8 +82,12 @@
 	}
 
 	.lines {
-		flex: 1;
-		overflow: visible;
+		flex: 0 1 400px;
+		width: 400px;
+		max-width: 400px;
+		min-width: 0;
+		overflow-x: auto;
+		overflow-y: hidden;
 		font-family: monospace;
 		font-size: 0.7rem;
 		line-height: 1.2rem;
@@ -95,7 +99,8 @@
 		height: 1.2rem;
 		box-sizing: border-box;
 		white-space: pre;
-		overflow: hidden;
+		width: max-content;
+		min-width: 100%;
 	}
 
 	.line.active,
