@@ -204,7 +204,7 @@
 
 <form on:submit={handleSubmit}>
 	<!-- FORM HEAD -->
-	<label>
+	<label class:hidden={!user.isSysAdmin()}>
 		ID (readonly)
 		<input type="number" bind:value={form.id} readonly />
 	</label><br />
@@ -258,17 +258,19 @@
 	/>
 	<!-- END FORM ROLES -->
 
-	<button type="submit">Uložit</button><br />
+	<div class="controls">
+		<button type="submit">Uložit</button><br />
 
-	{#if error}
-		<p style="color:red">{error}</p>
-		<br />
-	{/if}
+		{#if error}
+			<p style="color:red">{error}</p>
+			<br />
+		{/if}
 
-	{#if success}
-		<p style="color:green">{success}</p>
-		<br />
-	{/if}
+		{#if success}
+			<p style="color:green">{success}</p>
+			<br />
+		{/if}
+	</div>
 
 	<!-- NOTIFY USERS -->
 	{#if data.usersAllowedToReceiveNotifications.length < 1}
@@ -287,3 +289,18 @@
 {#if data.event}
 	<button type="button" on:click={copyEvent}> Kopírovat událost </button>
 {/if}
+
+<style>
+	.controls {
+		position: fixed;
+		bottom: 25px;
+		right: 50px;
+		padding: 10px 20px;
+		background-color: whitesmoke;
+		border: 1px solid grey;
+	}
+
+	.hidden{
+		display: none;
+	}
+</style>
