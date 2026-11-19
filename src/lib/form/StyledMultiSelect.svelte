@@ -3,7 +3,6 @@
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 	import { createEventDispatcher } from 'svelte';
 
-	export let id = '';
 	export let label = '';
 	export let required = false;
 	export let readonly = false;
@@ -12,6 +11,7 @@
 	export let withNote = false;
 	export let vacations = [];
 	export let dateRanges = [];
+	export let maxSelected = Infinity;
 
 	const dispatch = createEventDispatcher();
 
