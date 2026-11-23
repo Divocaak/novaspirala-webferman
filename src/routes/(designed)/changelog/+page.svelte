@@ -2,6 +2,30 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+### build 0.2.8, release 24. 11. 2026
+- milník __Poznatky z provozu__
+
+#### přidáno
+- možnost změnit si heslo
+- možnost změnit si login, telefonní číslo a email
+- barvy sekcí v hlavičce
+
+#### upraveno
+- ve formuláři pro přidání eventu plovoucí tlačítko uložit
+- ve všech formulářích skryto databázové \`readonly ID\`
+- jméno karty v prohlížeči
+- vybírání měsíce
+- u všech datumových inputů nastavena čeština
+- velikost okna s detailem akce v kalendáři
+	- menší, mělo by se lépe zavírat na telefonech
+
+#### opraveno
+- ve formuláři pro přidávání eventu nefungoval tabulátor v popisu
+- zobrazování titulkových polí na straně odbavovače titulků
+	- nastavena maximální šířka jazykového okna
+- pevný limit vybraných uživatelů v sekci _Titulky_ (odbavovač)
+
+
 ### build 0.2.7, release 2. 11. 2026
 #### opraveno
 - vedoucí sekce Titulky se nejevil jako vedoucí sekce
