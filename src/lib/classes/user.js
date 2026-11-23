@@ -49,7 +49,7 @@ export class User {
     static createPrivileges(json) { return json.map(privilege => new Privilege({ id: privilege.id, label: privilege.label, note: privilege.note, text_color: privilege.text_color, background_color: privilege.background_color })); }
 
     setRoles(json) { this.roles = User.createRoles(json); }
-    static createRoles(json) { return json.map(role => new Role({ id: role.id, label: role.label, manager: role.manager })); }
+    static createRoles(json) { return json.map(role => new Role({ id: role.id, label: role.label, manager: role.manager, note: role.note, text_color: role.text_color, background_color: role.background_color })); }
     static hasManagingRole(json) { return json.some(r => r.manager); }
     /* static */
 

@@ -54,7 +54,27 @@
 
 <label>
 	Popis<br />
-	<textarea rows="20" cols="70" bind:value={form.description} readonly={readonlyDescriptionField}>
+	<textarea
+		rows="20"
+		cols="70"
+		bind:value={form.description}
+		readonly={readonlyDescriptionField}
+		onkeydown={(event) => {
+			if (event.key === 'Tab' && !readonlyDescriptionField) {
+				event.preventDefault();
+
+				const textarea = event.currentTarget;
+				const start = textarea.selectionStart;
+				const end = textarea.selectionEnd;
+
+				textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end);
+
+				textarea.selectionStart = textarea.selectionEnd = start + 1;
+
+				textarea.dispatchEvent(new Event('input', { bubbles: true }));
+			}
+		}}
+	>
 	</textarea>
 </label><br />
 

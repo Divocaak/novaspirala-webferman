@@ -12,6 +12,7 @@
 	import EventFilesButton from './buttons/EventFilesButton.svelte';
 	import { onMount } from 'svelte';
 	import { getLocalisedDate } from './locale/localisedDateRangeText';
+	import { User } from './classes/user';
 
 	export let events;
 	export let roles;
@@ -22,6 +23,8 @@
 	export let date_to;
 	export let showEmptyDays = false;
 	export let openBookingModalFunction;
+
+	const userData = User.fromJSON(user);
 
 	let eventsAsc = true;
 
@@ -142,7 +145,7 @@
 <table bind:this={table}>
 	<thead>
 		<tr>
-			<th scope="col">ID</th>
+			{#if !userData.isSysAdmin()}<th scope="col">ID</th>{/if}
 			<th scope="col">ID Objednávky</th>
 			<th scope="col">Název</th>
 			<th scope="col">Datum</th>
@@ -172,9 +175,11 @@
 				{@const day = toLocalISO(new Date(event.date_from))}
 
 				<tr>
-					<td>
-						{event.id}
-					</td>
+					{#if !userData.isSysAdmin()}
+						<td>
+							{event.id}
+						</td>
+					{/if}
 					<td>
 						{event.id_order}
 					</td>

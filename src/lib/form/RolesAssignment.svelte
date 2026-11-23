@@ -76,7 +76,7 @@
 			</p>
 		{:else}
 			{#if role.role.id == PUBLIC_ROLE_SUBTITLES_ID}
-				<b>Odbavovač titulků může být pouze jeden!</b><br/>
+				<b>Odbavovač titulků může být pouze jeden!</b><br />
 			{/if}
 			<StyledMultiSelect
 				label={role.role.label}
@@ -86,6 +86,7 @@
 				withNote={true}
 				{vacations}
 				{dateRanges}
+				maxSelected={role.role.id == PUBLIC_ROLE_SUBTITLES_ID ? 1 : Infinity}
 			/>
 		{/if}
 

@@ -1,6 +1,7 @@
 <script>
 	import { User } from '$lib/classes/user.js';
 	import TooltipPrivilege from '$lib/tooltip/TooltipPrivilege.svelte';
+	import TooltipRole from '$lib/tooltip/TooltipRole.svelte';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -34,24 +35,24 @@
 			return;
 		}
 
-		alert("Uloženo!");
+		alert('Uloženo!');
 	}
 </script>
 
 <p>
 	{@html user.getInfoString()}
 	<a href="/logout">Odhlásit se</a>
+	<a href="/account">Upravit profil</a>
 	<br />
 	(práva: {#each user.privileges as privilege}
 		<TooltipPrivilege {privilege} />
 	{/each})<br />
 	(role: {#each user.roles as role}
-		{role.id}: <b>{role.label}</b>{#if role.manager}
-			(<i>Vedoucí</i>){/if},&nbsp;
+		<TooltipRole {role} />
 	{/each}
 	)
 </p>
-<button onclick={sendFeedback}>Zpětná vazba</button><br/>
+<button onclick={sendFeedback}>Zpětná vazba</button><br />
 
 <slot />
 

@@ -3,7 +3,6 @@
 	import { getLocalisedDate } from '$lib/locale/localisedDateRangeText';
 	import { createEventDispatcher } from 'svelte';
 
-	export let id = '';
 	export let label = '';
 	export let required = false;
 	export let readonly = false;
@@ -12,6 +11,7 @@
 	export let withNote = false;
 	export let vacations = [];
 	export let dateRanges = [];
+	export let maxSelected = Infinity;
 
 	const dispatch = createEventDispatcher();
 
@@ -55,6 +55,13 @@
 	}
 
 	/* ---------- selection ---------- */
+
+	function isOptionDisabled(userId) {
+		if (readonly) return true;
+		if (!selectionLimitReached) return false;
+
+		return !dates.some((date) => getDateValue(userId, date).selected);
+	}
 
 	function toggleOption(option, date) {
 		if (readonly) return;
@@ -133,6 +140,12 @@
 		dates.some((date) => getDateValue(user.id, date).selected)
 	);
 
+	$: selectedUserCount = value.filter((user) =>
+		dates.some((date) => getDateValue(user.id, date).selected)
+	).length;
+
+	$: selectionLimitReached = selectedUserCount >= maxSelected;
+
 	/* ---------- vacations ---------- */
 	$: vacationMap = buildVacationMap(options, vacations, dateRanges);
 
@@ -174,7 +187,7 @@
 	{#if required}*{/if}{label}
 </b>
 
-{#if !readonly && dates.length > 0}
+{#if (!readonly && dates.length > 0) && maxSelected == Infinity}
 	<div class="actions">
 		<button type="button" on:click={selectAll}> Vybrat vše </button>
 		<button type="button" on:click={resetAll} disabled={!hasSelectedUsers}>Zrušit výběr</button>
@@ -232,7 +245,7 @@
 								type="checkbox"
 								checked={isSelected(option.id, date)}
 								on:change={() => toggleOption(option, date)}
-								disabled={readonly}
+								disabled={isOptionDisabled(option.id)}
 							/>
 						{/key}
 

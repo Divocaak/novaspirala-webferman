@@ -51,7 +51,7 @@ export async function POST({ request, cookies }) {
     user.setPrivileges(prows)
 
     const [rrows] = await pool.query(`
-        SELECT r.id, r.label, ur.manager
+        SELECT r.id, r.label, ur.manager, r.text_color, r.background_color
         FROM user_role ur
         INNER JOIN role r ON ur.id_role=r.id
         WHERE ur.id_user = ?
