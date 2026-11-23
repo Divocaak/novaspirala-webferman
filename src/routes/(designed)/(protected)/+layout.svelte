@@ -41,6 +41,7 @@
 <p>
 	{@html user.getInfoString()}
 	<a href="/logout">Odhlásit se</a>
+	<a href="/account">Upravit profil</a>
 	<br />
 	(práva: {#each user.privileges as privilege}
 		<TooltipPrivilege {privilege} />
