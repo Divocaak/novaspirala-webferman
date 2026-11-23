@@ -86,7 +86,7 @@
 				withNote={true}
 				{vacations}
 				{dateRanges}
-				maxSelected={role.role.id == PUBLIC_ROLE_SUBTITLES_ID ? 1 : undefined}
+				maxSelected={role.role.id == PUBLIC_ROLE_SUBTITLES_ID ? 1 : Infinity}
 			/>
 		{/if}
 
